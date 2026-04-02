@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "server",
+  "dolt_database": "dark_research_lab",
+  "project_id": "cad14b76-afb8-40f1-805d-b5da90ea1902"
+}
