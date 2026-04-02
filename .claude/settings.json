@@ -1,0 +1,90 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run post-tool-success 2\u003e/dev/null || true",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash|Edit|Write"
+      },
+      {
+        "hooks": [
+          {
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run post-read 2\u003e/dev/null || true",
+            "type": "command"
+          }
+        ],
+        "matcher": "Read"
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run post-tool-failure 2\u003e/dev/null || true",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash|Edit|Write"
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' prime 2\u003e/dev/null || true",
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run phase-guard 2\u003e/dev/null || true",
+            "type": "command"
+          }
+        ],
+        "matcher": "Edit|Write"
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' prime 2\u003e/dev/null || true",
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run phase-audit 2\u003e/dev/null || true",
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run user-prompt 2\u003e/dev/null || true",
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      }
+    ]
+  }
+}
