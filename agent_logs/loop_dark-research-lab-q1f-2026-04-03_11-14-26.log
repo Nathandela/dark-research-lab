@@ -1,0 +1,62 @@
+Now I understand the epic. Let me explore the current project structure and the compound-agent source code to plan this properly.Now I need the Go source. Let me clone compound-agent and explore its structure.Now I have a thorough understanding of the Go source. Let me start the compound workflow with the plan phase.No prior lessons. Let me do targeted research on the compound-agent setup internals and the existing project docs to inform the plan.Now I have thorough context. Let me synthesize and create the plan with beads tasks.
+
+**Plan synthesis:**
+
+The epic requires 4 work streams:
+1. **Go source fork & rename** - mechanical but large: copy go/, rename module path, binary name, state files, user-facing strings
+2. **Tier system + tiered setup** - add tier annotations to template embedding, implement tier-aware setup with CLI flags
+3. **Python packaging** - pyproject.toml, wrapper script, cross-compile build 
+4. **Smoke tests** - verify all acceptance criteria
+
+Let me create the beads tasks with dependencies.Now set up dependencies:Now update the epic with acceptance criteria and verification contract:Now verify the plan is complete:Plan phase is complete. Now let me move to the **work phase**.Starting Task 1: Fork Go source and rename ca → drl. Let me copy the Go source and do the systematic rename.Now I need to do systematic renames. Let me deploy agents in parallel for the mechanical rename work and the structural changes.Good. Now I need to rename all the other "ca" references: state files, daemon binary name, hook commands, user-facing strings, and the Makefile.
+
+Good progress. Now let me update the test files and verify the build compiles.Now let me verify the build compiles:Build succeeds. Let me verify the binary works:Binary works. Let me run the tests (excluding embedding tests per safety rules):Several test failures. Let me investigate and fix them:The tests are checking for "Compound Agent Integration" but the template now has "Dark Research Lab Integration". I need to update the test assertions.Now check the init_test.go gitignore issue:The test expectations look correct (already renamed). Let me check what the actual init.go produces:The marker is `"# drl managed"` but the test expects `"# dark-research-lab managed"`. There's an inconsistency. Let me check which one the agent used:The source says `"# drl managed"` but the test expects `"# dark-research-lab managed"`. The test was over-renamed. Let me fix the test to match:Now for the npmdist tests - DRL uses PyPI, not npm. These tests check npm-specific files that won't exist. Let me skip them by removing the npmdist package tests that reference the old distribution model:The npmdist package tests are npm-specific (package.json, bin/ wrapper, postinstall.cjs). DRL uses PyPI, so this entire package is irrelevant. Let me remove it and the template_drift_test.go that also checks package.json:Now check if npmdist is imported anywhere:Good, npmdist wasn't imported by other packages. Now fix the template_drift_test.go:The `TestPlatformVersionSync` test checks npm package.json which is irrelevant for DRL. I'll remove just that test and keep the template drift tests that are still useful:Now clean up unused imports in template_drift_test.go:Good, both are still used. Now let me rebuild and test:Two remaining test failures in cli package. Let me fix them:The tests check for "Compound Agent Active" in the prime output. Let me check what the actual source produces:The source says "Dark Research Lab Active" but the tests check for "Compound Agent Active". Fix the tests:Now let me run the full test suite to confirm everything passes:The goreleaser tests look for `.goreleaser.yml` which is a compound-agent release artifact. DRL uses PyPI instead. Let me remove these tests since we don't use goreleaser:All tests pass. Let me also remove the v3-pipeline.sh which is compound-agent specific, and clean up the drl binary from the build:Let me do a final verification - make sure no "compound-agent" references remain in source code (excluding test template content which is intentional):Task 1 is complete. Let me commit and close it:Let me remove the sqlite cache files that shouldn't be committed:Task 1 committed. Let me close it:Now let me work on Tasks 2 and 3 in parallel since Task 2 (tier system) and Task 3 (Python packaging) are now unblocked and independent of each other.
+
+Both tasks completed by agents. Let me verify everything compiles and tests pass:All tests pass. Now run the full Go test suite to check for regressions:All green. Commit tasks 2 and 3:Now Task 4: Smoke tests. Let me claim it and implement.Let me verify the smoke tests pass:All 17 smoke tests pass. Let me commit and close:Now let me verify the verification contract evidence before proceeding to review. Let me run all the required evidence:All 24 Python tests + 13 Go packages pass. Now let me check remaining verification contract evidence:
+
+**Required evidence checklist:**
+- test: 13 Go packages + 24 Python tests pass
+- lint: need to run
+- build: `go build` succeeds
+- help_version_check: `drl version` outputs "dev", `drl --help` works
+- command_transcript: captured in smoke tests
+- package_build: pyproject.toml verified
+- install_smoke: Python wrapper verified
+
+Let me run lint:Clean. Now move to the **review phase**. Let me claim the review task:Let me follow the review process. First, check the epic's AC and verification contract:Good. Contract profile is `cli` - no runtime-verifier, design-craft, or QA Engineer needed. Let me run the baseline quality gates and verify each AC:Now let me run a focused review. Given this is a CLI project with a large diff (but mostly mechanical fork/rename), I'll deploy a targeted review checking the critical dimensions:Good review. Let me fix the P1 and P2 findings before proceeding.
+
+P1 and P2 findings are fixed. Let me verify the full test suite passes after the fixes:All 13 packages pass. Let me commit the review fixes:Now let me produce the review report with AC and verification contract tables:
+
+## Review Report: Epic 1 - Go Binary Bootstrap
+
+### Acceptance Criteria
+
+| AC ID | Criterion | Status | Evidence |
+|-------|-----------|--------|----------|
+| AC-1 | drl version prints version string | PASS | `./drl version` outputs "dev" |
+| AC-2 | Go binary named 'drl' | PASS | `go build ./cmd/drl/` produces drl binary |
+| AC-3 | All subsystems compile and reachable | PASS | 13 Go packages pass tests |
+| AC-4 | Empty repo installs all tiers | PASS | TestTierSetup_EmptyRepo, TestSetupEmptyRepo smoke |
+| AC-5 | Existing repo installs infrastructure only | PASS | TestTierSetup_ExistingRepo, TestSetupExistingRepo smoke |
+| AC-6 | --core-skill installs infra+core | PASS | TestTierSetup_CoreSkillFlag, TestSetupCoreSkill smoke |
+| AC-7 | --all-skill installs all tiers | PASS | TestTierSetup_AllSkillFlag, TestSetupAllSkill smoke |
+| AC-8 | pyproject.toml defines drl entry point | PASS | `[project.scripts] drl = "drl:main"` |
+| AC-9 | Python wrapper locates and executes binary | PASS | TestPythonWrapper smoke tests |
+| AC-10 | Cross-compile build script exists | PASS | scripts/build.sh targeting 4 platforms |
+
+### Verification Contract
+
+| Evidence | Status | Proof |
+|----------|--------|-------|
+| test | PASS | 13 Go packages + 24 Python tests |
+| lint | PASS | `go vet ./...` clean |
+| build | PASS | `go build ./cmd/drl/` succeeds |
+| help_version_check | PASS | `drl version` → "dev", `drl --help` shows all commands |
+| command_transcript | PASS | 17 smoke tests exercise CLI commands |
+| package_build | PASS | pyproject.toml verified with hatchling |
+| install_smoke | PASS | Python wrapper finds binary via DRL_BINARY_PATH |
+
+Runtime verification: SKIP (INFO - CLI project, no runtime evidence in contract)
+Design craft review: SKIP (INFO - non-UI project)
+
+All P1 findings fixed. Let me close the review task:Now the **compound phase** - extract lessons:Now verify all work tasks are closed and close the epic:All work tasks are closed. Only epics remain open. Let me close the epic and push:EPIC_COMPLETE
