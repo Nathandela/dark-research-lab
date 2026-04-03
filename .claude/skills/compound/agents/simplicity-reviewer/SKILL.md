@@ -17,7 +17,7 @@ Review code for unnecessary complexity, over-engineering, premature abstraction,
 6. Verify no "just in case" code exists
 
 ## Literature
-- Consult `docs/compound/research/code-review/` for over-engineering detection and YAGNI assessment methodology
+- Consult `docs/drl/research/code-review/` for over-engineering detection and YAGNI assessment methodology
 - Run `ca knowledge "simplicity over-engineering"` for indexed knowledge
 
 ## Collaboration

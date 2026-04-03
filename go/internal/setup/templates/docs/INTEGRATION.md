@@ -126,7 +126,7 @@ Add a reference to dark-research-lab in your project's `.claude/CLAUDE.md`:
 ```markdown
 ## References
 
-- docs/compound/README.md -- Dark-research-lab overview and getting started
+- docs/drl/README.md -- Dark-research-lab overview and getting started
 ```
 
 The `drl init` command does this automatically.

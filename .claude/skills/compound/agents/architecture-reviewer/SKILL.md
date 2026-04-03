@@ -18,7 +18,7 @@ Review code for architectural consistency, pattern compliance, module boundary i
 7. For changes spanning multiple modules, spawn opus subagents to review each module boundary in parallel.
 
 ## Literature
-- Consult `docs/compound/research/code-review/` for systematic review methodology and architectural assessment frameworks
+- Consult `docs/drl/research/code-review/` for systematic review methodology and architectural assessment frameworks
 - Run `ca knowledge "architecture module design"` for indexed knowledge on design patterns
 
 ## Collaboration

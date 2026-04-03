@@ -9,7 +9,7 @@ description: Dependency audit for vulnerable packages, lockfile changes, postins
 On-demand specialist for auditing dependency security, lockfile changes, and supply chain risks.
 
 ## Instructions
-1. Read `docs/compound/research/security/dependency-security.md` for risk model and audit methodology
+1. Read `docs/drl/research/security/dependency-security.md` for risk model and audit methodology
 2. Run audit tools on changed dependency files:
    - **JS/TS**: `pnpm audit` or `npm audit` -- report critical and high vulnerabilities
    - **Python**: `pip-audit` or `safety check` -- report known CVEs
@@ -27,8 +27,8 @@ On-demand specialist for auditing dependency security, lockfile changes, and sup
 5. For large dependency changes, spawn opus subagents to audit different package groups in parallel.
 
 ## Literature
-- Consult `docs/compound/research/security/dependency-security.md` for risk assessment methodology
-- Consult `docs/compound/research/security/secure-coding-failure.md` section 4.9 for theoretical foundation
+- Consult `docs/drl/research/security/dependency-security.md` for risk assessment methodology
+- Consult `docs/drl/research/security/secure-coding-failure.md` section 4.9 for theoretical foundation
 - Run `drl knowledge "dependency vulnerability supply chain"` for indexed knowledge
 
 ## Collaboration

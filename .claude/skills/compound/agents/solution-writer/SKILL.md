@@ -22,7 +22,7 @@ Transform approved lessons into properly formatted memory items that follow the 
 6. Store via `ca learn`
 
 ## Literature
-- Consult `docs/compound/research/learning-systems/` for knowledge representation and lesson schema design
+- Consult `docs/drl/research/learning-systems/` for knowledge representation and lesson schema design
 - Run `ca knowledge "knowledge storage representation"` for indexed knowledge
 
 ## Collaboration

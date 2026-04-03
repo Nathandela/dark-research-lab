@@ -37,13 +37,13 @@
 
 | Paper | Why it matters for this phase |
 |-------|-------------------------------|
-| [`docs/compound/research/design/web-apps/performance-perception-and-loading-ux.md`](docs/compound/research/design/web-apps/performance-perception-and-loading-ux.md) | Psychology of waiting (Maister, Attentional Gate Model); 0.1/1/10s framework (Card/Moran/Newell, Nielsen); skeleton screen evidence; RAIL model; Core Web Vitals; Speculation Rules API; streaming SSR; business-impact evidence linking latency to conversion |
-| [`docs/compound/research/design/web-apps/accessibility-and-inclusive-design.md`](docs/compound/research/design/web-apps/accessibility-and-inclusive-design.md) | Disability models (social, medical, ICF); WCAG 2.2 and 3.0; ARIA mechanics; screen reader interaction model; keyboard navigation; cognitive accessibility; automated vs. manual testing; legal frameworks; the overlay controversy |
-| [`docs/compound/research/design/web-apps/cognitive-load-and-attention-design.md`](docs/compound/research/design/web-apps/cognitive-load-and-attention-design.md) | Sweller's triarchic load taxonomy; working memory limits; progressive disclosure as cognitive load management; the attention economy; F-shaped scanning under high load; decision fatigue in settings panels |
-| [`docs/compound/research/development/web-apps/optimistic-ui-local-first-patterns.md`](docs/compound/research/development/web-apps/optimistic-ui-local-first-patterns.md) | CRDT theory and implementations (Yjs, Automerge); sync engines (Replicache, ElectricSQL, PowerSync); optimistic mutation with rollback; offline-first architecture; conflict resolution strategies |
-| [`docs/compound/research/development/web-apps/web-application-security.md`](docs/compound/research/development/web-apps/web-application-security.md) | Authentication patterns (OAuth/OIDC, passkeys, JWT); XSS/CSRF defense; CSP and security headers; OWASP Top 10 mapping; client-side secure storage; SPA vs SSR security profiles |
-| [`docs/compound/research/development/web-apps/spa-seo-crawlability.md`](docs/compound/research/development/web-apps/spa-seo-crawlability.md) | Rendering strategy SEO implications (CSR/SSR/SSG/ISR/RSC); Googlebot two-wave indexing; Core Web Vitals; structured data; URL design; social media crawler support |
-| [`docs/compound/research/development/software-design/philosophy-of-software-design.md`](docs/compound/research/development/software-design/philosophy-of-software-design.md) | "Define errors out of existence" principle — design flows so error categories are eliminated rather than handled; pull complexity downward into component internals |
+| [`docs/drl/research/design/web-apps/performance-perception-and-loading-ux.md`](docs/drl/research/design/web-apps/performance-perception-and-loading-ux.md) | Psychology of waiting (Maister, Attentional Gate Model); 0.1/1/10s framework (Card/Moran/Newell, Nielsen); skeleton screen evidence; RAIL model; Core Web Vitals; Speculation Rules API; streaming SSR; business-impact evidence linking latency to conversion |
+| [`docs/drl/research/design/web-apps/accessibility-and-inclusive-design.md`](docs/drl/research/design/web-apps/accessibility-and-inclusive-design.md) | Disability models (social, medical, ICF); WCAG 2.2 and 3.0; ARIA mechanics; screen reader interaction model; keyboard navigation; cognitive accessibility; automated vs. manual testing; legal frameworks; the overlay controversy |
+| [`docs/drl/research/design/web-apps/cognitive-load-and-attention-design.md`](docs/drl/research/design/web-apps/cognitive-load-and-attention-design.md) | Sweller's triarchic load taxonomy; working memory limits; progressive disclosure as cognitive load management; the attention economy; F-shaped scanning under high load; decision fatigue in settings panels |
+| [`docs/drl/research/development/web-apps/optimistic-ui-local-first-patterns.md`](docs/drl/research/development/web-apps/optimistic-ui-local-first-patterns.md) | CRDT theory and implementations (Yjs, Automerge); sync engines (Replicache, ElectricSQL, PowerSync); optimistic mutation with rollback; offline-first architecture; conflict resolution strategies |
+| [`docs/drl/research/development/web-apps/web-application-security.md`](docs/drl/research/development/web-apps/web-application-security.md) | Authentication patterns (OAuth/OIDC, passkeys, JWT); XSS/CSRF defense; CSP and security headers; OWASP Top 10 mapping; client-side secure storage; SPA vs SSR security profiles |
+| [`docs/drl/research/development/web-apps/spa-seo-crawlability.md`](docs/drl/research/development/web-apps/spa-seo-crawlability.md) | Rendering strategy SEO implications (CSR/SSR/SSG/ISR/RSC); Googlebot two-wave indexing; Core Web Vitals; structured data; URL design; social media crawler support |
+| [`docs/drl/research/development/software-design/philosophy-of-software-design.md`](docs/drl/research/development/software-design/philosophy-of-software-design.md) | "Define errors out of existence" principle — design flows so error categories are eliminated rather than handled; pull complexity downward into component internals |
 
 ---
 
@@ -83,11 +83,11 @@ Read these for deep theoretical grounding on this phase's topics.
 
 | Topic | Paper | Path |
 |-------|-------|------|
-| Performance perception and loading UX | Performance Perception and Loading UX | `docs/compound/research/design/web-apps/performance-perception-and-loading-ux.md` |
-| Accessibility and inclusive design | Accessibility and Inclusive Design | `docs/compound/research/design/web-apps/accessibility-and-inclusive-design.md` |
-| Cognitive load and attention design | Cognitive Load and Attention Design | `docs/compound/research/design/web-apps/cognitive-load-and-attention-design.md` |
-| Optimistic UI and local-first patterns | Optimistic UI and Local-First Patterns for Web Applications | `docs/compound/research/development/web-apps/optimistic-ui-local-first-patterns.md` |
-| Software design philosophy | A Philosophy of Software Design: Principles, Evidence, and Competing Perspectives | `docs/compound/research/development/software-design/philosophy-of-software-design.md` |
+| Performance perception and loading UX | Performance Perception and Loading UX | `docs/drl/research/design/web-apps/performance-perception-and-loading-ux.md` |
+| Accessibility and inclusive design | Accessibility and Inclusive Design | `docs/drl/research/design/web-apps/accessibility-and-inclusive-design.md` |
+| Cognitive load and attention design | Cognitive Load and Attention Design | `docs/drl/research/design/web-apps/cognitive-load-and-attention-design.md` |
+| Optimistic UI and local-first patterns | Optimistic UI and Local-First Patterns for Web Applications | `docs/drl/research/development/web-apps/optimistic-ui-local-first-patterns.md` |
+| Software design philosophy | A Philosophy of Software Design: Principles, Evidence, and Competing Perspectives | `docs/drl/research/development/software-design/philosophy-of-software-design.md` |
 
 ## Supplementary Sources
 
@@ -95,7 +95,7 @@ Consult these for specific questions or adjacent concerns.
 
 | Topic | Paper | Path |
 |-------|-------|------|
-| Responsive and adaptive design | Responsive and Adaptive Design | `docs/compound/research/design/web-apps/responsive-and-adaptive-design.md` |
-| Real-time and collaborative UX | Real-Time and Collaborative UX | `docs/compound/research/design/web-apps/real-time-and-collaborative-ux.md` |
-| Web application security | Web Application Security Architecture | `docs/compound/research/development/web-apps/web-application-security.md` |
-| SPA SEO and crawlability | SEO and Crawlability for Single-Page Applications | `docs/compound/research/development/web-apps/spa-seo-crawlability.md` |
+| Responsive and adaptive design | Responsive and Adaptive Design | `docs/drl/research/design/web-apps/responsive-and-adaptive-design.md` |
+| Real-time and collaborative UX | Real-Time and Collaborative UX | `docs/drl/research/design/web-apps/real-time-and-collaborative-ux.md` |
+| Web application security | Web Application Security Architecture | `docs/drl/research/development/web-apps/web-application-security.md` |
+| SPA SEO and crawlability | SEO and Crawlability for Single-Page Applications | `docs/drl/research/development/web-apps/spa-seo-crawlability.md` |

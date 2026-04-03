@@ -26,7 +26,7 @@ Share classifications with solution-writer via direct message so it knows which 
 AgentTeam member in the **compound** phase. Spawned via TeamCreate. Communicate with teammates via SendMessage.
 
 ## Literature
-- Consult `docs/compound/research/learning-systems/` for deduplication strategies and knowledge graph methodology
+- Consult `docs/drl/research/learning-systems/` for deduplication strategies and knowledge graph methodology
 - Run `ca knowledge "pattern matching deduplication"` for indexed knowledge
 
 ## Output Format

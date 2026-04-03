@@ -9,7 +9,7 @@ description: Mandatory core-4 reviewer with P0-P3 severity classification and sp
 Mandatory core-4 reviewer responsible for identifying security vulnerabilities using P0-P3 severity classification. Has authority to escalate findings to specialist security skills for deep analysis.
 
 ## Instructions
-1. Read `docs/compound/research/security/overview.md` for severity classification and escalation triggers
+1. Read `docs/drl/research/security/overview.md` for severity classification and escalation triggers
 2. Read all changed files completely, focusing on:
    - Input handling and data flow to interpreters (SQL, shell, HTML, templates)
    - Secrets and credential management
@@ -30,13 +30,13 @@ Mandatory core-4 reviewer responsible for identifying security vulnerabilities u
 5. For large diffs, spawn opus subagents to review different file groups in parallel. Merge findings and deduplicate.
 
 ## Literature
-- Consult `docs/compound/research/security/overview.md` for severity classification and OWASP mapping
-- Consult `docs/compound/research/security/injection-patterns.md` for injection detection heuristics
-- Consult `docs/compound/research/security/secrets-checklist.md` for secret format patterns
-- Consult `docs/compound/research/security/auth-patterns.md` for auth/authz audit methodology
-- Consult `docs/compound/research/security/data-exposure.md` for data leak detection
-- Consult `docs/compound/research/security/dependency-security.md` for dependency risk assessment
-- Consult `docs/compound/research/security/secure-coding-failure.md` for full theoretical foundation
+- Consult `docs/drl/research/security/overview.md` for severity classification and OWASP mapping
+- Consult `docs/drl/research/security/injection-patterns.md` for injection detection heuristics
+- Consult `docs/drl/research/security/secrets-checklist.md` for secret format patterns
+- Consult `docs/drl/research/security/auth-patterns.md` for auth/authz audit methodology
+- Consult `docs/drl/research/security/data-exposure.md` for data leak detection
+- Consult `docs/drl/research/security/dependency-security.md` for dependency risk assessment
+- Consult `docs/drl/research/security/secure-coding-failure.md` for full theoretical foundation
 - Run `ca knowledge "security review OWASP"` for indexed security knowledge
 
 ## Collaboration

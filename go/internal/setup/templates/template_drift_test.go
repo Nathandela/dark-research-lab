@@ -191,14 +191,18 @@ func TestTemplateDrift_ResearchReferencesResolve(t *testing.T) {
 	// Pattern: docs/drl/research/some/path
 	refRe := regexp.MustCompile("`docs/drl/research/([^`]+)`")
 
+	matchCount := 0
+
 	// Check all phase skills
 	for phase, content := range PhaseSkills() {
 		for _, m := range refRe.FindAllStringSubmatch(content, -1) {
+			matchCount++
 			checkResearchRef(t, "skill:"+phase, m[1], researchDocs, researchDirs)
 		}
 	}
 	for relPath, content := range PhaseSkillReferences() {
 		for _, m := range refRe.FindAllStringSubmatch(content, -1) {
+			matchCount++
 			checkResearchRef(t, "skill-ref:"+relPath, m[1], researchDocs, researchDirs)
 		}
 	}
@@ -206,13 +210,58 @@ func TestTemplateDrift_ResearchReferencesResolve(t *testing.T) {
 	// Check all agent role skills
 	for role, content := range AgentRoleSkills() {
 		for _, m := range refRe.FindAllStringSubmatch(content, -1) {
+			matchCount++
 			checkResearchRef(t, "role:"+role, m[1], researchDocs, researchDirs)
 		}
 	}
 	for relPath, content := range AgentRoleSkillReferences() {
 		for _, m := range refRe.FindAllStringSubmatch(content, -1) {
+			matchCount++
 			checkResearchRef(t, "role-ref:"+relPath, m[1], researchDocs, researchDirs)
 		}
+	}
+
+	if matchCount == 0 {
+		t.Fatal("found zero docs/drl/research/ references in templates -- regex or template content may be broken")
+	}
+	t.Logf("validated %d research path references", matchCount)
+}
+
+// TestTemplateDrift_NoStaleCompoundPaths ensures that no embedded templates
+// still reference the old compound/ namespace paths. This is a regression
+// guard for the compound->drl namespace migration.
+func TestTemplateDrift_NoStaleCompoundPaths(t *testing.T) {
+	staleRe := regexp.MustCompile(`(?:skills|agents|commands|docs)/compound/`)
+
+	check := func(label, content string) {
+		for _, m := range staleRe.FindAllString(content, -1) {
+			t.Errorf("%s contains stale compound namespace reference: %s", label, m)
+		}
+	}
+
+	for phase, content := range PhaseSkills() {
+		check("skill:"+phase, content)
+	}
+	for relPath, content := range PhaseSkillReferences() {
+		check("skill-ref:"+relPath, content)
+	}
+	for role, content := range AgentRoleSkills() {
+		check("role:"+role, content)
+	}
+	for relPath, content := range AgentRoleSkillReferences() {
+		check("role-ref:"+relPath, content)
+	}
+	for name, content := range CommandTemplates() {
+		check("command:"+name, content)
+	}
+	for name, content := range AgentTemplates() {
+		check("agent:"+name, content)
+	}
+	for name, content := range DocTemplates() {
+		check("doc:"+name, content)
+	}
+	for name, content := range ResearchDocs() {
+		check("research:"+name, content)
 	}
 }
 

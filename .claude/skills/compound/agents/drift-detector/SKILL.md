@@ -23,7 +23,7 @@ module-boundary-reviewer -> **Drift Detector** -> implementation-reviewer
 6. Report any deviation, even if the implementation "works"
 
 ## Literature
-- Consult `docs/compound/research/property-testing/` for invariant-driven development and constraint verification
+- Consult `docs/drl/research/property-testing/` for invariant-driven development and constraint verification
 - Run `ca knowledge "invariant drift detection"` for indexed knowledge on drift patterns
 
 ## Deployment

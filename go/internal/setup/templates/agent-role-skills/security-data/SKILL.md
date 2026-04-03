@@ -9,7 +9,7 @@ description: Audit for PII in logs, verbose error responses, sensitive data in U
 On-demand specialist for detecting sensitive data exposure through logging, error handling, URLs, and API responses.
 
 ## Instructions
-1. Read `docs/compound/research/security/data-exposure.md` for exposure patterns and detection heuristics
+1. Read `docs/drl/research/security/data-exposure.md` for exposure patterns and detection heuristics
 2. Audit logging calls:
    - Flag `console.log(req.body)`, `console.log(req.headers)`, `logger.info(user)` -- unfiltered objects may contain passwords/tokens
    - Flag logging of `Authorization` header values
@@ -29,8 +29,8 @@ On-demand specialist for detecting sensitive data exposure through logging, erro
    - Verify response serialization uses explicit field selection or DTOs
 
 ## Literature
-- Consult `docs/compound/research/security/data-exposure.md` for exposure patterns and detection heuristics
-- Consult `docs/compound/research/security/secure-coding-failure.md` section 4.8 for theoretical foundation
+- Consult `docs/drl/research/security/data-exposure.md` for exposure patterns and detection heuristics
+- Consult `docs/drl/research/security/secure-coding-failure.md` section 4.8 for theoretical foundation
 - Run `drl knowledge "data exposure PII logging"` for indexed knowledge
 
 ## Collaboration

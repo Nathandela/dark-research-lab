@@ -33,11 +33,11 @@ Conduct deep research on a topic and produce a structured survey document follow
 
 ## Memory Integration
 - Run `ca search` with topic keywords before starting research
-- Check for existing research docs in `docs/research/` and `docs/compound/research/` that overlap
+- Check for existing research docs in `docs/research/` and `docs/drl/research/` that overlap
 - After completion, key findings can be captured via `ca learn`
 
 ## Docs Integration
-- Scan `docs/research/` and `docs/compound/research/` for prior survey documents on related topics
+- Scan `docs/research/` and `docs/drl/research/` for prior survey documents on related topics
 - Check `docs/decisions/` for ADRs that inform or constrain the research scope
 - Reference existing project docs as primary sources where relevant
 

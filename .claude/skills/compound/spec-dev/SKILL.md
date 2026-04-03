@@ -18,7 +18,7 @@ Scale formality to risk: skip for trivial (<1h), lightweight (EARS + epic) for s
 1. Ask "why" before "how" -- understand the real need
 2. Search memory: `ca search` for past features, constraints, decisions
 3. Search knowledge: `ca knowledge "relevant terms"`
-4. Spawn subagents for research (`.claude/agents/compound/repo-analyst.md`, `memory-analyst.md`, or `subagent_type: Explore`)
+4. Spawn subagents for research (`.claude/agents/drl/repo-analyst.md`, `memory-analyst.md`, or `subagent_type: Explore`)
 5. For deep domain knowledge, consider `/get-a-phd`
 6. Build a discovery mindmap (Mermaid `mindmap`) -- makes implicit assumptions visible
 7. Use `AskUserQuestion` to clarify scope and preferences
@@ -78,7 +78,7 @@ Scale formality to risk: skip for trivial (<1h), lightweight (EARS + epic) for s
 - `ca learn` after corrections or discoveries
 
 ## Reference Material
-Read `.claude/skills/compound/spec-dev/references/spec-guide.md` on demand for EARS patterns, Mermaid templates, ambiguity checklists, and trade-off frameworks.
+Read `.claude/skills/drl/spec-dev/references/spec-guide.md` on demand for EARS patterns, Mermaid templates, ambiguity checklists, and trade-off frameworks.
 
 ## Common Pitfalls
 - Jumping to solutions before exploring the problem

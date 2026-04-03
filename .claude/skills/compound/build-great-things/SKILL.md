@@ -31,7 +31,7 @@ The principles that follow from this:
 - **Strategic, not tactical.** A tactical programmer (or a tactical AI) gets things working and moves on. A strategic one invests 10-20% additional effort in good structure, knowing it compounds. This skill exists to make you strategic.
 - **Design it twice.** Before committing to a component API, state architecture, or page layout, sketch two meaningfully different approaches and compare their trade-offs. The first design that comes to mind is rarely the best.
 
-*Full survey: `docs/compound/research/development/software-design/philosophy-of-software-design.md`*
+*Full survey: `docs/drl/research/development/software-design/philosophy-of-software-design.md`*
 
 ### Constraint-based design (Wathan & Schoger)
 
@@ -44,7 +44,7 @@ The perceptual science behind the constraints:
 - **Gestalt proximity** is the most powerful grouping principle — it overrides color and shape similarity. Maintain more space *between* groups than *within* groups, and the structure communicates itself without borders or dividers.
 - **Border alternatives.** Borders are a crutch. Spacing, background color differences, and shadows separate content more elegantly and with less visual clutter. Reach for a border only after trying these three alternatives.
 
-*Full survey: `docs/compound/research/design/web-apps/refactoring-ui-design-principles.md`*
+*Full survey: `docs/drl/research/design/web-apps/refactoring-ui-design-principles.md`*
 
 ---
 
@@ -206,5 +206,5 @@ Deep survey papers that ground this skill's two intellectual foundations. Each p
 
 | Paper | What it provides |
 |-------|-----------------|
-| `docs/compound/research/development/software-design/philosophy-of-software-design.md` | Ousterhout's 13 principles (deep modules, complexity management, information hiding, define errors out of existence, strategic programming) — the code architecture philosophy |
-| `docs/compound/research/design/web-apps/refactoring-ui-design-principles.md` | Wathan & Schoger's systematic visual design (hierarchy, spacing, typography, color, shadows, border alternatives) — the visual design philosophy |
+| `docs/drl/research/development/software-design/philosophy-of-software-design.md` | Ousterhout's 13 principles (deep modules, complexity management, information hiding, define errors out of existence, strategic programming) — the code architecture philosophy |
+| `docs/drl/research/design/web-apps/refactoring-ui-design-principles.md` | Wathan & Schoger's systematic visual design (hierarchy, spacing, typography, color, shadows, border alternatives) — the visual design philosophy |

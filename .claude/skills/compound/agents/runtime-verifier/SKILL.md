@@ -115,4 +115,4 @@ Report results in standard reviewer P0-P3 format:
 
 ## References
 - See `runtime-verifier/references/playwright-patterns.md` for code snippet examples
-- See `docs/compound/research/scenario-testing/` for methodology background
+- See `docs/drl/research/scenario-testing/` for methodology background

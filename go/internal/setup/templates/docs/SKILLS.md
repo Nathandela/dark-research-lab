@@ -6,7 +6,7 @@ summary: "Phase skills and agent role skills reference"
 
 # Skills Reference
 
-Skills are instructions that Claude reads before executing each phase. They live in `.claude/skills/compound/` and are auto-installed by `drl setup`.
+Skills are instructions that Claude reads before executing each phase. They live in `.claude/skills/drl/` and are auto-installed by `drl setup`.
 
 ---
 
@@ -125,4 +125,4 @@ Skills are invoked as Claude Code slash commands:
 /compound:prime            # Prime session with workflow context
 ```
 
-Each skill reads its SKILL.md file from `.claude/skills/compound/<phase>/SKILL.md` at invocation time. Skills are never executed from memory.
+Each skill reads its SKILL.md file from `.claude/skills/drl/<phase>/SKILL.md` at invocation time. Skills are never executed from memory.

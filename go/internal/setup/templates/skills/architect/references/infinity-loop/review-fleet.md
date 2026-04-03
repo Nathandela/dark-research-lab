@@ -232,6 +232,6 @@ When epics involve UI changes, new pages, or frontend components, the review pha
 - The epic involves new UI pages, forms, or user-facing flows
 - Accessibility requirements are part of the epic's EARS specification
 
-**How to invoke**: The implementer session (or a dedicated QA session) reads `.claude/skills/compound/qa-engineer/SKILL.md` and runs the QA protocol against the running application. QA findings are formatted as P0-P3 and included in the next review cycle's context.
+**How to invoke**: The implementer session (or a dedicated QA session) reads `.claude/skills/drl/qa-engineer/SKILL.md` and runs the QA protocol against the running application. QA findings are formatted as P0-P3 and included in the next review cycle's context.
 
 **Not a reviewer**: The QA Engineer does not participate in the reviewer fleet's approval/rejection flow. Its findings are additional evidence that reviewers can reference, not a separate approval gate.

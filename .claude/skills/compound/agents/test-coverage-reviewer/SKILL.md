@@ -19,8 +19,8 @@ Review tests for meaningful assertions, edge case coverage, and absence of cargo
 8. For many test files, spawn opus subagents to review test files in parallel (1 per test file).
 
 ## Literature
-- Consult `docs/compound/research/tdd/` for test quality assessment and coverage methodology
-- Consult `docs/compound/research/property-testing/` for property-based testing theory
+- Consult `docs/drl/research/tdd/` for test quality assessment and coverage methodology
+- Consult `docs/drl/research/property-testing/` for property-based testing theory
 - Run `ca knowledge "test coverage quality"` for indexed knowledge
 
 ## Collaboration

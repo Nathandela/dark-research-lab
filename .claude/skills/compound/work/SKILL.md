@@ -21,7 +21,7 @@ Execute implementation through an AgentTeam using adaptive TDD. The lead coordin
 6. Run `ca search` per agent/subtask for targeted context. Display results.
 7. Assess parallelization: identify independent tasks that can be worked simultaneously
 8. Deploy an **AgentTeam** (TeamCreate + Task with `team_name`) with MULTIPLE test-writers and implementers:
-   - Role skills: `.claude/skills/compound/agents/{test-writer,implementer}/SKILL.md`
+   - Role skills: `.claude/skills/drl/agents/{test-writer,implementer}/SKILL.md`
    - Scale teammate count to independent tasks; pairs coordinate via SendMessage on shared interfaces
 9. Agents communicate via SendMessage when working on overlapping areas.
 10. Lead coordinates: review agent outputs, resolve conflicts, verify tests pass. Do not write code directly.
@@ -65,8 +65,8 @@ for complex changes. For all changes, `/implementation-reviewer` is the minimum 
 - **Coordinate on shared interfaces**: teammates working on overlapping APIs must communicate via SendMessage before implementing
 
 ## Literature
-- Consult `docs/compound/research/tdd/` for TDD methodology, test-first development evidence, and best practices
-- Consult `docs/compound/research/property-testing/` for property-based testing theory and invariant design
+- Consult `docs/drl/research/tdd/` for TDD methodology, test-first development evidence, and best practices
+- Consult `docs/drl/research/property-testing/` for property-based testing theory and invariant design
 - Run `ca knowledge "TDD test-first"` for indexed knowledge on testing methodology
 - Run `ca search "testing"` for lessons from past TDD cycles
 

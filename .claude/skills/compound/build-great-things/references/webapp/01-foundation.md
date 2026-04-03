@@ -39,13 +39,13 @@
 
 | Paper | Why it matters for this phase |
 |-------|-------------------------------|
-| [`docs/compound/research/design/web-apps/information-architecture-and-navigation.md`](docs/compound/research/design/web-apps/information-architecture-and-navigation.md) | Rosenfeld-Morville IA framework, hierarchy-breadth trade-off, command palette as third navigation paradigm, SPA wayfinding contract |
-| [`docs/compound/research/design/web-apps/cognitive-load-and-attention-design.md`](docs/compound/research/design/web-apps/cognitive-load-and-attention-design.md) | Sweller's Cognitive Load Theory, Miller/Cowan working memory limits, Hick's Law for choice architecture — all constrain IA depth and breadth decisions |
-| [`docs/compound/research/design/web-apps/design-systems-and-component-architecture.md`](docs/compound/research/design/web-apps/design-systems-and-component-architecture.md) | Atomic Design methodology, W3C DTCG token specification, multi-tier token layering, headless vs. composed component strategy, governance models |
-| [`docs/compound/research/b2c_product/jobs-to-be-done-theory.md`](docs/compound/research/b2c_product/jobs-to-be-done-theory.md) | Three JTBD schools (Christensen narrative, Ulwick ODI, Moesta switch interview), Forces of Progress model, functional/social/emotional job layers |
-| [`docs/compound/research/development/software-design/philosophy-of-software-design.md`](docs/compound/research/development/software-design/philosophy-of-software-design.md) | Strategic vs. tactical programming, complexity as root cause, design-it-twice metacognitive practice — the intellectual foundation for investing in foundation-phase decisions |
-| [`docs/compound/research/development/web-apps/state-management-architecture.md`](docs/compound/research/development/web-apps/state-management-architecture.md) | Client/server/URL state taxonomy, signals vs. atoms vs. stores, state machines for UI, SSR hydration, cross-tab synchronization — grounds the state-architecture decision |
-| [`docs/compound/research/development/web-apps/optimistic-ui-local-first-patterns.md`](docs/compound/research/development/web-apps/optimistic-ui-local-first-patterns.md) | CRDTs, sync engines (Replicache, ElectricSQL), optimistic mutation patterns, conflict resolution — the engineering landscape for local-first state architecture |
+| [`docs/drl/research/design/web-apps/information-architecture-and-navigation.md`](docs/drl/research/design/web-apps/information-architecture-and-navigation.md) | Rosenfeld-Morville IA framework, hierarchy-breadth trade-off, command palette as third navigation paradigm, SPA wayfinding contract |
+| [`docs/drl/research/design/web-apps/cognitive-load-and-attention-design.md`](docs/drl/research/design/web-apps/cognitive-load-and-attention-design.md) | Sweller's Cognitive Load Theory, Miller/Cowan working memory limits, Hick's Law for choice architecture — all constrain IA depth and breadth decisions |
+| [`docs/drl/research/design/web-apps/design-systems-and-component-architecture.md`](docs/drl/research/design/web-apps/design-systems-and-component-architecture.md) | Atomic Design methodology, W3C DTCG token specification, multi-tier token layering, headless vs. composed component strategy, governance models |
+| [`docs/drl/research/b2c_product/jobs-to-be-done-theory.md`](docs/drl/research/b2c_product/jobs-to-be-done-theory.md) | Three JTBD schools (Christensen narrative, Ulwick ODI, Moesta switch interview), Forces of Progress model, functional/social/emotional job layers |
+| [`docs/drl/research/development/software-design/philosophy-of-software-design.md`](docs/drl/research/development/software-design/philosophy-of-software-design.md) | Strategic vs. tactical programming, complexity as root cause, design-it-twice metacognitive practice — the intellectual foundation for investing in foundation-phase decisions |
+| [`docs/drl/research/development/web-apps/state-management-architecture.md`](docs/drl/research/development/web-apps/state-management-architecture.md) | Client/server/URL state taxonomy, signals vs. atoms vs. stores, state machines for UI, SSR hydration, cross-tab synchronization — grounds the state-architecture decision |
+| [`docs/drl/research/development/web-apps/optimistic-ui-local-first-patterns.md`](docs/drl/research/development/web-apps/optimistic-ui-local-first-patterns.md) | CRDTs, sync engines (Replicache, ElectricSQL), optimistic mutation patterns, conflict resolution — the engineering landscape for local-first state architecture |
 
 ---
 
@@ -87,12 +87,12 @@ Read these for deep theoretical grounding on this phase's topics.
 
 | Topic | Paper | Path |
 |-------|-------|------|
-| Information architecture and navigation | Information Architecture and Navigation | `docs/compound/research/design/web-apps/information-architecture-and-navigation.md` |
-| Cognitive load and attention design | Cognitive Load and Attention Design | `docs/compound/research/design/web-apps/cognitive-load-and-attention-design.md` |
-| Design systems and component architecture | Design Systems and Component Architecture | `docs/compound/research/design/web-apps/design-systems-and-component-architecture.md` |
-| Jobs-to-be-done theory | Jobs-to-Be-Done Theory | `docs/compound/research/b2c_product/jobs-to-be-done-theory.md` |
-| Software design philosophy | A Philosophy of Software Design: Principles, Evidence, and Competing Perspectives | `docs/compound/research/development/software-design/philosophy-of-software-design.md` |
-| State management architecture | State Management Architecture for Web Applications | `docs/compound/research/development/web-apps/state-management-architecture.md` |
+| Information architecture and navigation | Information Architecture and Navigation | `docs/drl/research/design/web-apps/information-architecture-and-navigation.md` |
+| Cognitive load and attention design | Cognitive Load and Attention Design | `docs/drl/research/design/web-apps/cognitive-load-and-attention-design.md` |
+| Design systems and component architecture | Design Systems and Component Architecture | `docs/drl/research/design/web-apps/design-systems-and-component-architecture.md` |
+| Jobs-to-be-done theory | Jobs-to-Be-Done Theory | `docs/drl/research/b2c_product/jobs-to-be-done-theory.md` |
+| Software design philosophy | A Philosophy of Software Design: Principles, Evidence, and Competing Perspectives | `docs/drl/research/development/software-design/philosophy-of-software-design.md` |
+| State management architecture | State Management Architecture for Web Applications | `docs/drl/research/development/web-apps/state-management-architecture.md` |
 
 ## Supplementary Sources
 
@@ -100,7 +100,7 @@ Consult these for specific questions or adjacent concerns.
 
 | Topic | Paper | Path |
 |-------|-------|------|
-| Consumer behavioral psychology | Consumer Behavioral Psychology | `docs/compound/research/b2c_product/consumer-behavioral-psychology.md` |
-| Design thinking and ethnographic research | Design Thinking and Ethnographic Research | `docs/compound/research/b2c_product/design-thinking-ethnographic-research.md` |
-| State, forms, and complex flow UX | State, Forms, and Complex Flow UX | `docs/compound/research/design/web-apps/state-forms-and-complex-flow-ux.md` |
-| Optimistic UI and local-first patterns | Optimistic UI and Local-First Patterns for Web Applications | `docs/compound/research/development/web-apps/optimistic-ui-local-first-patterns.md` |
+| Consumer behavioral psychology | Consumer Behavioral Psychology | `docs/drl/research/b2c_product/consumer-behavioral-psychology.md` |
+| Design thinking and ethnographic research | Design Thinking and Ethnographic Research | `docs/drl/research/b2c_product/design-thinking-ethnographic-research.md` |
+| State, forms, and complex flow UX | State, Forms, and Complex Flow UX | `docs/drl/research/design/web-apps/state-forms-and-complex-flow-ux.md` |
+| Optimistic UI and local-first patterns | Optimistic UI and Local-First Patterns for Web Applications | `docs/drl/research/development/web-apps/optimistic-ui-local-first-patterns.md` |

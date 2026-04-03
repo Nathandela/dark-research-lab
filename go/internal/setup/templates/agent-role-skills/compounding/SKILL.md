@@ -21,7 +21,7 @@ Cluster similar lessons from memory and synthesize them into testable CCT (Compo
 7. For many clusters, spawn opus subagents to synthesize patterns from different clusters in parallel.
 
 ## Literature
-- Consult `docs/compound/research/learning-systems/` for knowledge compounding theory and pattern synthesis
+- Consult `docs/drl/research/learning-systems/` for knowledge compounding theory and pattern synthesis
 - Run `drl knowledge "lesson clustering compounding"` for indexed knowledge on learning systems
 
 ## Collaboration

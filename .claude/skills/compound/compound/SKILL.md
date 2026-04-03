@@ -17,7 +17,7 @@ Lessons go to `.claude/lessons/index.jsonl` through the CLI. MEMORY.md is a diff
 2. Detect spec drift: compare final implementation against original EARS requirements in the epic description (`bd show <epic>`). Note any divergences -- what changed, why, was it justified. If drift reveals a spec was wrong or incomplete, flag that for lesson extraction.
 3. Detect **verification drift**: compare the work and review evidence against the epic's `## Verification Contract`. If review had to escalate the contract, or if planned evidence was too weak/too strong, capture that as a workflow-quality lesson.
 4. Spawn the analysis pipeline in an **AgentTeam** (TeamCreate + Task with `team_name`):
-   - Role skills: `.claude/skills/compound/agents/{context-analyzer,lesson-extractor,pattern-matcher,solution-writer,compounding}/SKILL.md`
+   - Role skills: `.claude/skills/drl/agents/{context-analyzer,lesson-extractor,pattern-matcher,solution-writer,compounding}/SKILL.md`
    - For large diffs, deploy MULTIPLE context-analyzers and lesson-extractors
    - Pipeline: context-analyzers -> lesson-extractors -> pattern-matcher + solution-writer -> compounding
    - Agents coordinate via SendMessage throughout the pipeline
@@ -28,7 +28,7 @@ Lessons go to `.claude/lessons/index.jsonl` through the CLI. MEMORY.md is a diff
 9. Use `AskUserQuestion` to confirm high-severity items with the user before storing; medium/low items are auto-stored
 10. Store via `ca learn` with supersedes/related links where applicable.
    At minimum, capture 1 lesson per significant decision made during this cycle
-11. **Lint graduation**: Spawn the `lint-classifier` subagent (`.claude/agents/compound/lint-classifier.md`). Pass it the list of newly captured insights from step 10 via SendMessage (each with id, insight text, and severity). The subagent classifies each as LINTABLE, PARTIAL, or NOT_LINTABLE. For LINTABLE + HIGH confidence items, it detects the project's linter and creates beads tasks under a "Linting Improvement" epic. All insights remain stored as lessons regardless of classification.
+11. **Lint graduation**: Spawn the `lint-classifier` subagent (`.claude/agents/drl/lint-classifier.md`). Pass it the list of newly captured insights from step 10 via SendMessage (each with id, insight text, and severity). The subagent classifies each as LINTABLE, PARTIAL, or NOT_LINTABLE. For LINTABLE + HIGH confidence items, it detects the project's linter and creates beads tasks under a "Linting Improvement" epic. All insights remain stored as lessons regardless of classification.
 12. Delegate to the `compounding` subagent to run synthesis: cluster accumulated lessons by similarity and write CCT patterns to `.claude/lessons/cct-patterns.jsonl`
 13. Update outdated docs and deprecate superseded ADRs (set status to `deprecated`)
 
@@ -38,7 +38,7 @@ Lessons go to `.claude/lessons/index.jsonl` through the CLI. MEMORY.md is a diff
 - Set ADR status to `deprecated` if a decision was reversed, referencing the new ADR
 
 ## Literature
-- Consult `docs/compound/research/learning-systems/` for knowledge compounding theory, spaced repetition, and lesson extraction methodology
+- Consult `docs/drl/research/learning-systems/` for knowledge compounding theory, spaced repetition, and lesson extraction methodology
 - Run `ca knowledge "knowledge compounding"` for indexed knowledge on learning systems
 - Run `ca search "compound"` for lessons from past compounding cycles
 

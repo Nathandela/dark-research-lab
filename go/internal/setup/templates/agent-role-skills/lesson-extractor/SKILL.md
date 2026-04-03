@@ -25,7 +25,7 @@ Share findings with pattern-matcher and solution-writer via direct message so th
 AgentTeam member in the **compound** phase. Spawned via TeamCreate. Communicate with teammates via SendMessage.
 
 ## Literature
-- Consult `docs/compound/research/learning-systems/` for lesson extraction methodology and knowledge representation
+- Consult `docs/drl/research/learning-systems/` for lesson extraction methodology and knowledge representation
 - Run `drl knowledge "lesson extraction knowledge management"` for indexed knowledge
 
 ## Output Format

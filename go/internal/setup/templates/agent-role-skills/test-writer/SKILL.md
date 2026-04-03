@@ -22,7 +22,7 @@ Write comprehensive failing tests that define expected behavior before any imple
 8. For multiple test files, spawn opus subagents to write tests in parallel (1 subagent per test file or module). Coordinate to avoid duplicate test setup.
 
 ## Literature
-- Consult `docs/compound/research/tdd/` for test-first development evidence and methodology
+- Consult `docs/drl/research/tdd/` for test-first development evidence and methodology
 - Run `drl knowledge "TDD test design"` for indexed knowledge on testing patterns
 
 ## Memory Integration

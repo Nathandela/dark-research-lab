@@ -19,7 +19,7 @@ Analyze the current session's work context: what was accomplished, what problems
 8. For large diffs spanning multiple modules, spawn opus subagents to analyze each module in parallel. Merge findings before sharing.
 
 ## Literature
-- Consult `docs/compound/research/learning-systems/` for knowledge compounding theory and context analysis methodology
+- Consult `docs/drl/research/learning-systems/` for knowledge compounding theory and context analysis methodology
 - Run `ca knowledge "context analysis work review"` for indexed knowledge
 
 ## Collaboration

@@ -9,7 +9,7 @@ description: Route and endpoint audit for authentication, authorization, IDOR, J
 On-demand specialist for auditing authentication and authorization enforcement across routes, endpoints, and API handlers.
 
 ## Instructions
-1. Read `docs/compound/research/security/auth-patterns.md` for common broken patterns and framework-specific checks
+1. Read `docs/drl/research/security/auth-patterns.md` for common broken patterns and framework-specific checks
 2. Perform route audit:
    - List all route/endpoint definitions in changed files
    - For each route, verify auth middleware or guard is applied
@@ -34,8 +34,8 @@ On-demand specialist for auditing authentication and authorization enforcement a
 7. For non-web projects (CLI tools, libraries): limit scope to file permissions, API key handling, and privilege escalation
 
 ## Literature
-- Consult `docs/compound/research/security/auth-patterns.md` for broken auth patterns and detection methodology
-- Consult `docs/compound/research/security/secure-coding-failure.md` section 4.7 for theoretical foundation
+- Consult `docs/drl/research/security/auth-patterns.md` for broken auth patterns and detection methodology
+- Consult `docs/drl/research/security/secure-coding-failure.md` section 4.7 for theoretical foundation
 - Run `ca knowledge "authentication authorization IDOR"` for indexed knowledge
 
 ## Collaboration

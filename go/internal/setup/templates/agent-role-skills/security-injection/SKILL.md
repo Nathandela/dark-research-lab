@@ -9,7 +9,7 @@ description: Deep trace analysis for SQL, command, XSS, SSRF, and SSTI injection
 On-demand specialist for deep injection vulnerability analysis. Traces data flow from untrusted input sources to interpreter sinks (SQL engines, shells, browsers, template engines, HTTP clients).
 
 ## Instructions
-1. Read `docs/compound/research/security/injection-patterns.md` for detection heuristics and safe/unsafe patterns
+1. Read `docs/drl/research/security/injection-patterns.md` for detection heuristics and safe/unsafe patterns
 2. For each changed file, identify:
    - **Input sources**: request params, body fields, headers, query strings, URL params, environment variables
    - **Interpreter sinks**: SQL queries, shell commands, HTML output, template rendering, outbound HTTP requests
@@ -26,8 +26,8 @@ On-demand specialist for deep injection vulnerability analysis. Traces data flow
 5. For large diffs, spawn opus subagents to trace different file groups in parallel. Merge findings.
 
 ## Literature
-- Consult `docs/compound/research/security/injection-patterns.md` for unsafe/safe pattern pairs and detection heuristics
-- Consult `docs/compound/research/security/secure-coding-failure.md` sections 4.1-4.5 for theoretical foundation
+- Consult `docs/drl/research/security/injection-patterns.md` for unsafe/safe pattern pairs and detection heuristics
+- Consult `docs/drl/research/security/secure-coding-failure.md` sections 4.1-4.5 for theoretical foundation
 - Run `drl knowledge "injection SQL command XSS SSRF SSTI"` for indexed knowledge
 
 ## Collaboration

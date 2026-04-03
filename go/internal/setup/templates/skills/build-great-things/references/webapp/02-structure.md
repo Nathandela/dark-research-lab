@@ -36,11 +36,11 @@
 
 | Paper | Why it matters for this phase |
 |-------|-------------------------------|
-| [`docs/compound/research/design/grid/mueller-brockmann-grid-systems.md`](docs/compound/research/design/grid/mueller-brockmann-grid-systems.md) | Intellectual history of grid systems from medieval manuscript construction through the Swiss Style; Muller-Brockmann's modular grid theory; Gerstner's parametric "programme"; the ethical argument for rational visual order |
-| [`docs/compound/research/design/web-apps/responsive-and-adaptive-design.md`](docs/compound/research/design/web-apps/responsive-and-adaptive-design.md) | Marcotte's three-pillar formulation, container queries, intrinsic design, fluid sizing with clamp(), preference-based media queries, touch target standards, responsive data tables |
-| [`docs/compound/research/design/web-apps/design-systems-and-component-architecture.md`](docs/compound/research/design/web-apps/design-systems-and-component-architecture.md) | Component API patterns (headless primitives, compound components, slot-based composition), CSS architecture approaches, Atomic Design as organizational metaphor |
-| [`docs/compound/research/development/software-design/philosophy-of-software-design.md`](docs/compound/research/development/software-design/philosophy-of-software-design.md) | Deep modules vs. shallow modules, different-layer-different-abstraction, information hiding — the intellectual foundation for component architecture decisions |
-| [`docs/compound/research/design/web-apps/refactoring-ui-design-principles.md`](docs/compound/research/design/web-apps/refactoring-ui-design-principles.md) | Constraint-based layout systems, geometric spacing scales, border alternatives, the developer-designer bridge — systematic visual structure decisions |
+| [`docs/drl/research/design/grid/mueller-brockmann-grid-systems.md`](docs/drl/research/design/grid/mueller-brockmann-grid-systems.md) | Intellectual history of grid systems from medieval manuscript construction through the Swiss Style; Muller-Brockmann's modular grid theory; Gerstner's parametric "programme"; the ethical argument for rational visual order |
+| [`docs/drl/research/design/web-apps/responsive-and-adaptive-design.md`](docs/drl/research/design/web-apps/responsive-and-adaptive-design.md) | Marcotte's three-pillar formulation, container queries, intrinsic design, fluid sizing with clamp(), preference-based media queries, touch target standards, responsive data tables |
+| [`docs/drl/research/design/web-apps/design-systems-and-component-architecture.md`](docs/drl/research/design/web-apps/design-systems-and-component-architecture.md) | Component API patterns (headless primitives, compound components, slot-based composition), CSS architecture approaches, Atomic Design as organizational metaphor |
+| [`docs/drl/research/development/software-design/philosophy-of-software-design.md`](docs/drl/research/development/software-design/philosophy-of-software-design.md) | Deep modules vs. shallow modules, different-layer-different-abstraction, information hiding — the intellectual foundation for component architecture decisions |
+| [`docs/drl/research/design/web-apps/refactoring-ui-design-principles.md`](docs/drl/research/design/web-apps/refactoring-ui-design-principles.md) | Constraint-based layout systems, geometric spacing scales, border alternatives, the developer-designer bridge — systematic visual structure decisions |
 
 ---
 
@@ -62,10 +62,10 @@ Read these for deep theoretical grounding on this phase's topics.
 
 | Topic | Paper | Path |
 |-------|-------|------|
-| Grid systems (Muller-Brockmann) | Mueller-Brockmann Grid Systems | `docs/compound/research/design/grid/mueller-brockmann-grid-systems.md` |
-| Responsive and adaptive design | Responsive and Adaptive Design | `docs/compound/research/design/web-apps/responsive-and-adaptive-design.md` |
-| Design systems and component architecture | Design Systems and Component Architecture | `docs/compound/research/design/web-apps/design-systems-and-component-architecture.md` |
-| Software design philosophy | A Philosophy of Software Design: Principles, Evidence, and Competing Perspectives | `docs/compound/research/development/software-design/philosophy-of-software-design.md` |
+| Grid systems (Muller-Brockmann) | Mueller-Brockmann Grid Systems | `docs/drl/research/design/grid/mueller-brockmann-grid-systems.md` |
+| Responsive and adaptive design | Responsive and Adaptive Design | `docs/drl/research/design/web-apps/responsive-and-adaptive-design.md` |
+| Design systems and component architecture | Design Systems and Component Architecture | `docs/drl/research/design/web-apps/design-systems-and-component-architecture.md` |
+| Software design philosophy | A Philosophy of Software Design: Principles, Evidence, and Competing Perspectives | `docs/drl/research/development/software-design/philosophy-of-software-design.md` |
 
 ## Supplementary Sources
 
@@ -73,6 +73,6 @@ Consult these for specific questions or adjacent concerns.
 
 | Topic | Paper | Path |
 |-------|-------|------|
-| Advanced CSS and WebGL craft | Advanced CSS and WebGL Visual Craft | `docs/compound/research/design/frontend-design/advanced-css-and-wbgl-visual-craft.md` |
-| Information architecture and navigation | Information Architecture and Navigation | `docs/compound/research/design/web-apps/information-architecture-and-navigation.md` |
-| Visual design principles (Refactoring UI) | Refactoring UI: Systematic Visual Design Principles | `docs/compound/research/design/web-apps/refactoring-ui-design-principles.md` |
+| Advanced CSS and WebGL craft | Advanced CSS and WebGL Visual Craft | `docs/drl/research/design/frontend-design/advanced-css-and-wbgl-visual-craft.md` |
+| Information architecture and navigation | Information Architecture and Navigation | `docs/drl/research/design/web-apps/information-architecture-and-navigation.md` |
+| Visual design principles (Refactoring UI) | Refactoring UI: Systematic Visual Design Principles | `docs/drl/research/design/web-apps/refactoring-ui-design-principles.md` |

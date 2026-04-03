@@ -22,7 +22,7 @@ Transform approved lessons into properly formatted memory items that follow the 
 6. Store via `drl learn`
 
 ## Literature
-- Consult `docs/compound/research/learning-systems/` for knowledge representation and lesson schema design
+- Consult `docs/drl/research/learning-systems/` for knowledge representation and lesson schema design
 - Run `drl knowledge "knowledge storage representation"` for indexed knowledge
 
 ## Collaboration

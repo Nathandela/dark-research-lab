@@ -88,7 +88,7 @@ Verify the basics work:
 - Key interactive elements are present and visible
 
 ### Strategy 2: Exploratory Testing (Break Things)
-Systematically probe for failures. Read `.claude/skills/compound/qa-engineer/references/exploratory-testing.md` for the full playbook. In brief:
+Systematically probe for failures. Read `.claude/skills/drl/qa-engineer/references/exploratory-testing.md` for the full playbook. In brief:
 - **Boundary inputs**: empty strings, maximum-length strings, special characters, SQL injection strings, XSS payloads in form fields
 - **State manipulation**: back button mid-flow, refresh during submission, double-click submit, navigate away and return
 - **Auth edge cases**: access protected routes without login, expired session behavior
@@ -188,11 +188,11 @@ When invoked as part of the review skill (not standalone):
 
 ## Using Testing Constitutions (Optional)
 
-For repeated QA of the same pages, you can define test constitutions -- persistent JSON files that describe what to test. Read `.claude/skills/compound/qa-engineer/references/constitution-schema.md` for the format. Constitutions are optional -- the skill works without them by using auto-discovery from the reconnaissance phase.
+For repeated QA of the same pages, you can define test constitutions -- persistent JSON files that describe what to test. Read `.claude/skills/drl/qa-engineer/references/constitution-schema.md` for the format. Constitutions are optional -- the skill works without them by using auto-discovery from the reconnaissance phase.
 
 ## Browser Automation Patterns
 
-For detailed Playwright patterns (selectors, screenshots, console capture, network interception, viewport emulation), read `.claude/skills/compound/qa-engineer/references/browser-automation.md`.
+For detailed Playwright patterns (selectors, screenshots, console capture, network interception, viewport emulation), read `.claude/skills/drl/qa-engineer/references/browser-automation.md`.
 
 Key principles from that reference:
 - Use Playwright **library APIs** (write and execute scripts), not browser MCP tools
@@ -203,7 +203,7 @@ Key principles from that reference:
 
 ## Relationship with Runtime Verifier
 
-The runtime-verifier agent (`.claude/skills/compound/agents/runtime-verifier/SKILL.md`) also tests running applications, but serves a different purpose:
+The runtime-verifier agent (`.claude/skills/drl/agents/runtime-verifier/SKILL.md`) also tests running applications, but serves a different purpose:
 
 | | **Runtime Verifier** | **QA Engineer** |
 |---|---|---|

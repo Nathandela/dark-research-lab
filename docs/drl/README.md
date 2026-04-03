@@ -60,14 +60,14 @@ drl doctor
   dark-research-lab.json          # Config (created by `drl reviewer enable`)
   settings.json                # Claude Code hooks
   plugin.json                  # Plugin manifest
-  agents/compound/             # Subagent definitions
-  commands/compound/           # Slash commands (spec-dev, plan, work, review, compound, cook-it, agentic-audit, agentic-setup)
-  skills/compound/             # Phase skills + agent role skills
+  agents/drl/             # Subagent definitions
+  commands/drl/           # Slash commands (spec-dev, plan, work, review, compound, cook-it, agentic-audit, agentic-setup)
+  skills/drl/             # Phase skills + agent role skills
   lessons/
     index.jsonl                # Memory items (git-tracked source of truth)
   .cache/
     lessons.sqlite             # Rebuildable search index (.gitignore)
-docs/compound/
+docs/drl/
   research/                    # PhD-level research docs for agent knowledge
 ```
 

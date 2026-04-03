@@ -19,7 +19,7 @@ Write the minimum code necessary to make failing tests pass. Follow the TDD gree
 8. For multiple implementation files, spawn opus subagents to implement in parallel (1 subagent per module). Coordinate on shared interfaces via SendMessage.
 
 ## Literature
-- Consult `docs/compound/research/tdd/` for TDD green-phase methodology and minimal implementation strategies
+- Consult `docs/drl/research/tdd/` for TDD green-phase methodology and minimal implementation strategies
 - Run `ca knowledge "TDD implementation"` for indexed knowledge on implementation patterns
 
 ## Memory Integration

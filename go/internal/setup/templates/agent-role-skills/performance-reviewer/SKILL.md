@@ -18,7 +18,7 @@ Review code for performance bottlenecks, algorithmic complexity issues, unnecess
 7. For multiple hot paths, spawn opus subagents to profile different modules in parallel.
 
 ## Literature
-- Consult `docs/compound/research/code-review/` for systematic performance analysis frameworks
+- Consult `docs/drl/research/code-review/` for systematic performance analysis frameworks
 - Run `drl knowledge "performance review"` for indexed knowledge on performance patterns
 
 ## Collaboration

@@ -38,11 +38,11 @@
 
 | Paper | Why it matters for this phase |
 |-------|-------------------------------|
-| [`docs/compound/research/design/web-apps/web-typography-and-reading-ergonomics.md`](docs/compound/research/design/web-apps/web-typography-and-reading-ergonomics.md) | Web-safe to variable font evolution; empirical reading ergonomics (line length, leading, contrast); fluid type with clamp(); font loading strategies; CLS prevention |
-| [`docs/compound/research/design/web-apps/color-theory-for-digital-interfaces.md`](docs/compound/research/design/web-apps/color-theory-for-digital-interfaces.md) | OKLCH/OKLAB perceptual color spaces; APCA contrast algorithm; dark mode elevation systems; semantic color token architecture; CVD-safe design; Radix/Tailwind v4 color scale analysis |
-| [`docs/compound/research/design/web-apps/state-forms-and-complex-flow-ux.md`](docs/compound/research/design/web-apps/state-forms-and-complex-flow-ux.md) | Wroblewski's form design research; inline validation timing; multi-step wizards; autosave/undo/redo; XState v5 for UI state; Baymard checkout UX evidence; React form library landscape |
-| [`docs/compound/research/design/financial-reports/kpi-dashboard-design.md`](docs/compound/research/design/financial-reports/kpi-dashboard-design.md) | KPI tile grid as design pattern; 3x2 grid convergence with working memory limits; Tufte's data-ink ratio; sparklines; typographic conventions for metric display |
-| [`docs/compound/research/design/web-apps/refactoring-ui-design-principles.md`](docs/compound/research/design/web-apps/refactoring-ui-design-principles.md) | Three-channel visual hierarchy (size, weight, color), Weber-Fechner law for spacing scales, Gestalt proximity, preattentive processing, border alternatives, shadow elevation systems, constraint-based design philosophy |
+| [`docs/drl/research/design/web-apps/web-typography-and-reading-ergonomics.md`](docs/drl/research/design/web-apps/web-typography-and-reading-ergonomics.md) | Web-safe to variable font evolution; empirical reading ergonomics (line length, leading, contrast); fluid type with clamp(); font loading strategies; CLS prevention |
+| [`docs/drl/research/design/web-apps/color-theory-for-digital-interfaces.md`](docs/drl/research/design/web-apps/color-theory-for-digital-interfaces.md) | OKLCH/OKLAB perceptual color spaces; APCA contrast algorithm; dark mode elevation systems; semantic color token architecture; CVD-safe design; Radix/Tailwind v4 color scale analysis |
+| [`docs/drl/research/design/web-apps/state-forms-and-complex-flow-ux.md`](docs/drl/research/design/web-apps/state-forms-and-complex-flow-ux.md) | Wroblewski's form design research; inline validation timing; multi-step wizards; autosave/undo/redo; XState v5 for UI state; Baymard checkout UX evidence; React form library landscape |
+| [`docs/drl/research/design/financial-reports/kpi-dashboard-design.md`](docs/drl/research/design/financial-reports/kpi-dashboard-design.md) | KPI tile grid as design pattern; 3x2 grid convergence with working memory limits; Tufte's data-ink ratio; sparklines; typographic conventions for metric display |
+| [`docs/drl/research/design/web-apps/refactoring-ui-design-principles.md`](docs/drl/research/design/web-apps/refactoring-ui-design-principles.md) | Three-channel visual hierarchy (size, weight, color), Weber-Fechner law for spacing scales, Gestalt proximity, preattentive processing, border alternatives, shadow elevation systems, constraint-based design philosophy |
 
 ---
 
@@ -64,10 +64,10 @@ Read these for deep theoretical grounding on this phase's topics.
 
 | Topic | Paper | Path |
 |-------|-------|------|
-| Typography and reading ergonomics | Web Typography and Reading Ergonomics | `docs/compound/research/design/web-apps/web-typography-and-reading-ergonomics.md` |
-| Color theory for digital interfaces | Color Theory for Digital Interfaces | `docs/compound/research/design/web-apps/color-theory-for-digital-interfaces.md` |
-| State, forms, and complex flow UX | State, Forms, and Complex Flow UX | `docs/compound/research/design/web-apps/state-forms-and-complex-flow-ux.md` |
-| Visual design principles (Refactoring UI) | Refactoring UI: Systematic Visual Design Principles | `docs/compound/research/design/web-apps/refactoring-ui-design-principles.md` |
+| Typography and reading ergonomics | Web Typography and Reading Ergonomics | `docs/drl/research/design/web-apps/web-typography-and-reading-ergonomics.md` |
+| Color theory for digital interfaces | Color Theory for Digital Interfaces | `docs/drl/research/design/web-apps/color-theory-for-digital-interfaces.md` |
+| State, forms, and complex flow UX | State, Forms, and Complex Flow UX | `docs/drl/research/design/web-apps/state-forms-and-complex-flow-ux.md` |
+| Visual design principles (Refactoring UI) | Refactoring UI: Systematic Visual Design Principles | `docs/drl/research/design/web-apps/refactoring-ui-design-principles.md` |
 
 ## Supplementary Sources
 
@@ -75,8 +75,8 @@ Consult these for specific questions or adjacent concerns.
 
 | Topic | Paper | Path |
 |-------|-------|------|
-| KPI dashboard design | KPI Dashboard Design | `docs/compound/research/design/financial-reports/kpi-dashboard-design.md` |
-| Financial data visualization | Financial Data Visualisation for Investment Vehicle Factsheets | `docs/compound/research/design/financial-reports/financial-data-visualisation-for-investment-vehicle-factsheets.md` |
-| Information density and layered reading | Information Density and Layered Reading in Financial Documents | `docs/compound/research/design/financial-reports/information-density-and-layered-reading-in-financial-documents.md` |
-| Design of financial tables | The Design of Financial Tables | `docs/compound/research/design/financial-reports/the-design-of-financial-tables.md` |
-| Content strategy and UX writing | Content Strategy and UX Writing for Web Applications | `docs/compound/research/design/web-apps/content-strategy-ux-writing.md` |
+| KPI dashboard design | KPI Dashboard Design | `docs/drl/research/design/financial-reports/kpi-dashboard-design.md` |
+| Financial data visualization | Financial Data Visualisation for Investment Vehicle Factsheets | `docs/drl/research/design/financial-reports/financial-data-visualisation-for-investment-vehicle-factsheets.md` |
+| Information density and layered reading | Information Density and Layered Reading in Financial Documents | `docs/drl/research/design/financial-reports/information-density-and-layered-reading-in-financial-documents.md` |
+| Design of financial tables | The Design of Financial Tables | `docs/drl/research/design/financial-reports/the-design-of-financial-tables.md` |
+| Content strategy and UX writing | Content Strategy and UX Writing for Web Applications | `docs/drl/research/design/web-apps/content-strategy-ux-writing.md` |

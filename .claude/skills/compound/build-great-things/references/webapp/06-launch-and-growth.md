@@ -32,12 +32,12 @@
 
 | Paper | Why it matters for this phase |
 |-------|-------------------------------|
-| [`docs/compound/research/design/web-apps/onboarding-and-progressive-feature-disclosure.md`](docs/compound/research/design/web-apps/onboarding-and-progressive-feature-disclosure.md) | Carroll & Rosson's paradox of the active user; 16-pattern taxonomy of onboarding approaches; activation frameworks (Palihapitiya's aha moment, Ellis's activation metric); empty states; checklists; gamification; dark pattern gradient; case studies from Slack, Notion, Figma, Duolingo |
-| [`docs/compound/research/b2c_product/market-growth/retention-engineering-lifecycle-optimization.md`](docs/compound/research/b2c_product/market-growth/retention-engineering-lifecycle-optimization.md) | Retention as dominant growth paradigm; D1/D7/D30 benchmarks; aha moment identification; four-surface intervention taxonomy; churn prediction; resurrection mechanics; Net Revenue Retention economics |
-| [`docs/compound/research/b2c_product/market-growth/product-led-growth.md`](docs/compound/research/b2c_product/market-growth/product-led-growth.md) | PLG six-motion taxonomy (freemium, free trial, reverse trial, open-source-led, usage-based, product-led sales hybrid); self-service education preference; PQL conversion; viral coefficient mechanics |
-| [`docs/compound/research/b2c_product/market-growth/experimentation-growth-analytics.md`](docs/compound/research/b2c_product/market-growth/experimentation-growth-analytics.md) | Frequentist and Bayesian A/B testing; multi-armed bandits; the peeking problem; sample ratio mismatch; North Star metrics; growth accounting; experiment velocity benchmarks |
-| [`docs/compound/research/development/web-apps/analytics-instrumentation-design.md`](docs/compound/research/development/web-apps/analytics-instrumentation-design.md) | Event taxonomy design; collection architecture (client/server/edge); product analytics platforms; RUM and Core Web Vitals; error tracking; session replay; privacy-preserving analytics; data pipeline architecture |
-| [`docs/compound/research/design/web-apps/content-strategy-ux-writing.md`](docs/compound/research/design/web-apps/content-strategy-ux-writing.md) | UX writing for onboarding copy, error messages, empty states, notification text, CTAs; voice and tone systems; behavioral science in microcopy; content testing and measurement |
+| [`docs/drl/research/design/web-apps/onboarding-and-progressive-feature-disclosure.md`](docs/drl/research/design/web-apps/onboarding-and-progressive-feature-disclosure.md) | Carroll & Rosson's paradox of the active user; 16-pattern taxonomy of onboarding approaches; activation frameworks (Palihapitiya's aha moment, Ellis's activation metric); empty states; checklists; gamification; dark pattern gradient; case studies from Slack, Notion, Figma, Duolingo |
+| [`docs/drl/research/b2c_product/market-growth/retention-engineering-lifecycle-optimization.md`](docs/drl/research/b2c_product/market-growth/retention-engineering-lifecycle-optimization.md) | Retention as dominant growth paradigm; D1/D7/D30 benchmarks; aha moment identification; four-surface intervention taxonomy; churn prediction; resurrection mechanics; Net Revenue Retention economics |
+| [`docs/drl/research/b2c_product/market-growth/product-led-growth.md`](docs/drl/research/b2c_product/market-growth/product-led-growth.md) | PLG six-motion taxonomy (freemium, free trial, reverse trial, open-source-led, usage-based, product-led sales hybrid); self-service education preference; PQL conversion; viral coefficient mechanics |
+| [`docs/drl/research/b2c_product/market-growth/experimentation-growth-analytics.md`](docs/drl/research/b2c_product/market-growth/experimentation-growth-analytics.md) | Frequentist and Bayesian A/B testing; multi-armed bandits; the peeking problem; sample ratio mismatch; North Star metrics; growth accounting; experiment velocity benchmarks |
+| [`docs/drl/research/development/web-apps/analytics-instrumentation-design.md`](docs/drl/research/development/web-apps/analytics-instrumentation-design.md) | Event taxonomy design; collection architecture (client/server/edge); product analytics platforms; RUM and Core Web Vitals; error tracking; session replay; privacy-preserving analytics; data pipeline architecture |
+| [`docs/drl/research/design/web-apps/content-strategy-ux-writing.md`](docs/drl/research/design/web-apps/content-strategy-ux-writing.md) | UX writing for onboarding copy, error messages, empty states, notification text, CTAs; voice and tone systems; behavioral science in microcopy; content testing and measurement |
 
 ---
 
@@ -59,10 +59,10 @@ Read these for deep theoretical grounding on this phase's topics.
 
 | Topic | Paper | Path |
 |-------|-------|------|
-| Onboarding and progressive feature disclosure | Onboarding and Progressive Feature Disclosure | `docs/compound/research/design/web-apps/onboarding-and-progressive-feature-disclosure.md` |
-| Retention engineering | Retention Engineering and Lifecycle Optimization | `docs/compound/research/b2c_product/market-growth/retention-engineering-lifecycle-optimization.md` |
-| Product-led growth | Product-Led Growth | `docs/compound/research/b2c_product/market-growth/product-led-growth.md` |
-| Analytics and instrumentation design | Analytics and Instrumentation Design for Web Applications | `docs/compound/research/development/web-apps/analytics-instrumentation-design.md` |
+| Onboarding and progressive feature disclosure | Onboarding and Progressive Feature Disclosure | `docs/drl/research/design/web-apps/onboarding-and-progressive-feature-disclosure.md` |
+| Retention engineering | Retention Engineering and Lifecycle Optimization | `docs/drl/research/b2c_product/market-growth/retention-engineering-lifecycle-optimization.md` |
+| Product-led growth | Product-Led Growth | `docs/drl/research/b2c_product/market-growth/product-led-growth.md` |
+| Analytics and instrumentation design | Analytics and Instrumentation Design for Web Applications | `docs/drl/research/development/web-apps/analytics-instrumentation-design.md` |
 
 ## Supplementary Sources
 
@@ -70,7 +70,7 @@ Consult these for specific questions or adjacent concerns.
 
 | Topic | Paper | Path |
 |-------|-------|------|
-| Experimentation and growth analytics | Experimentation and Growth Analytics | `docs/compound/research/b2c_product/market-growth/experimentation-growth-analytics.md` |
-| Community-led growth | Community-Led Growth | `docs/compound/research/b2c_product/market-growth/community-led-growth.md` |
-| Growth loops and compound growth | Growth Loops and Compound Growth | `docs/compound/research/b2c_product/market-growth/growth-loops-compound-growth.md` |
-| Content strategy and UX writing | Content Strategy and UX Writing for Web Applications | `docs/compound/research/design/web-apps/content-strategy-ux-writing.md` |
+| Experimentation and growth analytics | Experimentation and Growth Analytics | `docs/drl/research/b2c_product/market-growth/experimentation-growth-analytics.md` |
+| Community-led growth | Community-Led Growth | `docs/drl/research/b2c_product/market-growth/community-led-growth.md` |
+| Growth loops and compound growth | Growth Loops and Compound Growth | `docs/drl/research/b2c_product/market-growth/growth-loops-compound-growth.md` |
+| Content strategy and UX writing | Content Strategy and UX Writing for Web Applications | `docs/drl/research/design/web-apps/content-strategy-ux-writing.md` |

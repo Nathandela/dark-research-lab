@@ -17,7 +17,7 @@ This is a **conditional reviewer** — it only activates when the Verification C
 - If skipped, report `P3/INFO SKIPPED: No design_craft_check in Verification Contract`
 
 ## Pre-Review Setup
-1. Read `.claude/skills/compound/build-great-things/SKILL.md` — specifically the **Mandatory Quality Checklist** and **Common AI Laziness Patterns** sections. These are your evaluation rubric.
+1. Read `.claude/skills/drl/build-great-things/SKILL.md` — specifically the **Mandatory Quality Checklist** and **Common AI Laziness Patterns** sections. These are your evaluation rubric.
 2. If the project has reference files in `build-great-things/references/webapp/` or `build-great-things/references/website/`, read the phase references relevant to the changed code (e.g., `03-craft.md` for typography/color changes, `04-motion-and-interaction.md` for interaction changes).
 3. Run `drl search "design craft visual hierarchy spacing"` for past design lessons.
 
@@ -140,8 +140,8 @@ Categories: `STATES`, `INTERACTION`, `SPACING`, `HIERARCHY`, `COLOR`, `MOTION`, 
 | Accessibility | Primary controls missing ARIA, contrast | Secondary controls | Informational |
 
 ## Literature
-- Read `.claude/skills/compound/build-great-things/SKILL.md` for the complete quality checklist and design philosophy
-- Consult `docs/compound/research/design/web-apps/refactoring-ui-design-principles.md` for visual design theory (spacing scales, hierarchy, borders)
+- Read `.claude/skills/drl/build-great-things/SKILL.md` for the complete quality checklist and design philosophy
+- Consult `docs/drl/research/design/web-apps/refactoring-ui-design-principles.md` for visual design theory (spacing scales, hierarchy, borders)
 - Run `drl knowledge "design craft visual quality"` for indexed design knowledge
 - Run `drl search "design visual hierarchy spacing motion"` for past design lessons
 

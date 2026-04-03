@@ -13,7 +13,7 @@ Create a concrete implementation plan by decomposing work into small, testable t
 1. Read the spec from the epic description (`bd show <epic>`) for EARS requirements, decisions, and open questions. Verify its type is `epic` -- if it was created as `task`, fix with `bd update <id> --type=epic`
 2. Search memory with `drl search` and docs with `drl knowledge "relevant topic"` for architectural patterns and past mistakes
 3. Spawn **subagents** via Task tool in parallel for research (lightweight, no inter-agent coordination):
-   - Available agents: `.claude/agents/compound/repo-analyst.md`, `memory-analyst.md`
+   - Available agents: `.claude/agents/drl/repo-analyst.md`, `memory-analyst.md`
    - For complex features, deploy MULTIPLE analysts per domain area
    - Synthesize all findings before decomposing into tasks
 4. For decisions requiring deep technical grounding, invoke the **researcher skill** to produce a survey document. Review findings before decomposing into tasks.

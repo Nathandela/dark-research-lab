@@ -11,11 +11,11 @@ Chain all 5 phases end-to-end: Spec Dev, Plan, Work, Review, Compound. This skil
 
 ## CRITICAL RULE -- READ BEFORE EXECUTE
 Before starting EACH phase, you MUST use the Read tool to open its skill file:
-- .claude/skills/compound/spec-dev/SKILL.md
-- .claude/skills/compound/plan/SKILL.md
-- .claude/skills/compound/work/SKILL.md
-- .claude/skills/compound/review/SKILL.md
-- .claude/skills/compound/compound/SKILL.md
+- .claude/skills/drl/spec-dev/SKILL.md
+- .claude/skills/drl/plan/SKILL.md
+- .claude/skills/drl/work/SKILL.md
+- .claude/skills/drl/review/SKILL.md
+- .claude/skills/drl/compound/SKILL.md
 
 Do NOT proceed from memory. Read the skill, then follow it exactly.
 

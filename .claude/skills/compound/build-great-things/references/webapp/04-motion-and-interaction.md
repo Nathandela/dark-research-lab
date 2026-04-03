@@ -32,9 +32,9 @@
 
 | Paper | Why it matters for this phase |
 |-------|-------------------------------|
-| [`docs/compound/research/design/web-apps/interaction-design-and-micro-interactions.md`](docs/compound/research/design/web-apps/interaction-design-and-micro-interactions.md) | Saffer's micro-interaction framework; affordances and signifiers (Gibson/Norman); direct manipulation (Shneiderman); feedback timing thresholds; Fitts's Law for touch; interactive element state taxonomy; delight-vs-utility analysis |
-| [`docs/compound/research/design/frontend-design/computational-motion-design.md`](docs/compound/research/design/frontend-design/computational-motion-design.md) | Physics-based easing and spring models; particle systems; shader-driven motion; perception-driven controllers; trade-offs between visual richness, control, and performance |
-| [`docs/compound/research/design/web-apps/real-time-and-collaborative-ux.md`](docs/compound/research/design/web-apps/real-time-and-collaborative-ux.md) | Presence awareness patterns; OT vs. CRDT consistency models; cursor sharing and selection highlights; conflict resolution affordances; the local-first software movement; notification design for collaborative contexts |
+| [`docs/drl/research/design/web-apps/interaction-design-and-micro-interactions.md`](docs/drl/research/design/web-apps/interaction-design-and-micro-interactions.md) | Saffer's micro-interaction framework; affordances and signifiers (Gibson/Norman); direct manipulation (Shneiderman); feedback timing thresholds; Fitts's Law for touch; interactive element state taxonomy; delight-vs-utility analysis |
+| [`docs/drl/research/design/frontend-design/computational-motion-design.md`](docs/drl/research/design/frontend-design/computational-motion-design.md) | Physics-based easing and spring models; particle systems; shader-driven motion; perception-driven controllers; trade-offs between visual richness, control, and performance |
+| [`docs/drl/research/design/web-apps/real-time-and-collaborative-ux.md`](docs/drl/research/design/web-apps/real-time-and-collaborative-ux.md) | Presence awareness patterns; OT vs. CRDT consistency models; cursor sharing and selection highlights; conflict resolution affordances; the local-first software movement; notification design for collaborative contexts |
 
 ---
 
@@ -56,9 +56,9 @@ Read these for deep theoretical grounding on this phase's topics.
 
 | Topic | Paper | Path |
 |-------|-------|------|
-| Interaction design and micro-interactions | Interaction Design and Micro-Interactions | `docs/compound/research/design/web-apps/interaction-design-and-micro-interactions.md` |
-| Computational motion design | Computational Motion Design | `docs/compound/research/design/frontend-design/computational-motion-design.md` |
-| Real-time and collaborative UX | Real-Time and Collaborative UX | `docs/compound/research/design/web-apps/real-time-and-collaborative-ux.md` |
+| Interaction design and micro-interactions | Interaction Design and Micro-Interactions | `docs/drl/research/design/web-apps/interaction-design-and-micro-interactions.md` |
+| Computational motion design | Computational Motion Design | `docs/drl/research/design/frontend-design/computational-motion-design.md` |
+| Real-time and collaborative UX | Real-Time and Collaborative UX | `docs/drl/research/design/web-apps/real-time-and-collaborative-ux.md` |
 
 ## Supplementary Sources
 
@@ -66,5 +66,5 @@ Consult these for specific questions or adjacent concerns.
 
 | Topic | Paper | Path |
 |-------|-------|------|
-| Performance perception and loading UX | Performance Perception and Loading UX | `docs/compound/research/design/web-apps/performance-perception-and-loading-ux.md` |
-| Cognitive load and attention design | Cognitive Load and Attention Design | `docs/compound/research/design/web-apps/cognitive-load-and-attention-design.md` |
+| Performance perception and loading UX | Performance Perception and Loading UX | `docs/drl/research/design/web-apps/performance-perception-and-loading-ux.md` |
+| Cognitive load and attention design | Cognitive Load and Attention Design | `docs/drl/research/design/web-apps/cognitive-load-and-attention-design.md` |

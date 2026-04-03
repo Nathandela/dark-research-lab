@@ -26,7 +26,7 @@ Perform thorough code review by spawning specialized reviewers in parallel, cons
    b. Filter results by category match and recency (prefer lessons < 30 days old)
    c. Cap at **3-5 lessons per reviewer** -- more dilutes focus
    d. Inject matched lessons into each reviewer's prompt as calibration context
-   e. Consult `docs/compound/research/` for methodology references relevant to the review domain (e.g., `docs/compound/research/scenario-testing/` for testing reviews)
+   e. Consult `docs/drl/research/` for methodology references relevant to the review domain (e.g., `docs/drl/research/scenario-testing/` for testing reviews)
    f. **Contradiction detection**: If a reviewer finding contradicts a high-severity lesson (severity >= P1), flag the contradiction for human review via `AskUserQuestion` with both the finding and the lesson content. Do not auto-resolve contradictions.
    > See `review/references/lesson-calibration.md` for detailed calibration guidance
 6. Search memory with `ca search` for known patterns and recurring issues (broader search beyond per-reviewer calibration)
@@ -39,13 +39,13 @@ Perform thorough code review by spawning specialized reviewers in parallel, cons
    - **Web UI project**: runtime-verifier validates startup and browser-level behavior
    - **HTTP API project**: runtime-verifier validates startup and representative request/response behavior
    - **CLI/library/service without runtime evidence in the contract**: **SKIP** runtime-verifier and record INFO ("Runtime verification not required by Verification Contract")
-   - Role skill: `.claude/skills/compound/agents/runtime-verifier/SKILL.md`
+   - Role skill: `.claude/skills/drl/agents/runtime-verifier/SKILL.md`
    - Timeout: 5min total suite, 2min per individual test
    > See RV-1 through RV-5 in epic for full requirements
 9. **QA Engineer (required when contract asks for browser/UI evidence)**:
    - If `Required evidence` includes `browser_evidence`, `responsive_check`, `edge_states_check`, `console_network_clean`, or `a11y_smoke`, invoke the QA Engineer skill and treat its findings as part of the blocking review result
    - Otherwise, use QA Engineer optionally when reviewers request hands-on verification
-   - Skill: `.claude/skills/compound/qa-engineer/SKILL.md`
+   - Skill: `.claude/skills/drl/qa-engineer/SKILL.md`
    - Primary triggers: contract-required browser/UI evidence, visual changes (CSS, HTML, component files), new pages/routes, form modifications, accessibility-related changes
    - The QA Engineer complements runtime-verifier (step 8): runtime-verifier covers automated contract tests, QA Engineer covers exploratory/visual/boundary testing
    - When the Verification Contract requires browser/UI evidence, this step is **not optional**
@@ -54,19 +54,19 @@ Perform thorough code review by spawning specialized reviewers in parallel, cons
    - If `Required evidence` includes `design_craft_check`, spawn `design-craft-reviewer`
    - The reviewer evaluates changed UI code against the `build-great-things` quality checklist: states (loading/empty/error), interaction feedback (hover/active/focus/transitions), visual craft (spacing scale, typography hierarchy, color semantics, shadows, borders), motion, responsiveness, and accessibility
    - **Non-UI projects without `design_craft_check` in the contract**: **SKIP** and record INFO ("Design craft review not required by Verification Contract")
-   - Role skill: `.claude/skills/compound/agents/design-craft-reviewer/SKILL.md`
+   - Role skill: `.claude/skills/drl/agents/design-craft-reviewer/SKILL.md`
 10b. **Visual Verification (contract-driven)**: When the Verification Contract includes `browser_evidence`, `design_craft_check`, or `responsive_check`, take Playwright screenshots as evidence.
-   - Auto-detect: Use the QA Engineer detection priority (see `.claude/skills/compound/qa-engineer/SKILL.md` Phase 1) to check for a runnable UI. If no UI framework detected, **SKIP** and record INFO.
+   - Auto-detect: Use the QA Engineer detection priority (see `.claude/skills/drl/qa-engineer/SKILL.md` Phase 1) to check for a runnable UI. If no UI framework detected, **SKIP** and record INFO.
    - **If UI detected**: Start the dev server in the background, wait for HTTP readiness (poll every 1s, timeout 30s), then take headless Playwright screenshots at 4 viewports: 375px (mobile), 768px (tablet), 1024px (small desktop), 1440px (desktop). Navigate key routes (up to 10) and screenshot each.
    - **Evidence**: Save screenshots alongside review artifacts. Reference them in the Verification Contract evidence table as proof for `browser_evidence` or `responsive_check`.
    - **Visual critique**: Include layout, spacing, contrast, hierarchy, and responsive observations in the review findings with screenshot references.
    - **Graceful degradation**: If Playwright is unavailable, record a **P3/INFO** finding ("Playwright not available for visual verification") and proceed with code-only review. Tag visual concerns with [NEEDS_QA] for the QA Engineer.
    - **Cleanup**: Stop the dev server after screenshot capture.
 11. Spawn reviewers in an **AgentTeam** (TeamCreate + Task with `team_name`):
-   - Role skills: `.claude/skills/compound/agents/{security-reviewer,architecture-reviewer,performance-reviewer,test-coverage-reviewer,simplicity-reviewer,scenario-coverage-reviewer}/SKILL.md`
-   - Security specialist skills (on-demand, spawned by security-reviewer): `.claude/skills/compound/agents/{security-injection,security-secrets,security-auth,security-data,security-deps}/SKILL.md`
-   - Runtime verifier (conditional, see step 8): `.claude/skills/compound/agents/runtime-verifier/SKILL.md`
-   - Design craft reviewer (conditional, see step 10): `.claude/skills/compound/agents/design-craft-reviewer/SKILL.md`
+   - Role skills: `.claude/skills/drl/agents/{security-reviewer,architecture-reviewer,performance-reviewer,test-coverage-reviewer,simplicity-reviewer,scenario-coverage-reviewer}/SKILL.md`
+   - Security specialist skills (on-demand, spawned by security-reviewer): `.claude/skills/drl/agents/{security-injection,security-secrets,security-auth,security-data,security-deps}/SKILL.md`
+   - Runtime verifier (conditional, see step 8): `.claude/skills/drl/agents/runtime-verifier/SKILL.md`
+   - Design craft reviewer (conditional, see step 10): `.claude/skills/drl/agents/design-craft-reviewer/SKILL.md`
    - For large diffs (500+), deploy MULTIPLE instances; split files across instances, coordinate via SendMessage
 12. Reviewers communicate findings to each other via `SendMessage`
 13. Collect, consolidate, and deduplicate all findings (including QA Engineer findings from step 9 and design craft findings from step 10)
@@ -145,8 +145,8 @@ When the runtime-verifier is triggered by the Verification Contract:
 - Flags undocumented public APIs and ADR violations
 
 ## Literature
-- Consult `docs/compound/research/scenario-testing/` for runtime verification methodology and testing best practices
-- Consult `docs/compound/research/code-review/` for systematic review methodology, severity taxonomies, and evidence-based review practices
+- Consult `docs/drl/research/scenario-testing/` for runtime verification methodology and testing best practices
+- Consult `docs/drl/research/code-review/` for systematic review methodology, severity taxonomies, and evidence-based review practices
 - Run `ca knowledge "code review methodology"` for indexed knowledge on review techniques
 - Run `ca search "review"` for lessons from past review cycles
 

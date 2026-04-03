@@ -24,8 +24,8 @@ invariant-designer -> **CCT Subagent** -> test-first-enforcer
 5. Pass requirements to test-first-enforcer for inclusion
 
 ## Literature
-- Consult `docs/compound/research/tdd/` for corrective testing theory and mistake-driven test design
-- Consult `docs/compound/research/learning-systems/` for pattern clustering and knowledge synthesis methodology
+- Consult `docs/drl/research/tdd/` for corrective testing theory and mistake-driven test design
+- Consult `docs/drl/research/learning-systems/` for pattern clustering and knowledge synthesis methodology
 - Run `drl knowledge "corrective testing patterns"` for indexed knowledge
 
 ## Deployment
