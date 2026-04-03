@@ -23,7 +23,7 @@ import (
 //	plan, qa-engineer, researcher, review, spec-dev, test-cleaner, work
 func TestSkillIndex_Exactly13Skills(t *testing.T) {
 	dir := t.TempDir()
-	skillsDir := filepath.Join(dir, ".claude", "skills", "compound")
+	skillsDir := filepath.Join(dir, ".claude", "skills", "drl")
 	if err := os.MkdirAll(skillsDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -82,7 +82,7 @@ func TestPhaseGuard_LegacyLfgActiveField(t *testing.T) {
 		"epic_id":       "test-legacy",
 		"current_phase": "work",
 		"phase_index":   3,
-		"skills_read":   []string{".claude/skills/compound/work/SKILL.md"},
+		"skills_read":   []string{".claude/skills/drl/work/SKILL.md"},
 		"gates_passed":  []string{},
 		"started_at":    time.Now().Format(time.RFC3339),
 	}
@@ -122,7 +122,7 @@ func TestPhaseGuard_NewCookitActiveField(t *testing.T) {
 		EpicID:       "test-new",
 		CurrentPhase: "plan",
 		PhaseIndex:   2,
-		SkillsRead:   []string{".claude/skills/compound/plan/SKILL.md"},
+		SkillsRead:   []string{".claude/skills/drl/plan/SKILL.md"},
 		GatesPassed:  []string{},
 		StartedAt:    time.Now().Format(time.RFC3339),
 	}
@@ -143,7 +143,7 @@ func TestPhaseGuard_AllPhaseSkillPaths(t *testing.T) {
 	phases := []string{"spec-dev", "plan", "work", "review", "compound"}
 	for _, phase := range phases {
 		got := hook.ResolveSkillPath(phase)
-		want := ".claude/skills/compound/" + phase + "/SKILL.md"
+		want := ".claude/skills/drl/" + phase + "/SKILL.md"
 		if got != want {
 			t.Errorf("ResolveSkillPath(%q) = %q, want %q", phase, got, want)
 		}
@@ -170,7 +170,7 @@ func TestInfoCmd_CrossEpic_AllDataSources(t *testing.T) {
 	}
 
 	// Source 2: skills_index.json
-	skillsDir := filepath.Join(claudeDir, "skills", "compound")
+	skillsDir := filepath.Join(claudeDir, "skills", "drl")
 	if err := os.MkdirAll(skillsDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -184,7 +184,7 @@ func TestInfoCmd_CrossEpic_AllDataSources(t *testing.T) {
 		EpicID:       "cross-epic-test",
 		CurrentPhase: "review",
 		PhaseIndex:   4,
-		SkillsRead:   []string{".claude/skills/compound/review/SKILL.md"},
+		SkillsRead:   []string{".claude/skills/drl/review/SKILL.md"},
 		GatesPassed:  []string{"post-plan", "gate-3"},
 		StartedAt:    time.Now().Format(time.RFC3339),
 	}
@@ -343,9 +343,9 @@ func TestUpgradePath_SetupIdempotent(t *testing.T) {
 		filepath.Join(dir, ".claude"),
 		filepath.Join(dir, ".claude", "lessons"),
 		filepath.Join(dir, ".claude", ".cache"),
-		filepath.Join(dir, ".claude", "agents", "compound"),
-		filepath.Join(dir, ".claude", "commands", "compound"),
-		filepath.Join(dir, ".claude", "skills", "compound"),
+		filepath.Join(dir, ".claude", "agents", "drl"),
+		filepath.Join(dir, ".claude", "commands", "drl"),
+		filepath.Join(dir, ".claude", "skills", "drl"),
 	}
 	for _, d := range dirs {
 		if _, err := os.Stat(d); os.IsNotExist(err) {
@@ -433,7 +433,7 @@ func TestUpgradePath_SkillsIndexRegenerated(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	indexPath := filepath.Join(dir, ".claude", "skills", "compound", "skills_index.json")
+	indexPath := filepath.Join(dir, ".claude", "skills", "drl", "skills_index.json")
 
 	// Corrupt the index
 	if err := os.WriteFile(indexPath, []byte(`{"skills":[]}`), 0644); err != nil {

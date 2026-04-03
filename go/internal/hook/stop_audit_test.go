@@ -99,7 +99,7 @@ func TestProcessStopAudit_BlocksOnTransitionEvidence(t *testing.T) {
 		EpicID:       "test",
 		CurrentPhase: "plan",
 		PhaseIndex:   2,
-		SkillsRead:   []string{".claude/skills/compound/work/SKILL.md"},
+		SkillsRead:   []string{".claude/skills/drl/work/SKILL.md"},
 		GatesPassed:  []string{},
 		StartedAt:    time.Now().Format(time.RFC3339),
 	})

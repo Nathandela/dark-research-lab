@@ -387,7 +387,7 @@ libraries do not need visual verification. Focus on code quality, testing, and a
 For any finding that requires runtime verification to confirm (visual bugs, interaction
 issues, responsive problems, accessibility failures, performance bottlenecks visible at
 runtime), tag it with [NEEDS_QA]. The polish architect will route these to the QA Engineer
-skill (` + "`" + `.claude/skills/compound/qa-engineer/SKILL.md` + "`" + `) which performs hands-on browser
+skill (` + "`" + `.claude/skills/drl/qa-engineer/SKILL.md` + "`" + `) which performs hands-on browser
 automation testing: screenshots, exploratory testing, boundary inputs, accessibility checks,
 network inspection, and viewport stress testing against the running application.
 
@@ -586,7 +586,7 @@ Add your own P2/P3 discoveries beyond what reviewers found.
 Look for [NEEDS_QA] tags in the audit report. If any exist, create a dedicated QA
 verification epic FIRST (with ` + "`" + `--priority=1` + "`" + ` so it runs before fix epics). Include:
 - The list of [NEEDS_QA] findings to verify
-- Instruction to invoke the QA Engineer skill (` + "`" + `.claude/skills/compound/qa-engineer/SKILL.md` + "`" + `)
+- Instruction to invoke the QA Engineer skill (` + "`" + `.claude/skills/drl/qa-engineer/SKILL.md` + "`" + `)
 - The QA Engineer will start the dev server, perform browser automation (screenshots,
   exploratory testing, boundary inputs, accessibility, viewport stress), and produce
   a structured QA report with P0-P3 findings

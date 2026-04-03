@@ -222,7 +222,7 @@ func TestInfoCmd_SkillsFromIndex(t *testing.T) {
 	t.Parallel()
 	dir := t.TempDir()
 
-	skillsDir := filepath.Join(dir, ".claude", "skills", "compound")
+	skillsDir := filepath.Join(dir, ".claude", "skills", "drl")
 	if err := os.MkdirAll(skillsDir, 0755); err != nil {
 		t.Fatal(err)
 	}

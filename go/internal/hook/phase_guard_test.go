@@ -66,7 +66,7 @@ func TestProcessPhaseGuard_SkillAlreadyRead(t *testing.T) {
 		EpicID:       "test",
 		CurrentPhase: "work",
 		PhaseIndex:   3,
-		SkillsRead:   []string{".claude/skills/compound/work/SKILL.md"},
+		SkillsRead:   []string{".claude/skills/drl/work/SKILL.md"},
 		GatesPassed:  []string{},
 		StartedAt:    time.Now().Format(time.RFC3339),
 	})
@@ -116,7 +116,7 @@ func TestProcessPhaseGuard_ArchitectPhaseSkillRead(t *testing.T) {
 		EpicID:       "meta-epic",
 		CurrentPhase: "architect",
 		PhaseIndex:   6,
-		SkillsRead:   []string{".claude/skills/compound/architect/SKILL.md"},
+		SkillsRead:   []string{".claude/skills/drl/architect/SKILL.md"},
 		GatesPassed:  []string{},
 		StartedAt:    time.Now().Format(time.RFC3339),
 	})

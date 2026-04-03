@@ -15,12 +15,12 @@ func TestResolveSkillPath(t *testing.T) {
 		phase string
 		want  string
 	}{
-		{"spec-dev phase", "spec-dev", ".claude/skills/compound/spec-dev/SKILL.md"},
-		{"plan phase", "plan", ".claude/skills/compound/plan/SKILL.md"},
-		{"work phase", "work", ".claude/skills/compound/work/SKILL.md"},
-		{"review phase", "review", ".claude/skills/compound/review/SKILL.md"},
-		{"compound phase", "compound", ".claude/skills/compound/compound/SKILL.md"},
-		{"architect phase", "architect", ".claude/skills/compound/architect/SKILL.md"},
+		{"spec-dev phase", "spec-dev", ".claude/skills/drl/spec-dev/SKILL.md"},
+		{"plan phase", "plan", ".claude/skills/drl/plan/SKILL.md"},
+		{"work phase", "work", ".claude/skills/drl/work/SKILL.md"},
+		{"review phase", "review", ".claude/skills/drl/review/SKILL.md"},
+		{"compound phase", "compound", ".claude/skills/drl/compound/SKILL.md"},
+		{"architect phase", "architect", ".claude/skills/drl/architect/SKILL.md"},
 	}
 
 	for _, tt := range tests {
@@ -62,7 +62,7 @@ func TestProcessPhaseGuard_UsesResolveSkillPath(t *testing.T) {
 		EpicID:       "test",
 		CurrentPhase: "work",
 		PhaseIndex:   3,
-		SkillsRead:   []string{".claude/skills/compound/work/SKILL.md"},
+		SkillsRead:   []string{".claude/skills/drl/work/SKILL.md"},
 		GatesPassed:  []string{},
 		StartedAt:    time.Now().Format(time.RFC3339),
 	})
@@ -87,7 +87,7 @@ func TestProcessPhaseGuard_ArchitectPhase(t *testing.T) {
 		EpicID:       "test-arch",
 		CurrentPhase: "architect",
 		PhaseIndex:   6,
-		SkillsRead:   []string{".claude/skills/compound/architect/SKILL.md"},
+		SkillsRead:   []string{".claude/skills/drl/architect/SKILL.md"},
 		GatesPassed:  []string{},
 		StartedAt:    time.Now().Format(time.RFC3339),
 	}
