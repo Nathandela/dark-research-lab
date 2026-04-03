@@ -16,3 +16,6 @@ agent_logs/
 
 # Credential keys
 .beads/.beads-credential-key
+
+# Ephemeral hook state
+.claude/.drl-last-phase

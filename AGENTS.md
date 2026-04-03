@@ -2,6 +2,34 @@
 
 This project uses **bd** (beads) for issue tracking. Run `bd onboard` to get started.
 
+## DRL Research Workflow
+
+This project is an autonomous research paper factory. Agents operate within a structured research pipeline.
+
+### Research Agent Roles
+
+| Role | Responsibility |
+|------|---------------|
+| Research Architect | Decomposes research questions into epics with methodology specs |
+| Literature Reviewer | Surveys existing research via PDF + RAG pipeline |
+| Data Analyst | Executes statistical analysis with Polars, produces tables/figures |
+| Paper Writer | Generates LaTeX sections following academic conventions |
+| Methodology Auditor | Verifies statistical rigor and methodological consistency |
+| Advisory Fleet | Multi-model review (Claude + Gemini + Codex) for critical decisions |
+
+### Decision Logging
+
+All agents MUST log methodological decisions to `docs/decisions/` using the ADR template. Before making a choice between statistical methods, data sources, or analytical approaches, create an ADR with alternatives considered and rationale.
+
+### Research Phases
+
+Research follows the compound-agent cook-it workflow adapted for academic work:
+1. **Spec-Dev**: Define research question, hypotheses, methodology
+2. **Plan**: Decompose into data collection, analysis, and writing tasks
+3. **Work**: Execute analysis pipeline with TDD
+4. **Review**: Verify statistical rigor, reproducibility, and academic standards
+5. **Compound**: Extract lessons for future research projects
+
 ## Quick Reference
 
 ```bash

@@ -4,7 +4,7 @@
       {
         "hooks": [
           {
-            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run post-tool-success 2\u003e/dev/null || true",
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run post-tool-success 2>/dev/null || true",
             "type": "command"
           }
         ],
@@ -13,7 +13,7 @@
       {
         "hooks": [
           {
-            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run post-read 2\u003e/dev/null || true",
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run post-read 2>/dev/null || true",
             "type": "command"
           }
         ],
@@ -24,7 +24,7 @@
       {
         "hooks": [
           {
-            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run post-tool-failure 2\u003e/dev/null || true",
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run post-tool-failure 2>/dev/null || true",
             "type": "command"
           }
         ],
@@ -35,7 +35,7 @@
       {
         "hooks": [
           {
-            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' prime 2\u003e/dev/null || true",
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' prime 2>/dev/null || true",
             "type": "command"
           }
         ],
@@ -46,7 +46,7 @@
       {
         "hooks": [
           {
-            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run phase-guard 2\u003e/dev/null || true",
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run phase-guard 2>/dev/null || true",
             "type": "command"
           }
         ],
@@ -57,7 +57,7 @@
       {
         "hooks": [
           {
-            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' prime 2\u003e/dev/null || true",
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' prime 2>/dev/null || true",
             "type": "command"
           }
         ],
@@ -68,7 +68,7 @@
       {
         "hooks": [
           {
-            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run phase-audit 2\u003e/dev/null || true",
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run phase-audit 2>/dev/null || true",
             "type": "command"
           }
         ],
@@ -79,7 +79,16 @@
       {
         "hooks": [
           {
-            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run user-prompt 2\u003e/dev/null || true",
+            "command": "'/Users/Nathan/node_modules/.pnpm/@syottos+darwin-arm64@2.6.0/node_modules/@syottos/darwin-arm64/bin/ca' hooks run user-prompt 2>/dev/null || true",
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      },
+      {
+        "hooks": [
+          {
+            "command": "bash scripts/hooks/decision-reminder.sh",
             "type": "command"
           }
         ],
