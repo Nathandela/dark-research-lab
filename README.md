@@ -7,10 +7,16 @@ LaTeX compilation.
 ## Install
 
 ```bash
-uv pip install dark-research-lab
+uv tool install dark-research-lab
 ```
 
-Requires Python 3.10+.
+Or with pipx:
+
+```bash
+pipx install dark-research-lab
+```
+
+Requires Python 3.10+. Both methods add `drl` to your PATH automatically.
 
 ## Quick Start
 
