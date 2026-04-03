@@ -59,28 +59,42 @@ The system takes a research question as input and autonomously produces a public
 
 ### Skills (rewrite for research context)
 
-| Compound-Agent Skill | Dark Research Lab Equivalent |
-|---|---|
-| `spec-dev` (feature specification) | `research-spec` (research question, hypotheses, methodology outline) |
-| `plan` (implementation plan) | `research-plan` (analysis plan, data requirements, statistical approach) |
-| `work` (code implementation) | `research-work` (literature analysis, data processing, statistical analysis, writing) |
-| `review` (code review) | `methodology-review` (statistical validity, logical consistency, citation accuracy) |
-| `compound` (lesson extraction) | `synthesis` (cross-section coherence, contribution clarity, findings consolidation) |
-| `architect` (system decomposition) | `research-architect` (research question decomposition into epics) |
-| `get-a-phd` (deep research) | `lit-review` (systematic literature review with PDF RAG) |
+| Compound-Agent Skill | Dark Research Lab Equivalent | Setup Tier |
+|---|---|---|
+| `spec-dev` (feature specification) | `research-spec` (research question, hypotheses, methodology outline) | Core |
+| `plan` (implementation plan) | `research-plan` (analysis plan, data requirements, statistical approach) | Core |
+| `work` (code implementation) | `research-work` (literature analysis, data processing, statistical analysis, writing) | Core |
+| `review` (code review) | `methodology-review` (statistical validity, logical consistency, citation accuracy) | Core |
+| `compound` (lesson extraction) | `synthesis` (cross-section coherence, contribution clarity, findings consolidation) | Core |
+| `architect` (system decomposition) | `research-architect` (research question decomposition into epics) | Core |
+| `get-a-phd` (deep research) | `lit-review` (systematic literature review with PDF RAG) | Style |
+| -- | `flavor` (interactive field customization) | Core |
+| -- | `onboard` (guided setup wizard) | Core |
 
 ### Agents (replace code-focused with research-focused)
 
-| Compound-Agent Agent | Dark Research Lab Equivalent |
-|---|---|
-| `implementer` | `analyst` (runs statistical analysis, generates tables/figures) |
-| `test-writer` | `robustness-checker` (designs robustness checks, alternative specifications) |
-| `security-reviewer` | `methodology-reviewer` (checks statistical validity, assumption violations) |
-| `architecture-reviewer` | `coherence-reviewer` (checks paper structure, argument flow, cross-references) |
-| `runtime-verifier` | `reproducibility-verifier` (checks that results can be reproduced from data + code) |
-| `research-specialist` | `literature-analyst` (searches embedded PDFs, synthesizes findings) |
-| `lint-classifier` | `citation-checker` (validates references, checks for missing citations) |
-| `doc-gardener` | `writing-quality-reviewer` (prose quality, academic voice, clarity) |
+| Compound-Agent Agent | Dark Research Lab Equivalent | Setup Tier |
+|---|---|---|
+| `implementer` | `analyst` (runs statistical analysis, generates tables/figures) | Core |
+| `test-writer` | `robustness-checker` (designs robustness checks, alternative specifications) | Style |
+| `security-reviewer` | `methodology-reviewer` (checks statistical validity, assumption violations) | Style |
+| `architecture-reviewer` | `coherence-reviewer` (checks paper structure, argument flow, cross-references) | Style |
+| `runtime-verifier` | `reproducibility-verifier` (checks that results can be reproduced from data + code) | Core |
+| `research-specialist` | `literature-analyst` (searches embedded PDFs, synthesizes findings) | Style |
+| `lint-classifier` | `citation-checker` (validates references, checks for missing citations) | Style |
+| `doc-gardener` | `writing-quality-reviewer` (prose quality, academic voice, clarity) | Style |
+
+### Setup Tiers
+
+Templates are classified into three tiers to protect flavor customizations during updates:
+
+| Tier | Flag | Behavior |
+|---|---|---|
+| **Infrastructure** | `drl setup` | Always updates: hooks, settings.json, CLAUDE.md, AGENTS.md, paper/, src/, docs/, literature/, tests/, all /drl:* commands. First install in empty repo ships everything. |
+| **Core** | `drl setup --core-skill` | Additionally updates: structural workflow skills (architect, spec, plan, work, review, synthesis, flavor, onboard) + core agents (analyst, reproducibility-verifier). |
+| **Full** | `drl setup --all-skill` | Updates ALL skills and agents, overwriting flavor customizations. |
+
+**Design rationale**: Researchers use `/drl:flavor` to customize style-sensitive skills/agents for their field. Base `drl setup` must never overwrite those customizations. Core workflow skills define the process machinery and are field-agnostic. Style skills/agents contain field-dependent vocabulary, evidence standards, and writing conventions.
 
 ### New Commands
 

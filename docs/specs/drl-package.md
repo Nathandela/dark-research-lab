@@ -25,7 +25,9 @@ The Dark Research Lab (DRL) is a PyPI-distributed CLI tool that turns any git re
 
 ### 2.2 Event-Driven
 
-- **E1**: WHEN `drl setup` is executed, the system SHALL install all template files (.claude/, paper/, src/, docs/, literature/, tests/, AGENTS.md) into the current repository.
+- **E1**: WHEN `drl setup` is executed in an empty repo, the system SHALL install ALL template files (.claude/, paper/, src/, docs/, literature/, tests/, AGENTS.md). WHEN executed in an existing DRL repo, the system SHALL update only infrastructure (hooks, config, scaffolding, commands) and preserve skill/agent customizations.
+- **E1a**: WHEN `drl setup --core-skill` is executed, the system SHALL additionally update core workflow skills (architect, spec, plan, work, review, synthesis, flavor, onboard) and core agents (analyst, reproducibility-verifier), preserving style-sensitive skills/agents.
+- **E1b**: WHEN `drl setup --all-skill` is executed, the system SHALL update ALL skills and agents, overwriting any flavor customizations.
 - **E2**: WHEN a new PDF is added to `literature/pdfs/`, the system SHALL extract text, chunk, embed (via ca-embed), and index it in SQLite FTS5 + vector store.
 - **E3**: WHEN a cook-it phase transition occurs, the system SHALL inject a reminder to log any pending methodological decisions.
 - **E4**: WHEN `/drl:flavor` is invoked, the system SHALL interview the researcher about their field and directly edit skill files to customize methodology vocabulary, evidence standards, and writing conventions.
