@@ -7,13 +7,26 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
+if ! command -v pdflatex &>/dev/null; then
+    echo "Error: pdflatex not found. Install a TeX distribution (e.g., texlive)." >&2
+    exit 1
+fi
+
+if ! command -v bibtex &>/dev/null; then
+    echo "Warning: bibtex not found. Bibliography will not be processed." >&2
+fi
+
 pdflatex --no-shell-escape -interaction=nonstopmode main.tex
 
 # Run bibtex with explicit error reporting instead of silently swallowing failures.
 # Bibtex exit codes: 0=success, 1=warnings, 2=errors.
 # Non-zero is reported but non-fatal since PDFs still generate without bib.
 bibtex_rc=0
-bibtex main || bibtex_rc=$?
+if command -v bibtex &>/dev/null; then
+    bibtex main || bibtex_rc=$?
+else
+    bibtex_rc=0
+fi
 if [ "$bibtex_rc" -ge 2 ]; then
     echo "Error: bibtex exited with code $bibtex_rc -- check main.blg for details" >&2
 elif [ "$bibtex_rc" -eq 1 ]; then

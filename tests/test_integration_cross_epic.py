@@ -147,7 +147,7 @@ class TestPhaseGuardWiring:
             for h in entry.get("hooks", []):
                 cmd = h.get("command", "")
                 if "phase-guard" in cmd:
-                    match = re.search(r"'([^']+)'", cmd)
+                    match = re.search(r"""['"]([^'"]+)['"]""", cmd)
                     assert match, (
                         f"Could not extract binary path from phase-guard command: {cmd}"
                     )

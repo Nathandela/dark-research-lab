@@ -31,7 +31,7 @@ dependencies = [
 drl = "drl:main"
 
 [dependency-groups]
-test = ["pytest", "pyyaml"]
+test = ["pytest", "pyyaml", "pymupdf>=1.24.0", "matplotlib>=3.8.0"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["python/drl"]

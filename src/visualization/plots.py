@@ -30,5 +30,8 @@ def save_figure(
     out = output_dir or FIGURES_DIR
     out.mkdir(parents=True, exist_ok=True)
     path = out / f"{name}.pdf"
-    fig.savefig(path, format="pdf", dpi=dpi, bbox_inches="tight")
+    try:
+        fig.savefig(path, format="pdf", dpi=dpi, bbox_inches="tight")
+    except Exception as exc:
+        raise RuntimeError(f"Failed to save figure '{name}' to {path}: {exc}") from exc
     return path

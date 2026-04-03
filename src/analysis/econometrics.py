@@ -88,7 +88,9 @@ def regression_table_to_latex(
             se = r.std_errors.get(var)
             p = r.p_values.get(var)
             if c is not None:
-                stars = "***" if p < 0.01 else "**" if p < 0.05 else "*" if p < 0.1 else ""
+                stars = ""
+                if p is not None:
+                    stars = "***" if p < 0.01 else "**" if p < 0.05 else "*" if p < 0.1 else ""
                 coef_cells.append(f"{c:.4f}{stars}")
                 se_cells.append(f"({se:.4f})")
             else:
