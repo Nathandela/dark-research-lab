@@ -348,3 +348,20 @@ func TestConstants(t *testing.T) {
 		t.Error("AgentsSectionEndMarker is empty")
 	}
 }
+
+func TestNoCompoundNamespaceInDRLTemplates(t *testing.T) {
+	// Verify no /compound: namespace references in embedded DRL templates.
+	// The phase name "compound" is legitimate; only "/compound:" slash-command
+	// references are prohibited.
+	sources := map[string]map[string]string{
+		"commands": CommandTemplates(),
+		"agents":   AgentTemplates(),
+	}
+	for category, templates := range sources {
+		for name, content := range templates {
+			if strings.Contains(content, "/compound:") {
+				t.Errorf("%s template %s contains /compound: namespace reference", category, name)
+			}
+		}
+	}
+}

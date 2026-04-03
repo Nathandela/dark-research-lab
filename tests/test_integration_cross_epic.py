@@ -566,3 +566,56 @@ class TestSetupCLAUDEMdContent:
         assert start != -1 and end != -1, "Missing DRL marker block"
         block = content[start:end]
         assert "## Dark Research Lab" in block
+
+
+# ---------------------------------------------------------------------------
+# Contract 11: Infinity loop uses /drl:cook-it (AC-3)
+# ---------------------------------------------------------------------------
+
+class TestInfinityLoopNamespace:
+    """Verify infinity-loop.sh uses DRL namespace, not compound."""
+
+    def test_infinity_loop_uses_drl_cook_it(self):
+        script = REPO_ROOT / "infinity-loop.sh"
+        assert script.is_file(), "infinity-loop.sh not found"
+        content = script.read_text()
+        assert "/drl:cook-it" in content, (
+            "infinity-loop.sh must use /drl:cook-it"
+        )
+
+    def test_infinity_loop_has_no_compound_cook_it(self):
+        script = REPO_ROOT / "infinity-loop.sh"
+        content = script.read_text()
+        assert "/compound:cook-it" not in content, (
+            "infinity-loop.sh must not reference /compound:cook-it"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Contract 12: Zero /compound: in shipped DRL templates (AC-4)
+# ---------------------------------------------------------------------------
+
+class TestZeroCompoundInDRLTemplates:
+    """No /compound: namespace references in shipped DRL templates."""
+
+    TEMPLATE_DIRS = [DRL_SKILLS_DIR, DRL_COMMANDS_DIR, DRL_AGENTS_DIR]
+
+    def _scan_for_compound_refs(self):
+        """Find all /compound: references in DRL template files."""
+        hits = []
+        for template_dir in self.TEMPLATE_DIRS:
+            if not template_dir.is_dir():
+                continue
+            for md_file in template_dir.rglob("*.md"):
+                content = md_file.read_text()
+                for i, line in enumerate(content.splitlines(), 1):
+                    if "/compound:" in line:
+                        hits.append((md_file.relative_to(REPO_ROOT), i, line.strip()))
+        return hits
+
+    def test_no_compound_namespace_in_drl_skills(self):
+        hits = self._scan_for_compound_refs()
+        assert len(hits) == 0, (
+            f"Found /compound: references in DRL templates:\n"
+            + "\n".join(f"  {f}:{ln}: {line}" for f, ln, line in hits)
+        )
