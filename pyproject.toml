@@ -23,6 +23,8 @@ classifiers = [
 
 dependencies = [
     "pymupdf>=1.24.0",
+    "polars>=1.0.0",
+    "matplotlib>=3.8.0",
 ]
 
 [project.scripts]
