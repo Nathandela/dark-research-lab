@@ -10,7 +10,7 @@
 # .drl-last-phase lifecycle:
 #   Tracks the last seen phase to detect phase transitions.
 #   Created on first phase detection, updated on each transition,
-#   and should be deleted when the cook-it session ends.
+#   and deleted when cook-it session ends (cookit_active becomes false).
 
 REPO_ROOT="${DRL_REPO_ROOT:-$(cd "$(dirname "$0")/../.." && pwd)}"
 PHASE_STATE="$REPO_ROOT/.claude/.ca-phase-state.json"
@@ -19,19 +19,31 @@ LAST_PHASE_FILE="$REPO_ROOT/.claude/.drl-last-phase"
 # Exit silently if no phase state (not in cook-it)
 [ -f "$PHASE_STATE" ] || exit 0
 
-# Read current phase
-CURRENT_PHASE=$(python3 -c "
+# Read cookit_active and current_phase
+PHASE_DATA=$(python3 -c "
 import json, sys
 try:
     with open(sys.argv[1]) as f:
         state = json.load(f)
-    if state.get('cookit_active'):
-        print(state.get('current_phase', ''))
+    active = '1' if state.get('cookit_active') else '0'
+    phase = state.get('current_phase', '')
+    print(active)
+    print(phase)
 except Exception:
-    pass
+    print('0')
+    print('')
 " "$PHASE_STATE" 2>/dev/null)
 
-# Exit if not in active cook-it
+COOKIT_ACTIVE=$(echo "$PHASE_DATA" | head -1)
+CURRENT_PHASE=$(echo "$PHASE_DATA" | tail -1)
+
+# If cook-it is not active, clean up .drl-last-phase and exit
+if [ "$COOKIT_ACTIVE" != "1" ]; then
+    [ -f "$LAST_PHASE_FILE" ] && rm -f "$LAST_PHASE_FILE"
+    exit 0
+fi
+
+# Exit if no phase detected
 [ -z "$CURRENT_PHASE" ] && exit 0
 
 # Read last known phase

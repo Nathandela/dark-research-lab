@@ -424,3 +424,167 @@ class TestAGENTSmd:
         content = self.AGENTS_MD.read_text()
         assert "bd" in content
         assert "beads" in content.lower()
+
+
+# ---------------------------------------------------------------------------
+# Epic 4th: Infrastructure state management and hook resilience
+# ---------------------------------------------------------------------------
+
+
+class TestCookItPhaseStateSchema:
+    """AC-1: cook-it/SKILL.md documents .ca-phase-state.json schema."""
+
+    SKILL = REPO_ROOT / ".claude" / "skills" / "drl" / "cook-it" / "SKILL.md"
+
+    def test_documents_all_schema_fields(self):
+        """Must document all three fields of .ca-phase-state.json."""
+        content = self.SKILL.read_text()
+        for field in ["cookit_active", "current_phase", "epic_id"]:
+            assert field in content, (
+                f"cook-it/SKILL.md must document .ca-phase-state.json field: {field}"
+            )
+
+    def test_documents_field_types(self):
+        """Must document field types (bool, string)."""
+        content = self.SKILL.read_text().lower()
+        assert "bool" in content, "Must document cookit_active as boolean type"
+        assert "string" in content, "Must document string-typed fields"
+
+    def test_documents_valid_phase_values(self):
+        """Must list valid values for current_phase."""
+        content = self.SKILL.read_text()
+        # At minimum should list the phases as valid values
+        for phase in ["spec", "plan", "work", "review", "synthesis"]:
+            assert phase in content.lower()
+
+    def test_documents_who_creates_and_reads(self):
+        """Must explain who creates and who reads the state file."""
+        content = self.SKILL.read_text().lower()
+        # Must mention creation/writing
+        assert "create" in content or "write" in content or "written" in content
+        # Must mention reading
+        assert "read" in content
+
+
+class TestCookItPrerequisites:
+    """AC-2: cook-it/SKILL.md has Prerequisites section with verification."""
+
+    SKILL = REPO_ROOT / ".claude" / "skills" / "drl" / "cook-it" / "SKILL.md"
+
+    def test_has_prerequisites_section(self):
+        content = self.SKILL.read_text()
+        assert "## Prerequisites" in content
+
+    def test_lists_required_hooks(self):
+        content = self.SKILL.read_text()
+        section = content.split("## Prerequisites")[1].split("\n## ")[0]
+        assert "decision-reminder" in section.lower()
+
+    def test_lists_required_files(self):
+        content = self.SKILL.read_text()
+        section = content.split("## Prerequisites")[1].split("\n## ")[0]
+        assert "settings.json" in section
+
+    def test_has_verification_command(self):
+        """Prerequisites section must include a backtick-enclosed verification command."""
+        content = self.SKILL.read_text()
+        section = content.split("## Prerequisites")[1].split("\n## ")[0]
+        assert "`" in section, "Prerequisites must include verification commands"
+
+
+class TestDecisionReminderCleanup:
+    """AC-3: decision-reminder.sh cleans up .drl-last-phase when session ends."""
+
+    HOOK_SCRIPT = REPO_ROOT / "scripts" / "hooks" / "decision-reminder.sh"
+
+    def test_cleans_up_last_phase_when_cookit_inactive(self):
+        """When cookit_active is false and .drl-last-phase exists, should clean up."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            claude_dir = Path(tmpdir) / ".claude"
+            claude_dir.mkdir()
+            phase_state = claude_dir / ".ca-phase-state.json"
+            phase_state.write_text(json.dumps({
+                "cookit_active": False,
+                "current_phase": "work",
+            }))
+            last_phase = claude_dir / ".drl-last-phase"
+            last_phase.write_text("spec")
+            env = os.environ.copy()
+            env["DRL_REPO_ROOT"] = str(tmpdir)
+            subprocess.run(
+                ["bash", str(self.HOOK_SCRIPT)],
+                cwd=str(tmpdir),
+                capture_output=True,
+                text=True,
+                timeout=10,
+                env=env,
+            )
+            assert not last_phase.exists(), (
+                ".drl-last-phase should be cleaned up when cookit_active is false"
+            )
+
+    def test_no_cleanup_when_no_phase_state(self):
+        """Without phase state file, .drl-last-phase should remain untouched."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            claude_dir = Path(tmpdir) / ".claude"
+            claude_dir.mkdir()
+            last_phase = claude_dir / ".drl-last-phase"
+            last_phase.write_text("spec")
+            env = os.environ.copy()
+            env["DRL_REPO_ROOT"] = str(tmpdir)
+            subprocess.run(
+                ["bash", str(self.HOOK_SCRIPT)],
+                cwd=str(tmpdir),
+                capture_output=True,
+                text=True,
+                timeout=10,
+                env=env,
+            )
+            assert last_phase.exists(), (
+                ".drl-last-phase should not be touched when no phase state exists"
+            )
+
+
+class TestFlavorAtomicWriteSimplified:
+    """AC-4: flavor/SKILL.md atomic write uses standard shell mv."""
+
+    SKILL = REPO_ROOT / ".claude" / "skills" / "drl" / "flavor" / "SKILL.md"
+
+    def test_uses_mv_pattern(self):
+        content = self.SKILL.read_text()
+        assert "mv " in content, "Atomic write must use mv command"
+
+    def test_mentions_edit_tool_as_primary(self):
+        """Should mention Claude's Edit tool as the primary editing method."""
+        content = self.SKILL.read_text()
+        assert "Edit" in content, "Should reference Claude's Edit tool"
+
+    def test_no_special_tooling_expected(self):
+        """Should not imply special tooling is needed beyond standard shell."""
+        content = self.SKILL.read_text().lower()
+        assert "special tool" not in content
+        assert "external tool" not in content
+
+
+class TestOnboardHookValidation:
+    """AC-5: onboard skill verifies hooks are configured correctly."""
+
+    SKILL = REPO_ROOT / ".claude" / "skills" / "drl" / "onboard" / "SKILL.md"
+
+    def test_has_hook_validation(self):
+        content = self.SKILL.read_text().lower()
+        assert "hook" in content and (
+            "verify" in content or "check" in content or "validate" in content
+        ), "onboard/SKILL.md must verify hook configuration"
+
+    def test_checks_settings_json(self):
+        content = self.SKILL.read_text()
+        assert "settings.json" in content, (
+            "onboard/SKILL.md must check settings.json"
+        )
+
+    def test_checks_decision_reminder_hook(self):
+        content = self.SKILL.read_text()
+        assert "decision-reminder" in content, (
+            "onboard/SKILL.md must check decision-reminder hook"
+        )

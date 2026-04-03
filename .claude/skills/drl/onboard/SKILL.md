@@ -22,6 +22,19 @@ Based on what already exists:
 - **Literature exists, no analysis**: Skip literature setup (Step 5), focus on architect phase
 - **Analysis in progress**: Summarize existing state and ask what needs to change or continue
 
+## Step 1b: Verify Hook Configuration
+
+Check that the required hooks are properly configured before proceeding:
+
+1. **Check settings.json**: `cat .claude/settings.json | python3 -c "import json,sys; h=json.load(sys.stdin).get('hooks',{}); print('OK' if 'UserPromptSubmit' in h and 'PreToolUse' in h else 'MISSING hooks')"`
+2. **Check decision-reminder hook**: `grep -q 'decision-reminder' .claude/settings.json && echo 'OK: decision-reminder configured' || echo 'MISSING: decision-reminder hook'`
+3. **Check hook script**: `test -x scripts/hooks/decision-reminder.sh && echo 'OK: hook executable' || echo 'MISSING: decision-reminder.sh not found or not executable'`
+
+If any check fails, guide the researcher through the setup:
+- The `decision-reminder.sh` hook must be registered in `.claude/settings.json` under `UserPromptSubmit`
+- The `phase-guard` hook must be registered under `PreToolUse`
+- Both are required for the cook-it workflow to function correctly
+
 ## Step 2: Explain the DRL Framework
 
 Introduce the researcher to the DRL research pipeline:

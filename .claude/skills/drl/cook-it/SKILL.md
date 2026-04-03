@@ -9,6 +9,41 @@ description: Orchestrate the full DRL research workflow from specification throu
 
 Run the complete DRL research pipeline for a given epic. This is the DRL cook-it workflow, adapting the compound cook-it pattern for social science research. It chains five research phases in sequence, enforcing gate criteria between each transition. Each phase uses a dedicated DRL skill and involves specialized research agents.
 
+## Prerequisites
+
+Before running cook-it, verify these dependencies are in place:
+
+1. **Hooks configured** in `.claude/settings.json`:
+   - `UserPromptSubmit` must include `decision-reminder.sh` (ADR reminders on phase transitions)
+   - `PreToolUse` must include `phase-guard` (prevents writes during wrong phase)
+   - Verify: `cat .claude/settings.json | python3 -c "import json,sys; h=json.load(sys.stdin)['hooks']; assert any('decision-reminder' in hook['command'] for entry in h['UserPromptSubmit'] for hook in entry['hooks']), 'Missing decision-reminder hook'; print('OK: hooks configured')"`
+
+2. **Hook script** exists and is executable:
+   - `scripts/hooks/decision-reminder.sh` must be present and executable
+   - Verify: `test -x scripts/hooks/decision-reminder.sh && echo 'OK: hook executable'`
+
+3. **ADR template** exists:
+   - `docs/decisions/0000-template.md` must be present
+   - Verify: `test -f docs/decisions/0000-template.md && echo 'OK: template exists'`
+
+4. **Beads** is initialized:
+   - An epic must exist in beads for the research project
+   - Verify: `bd show <epic-id>`
+
+## State File Schema: `.ca-phase-state.json`
+
+The cook-it workflow tracks its state in `.claude/.ca-phase-state.json`. This file is the coordination point between the orchestrator and the decision-reminder hook.
+
+| Field | Type | Valid Values | Description |
+|-------|------|--------------|-------------|
+| `cookit_active` | bool | `true` / `false` | Whether a cook-it session is currently running |
+| `current_phase` | string | `"spec"`, `"plan"`, `"work"`, `"review"`, `"synthesis"` | The active workflow phase |
+| `epic_id` | string | A beads issue ID (e.g. `"dark-research-lab-xxx"`) | The bead ID of the parent epic |
+
+**Who creates it**: The cook-it orchestrator creates and updates this file at each phase transition.
+**Who reads it**: `decision-reminder.sh` reads it on every `UserPromptSubmit` to detect phase changes and emit ADR reminders. The `phase-guard` hook reads it to restrict file writes to the current phase's scope.
+**Lifecycle**: Created when cook-it starts, updated at each phase transition, and should be deleted (or set `cookit_active: false`) when the session ends. The companion file `.claude/.drl-last-phase` is automatically cleaned up by `decision-reminder.sh` when it detects `cookit_active` is `false`.
+
 ## Input
 
 - Epic ID (from beads) or a research question to start from
