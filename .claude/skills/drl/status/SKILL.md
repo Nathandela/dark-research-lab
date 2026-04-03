@@ -37,7 +37,7 @@ Report the current phase and percentage completion estimate based on closed vs. 
 
 Summarize the ADR registry:
 
-1. Count total decisions: `ls docs/decisions/*.md | wc -l` (excluding the template)
+1. Count total decisions: `ls docs/decisions/*.md | grep -v 0000-template | wc -l` (excluding the template)
 2. List recent decisions (last 5 by file number)
 3. Check for any decisions marked as "proposed" (not yet accepted)
 4. Flag if no decisions exist yet (suggesting the project needs more methodological logging)

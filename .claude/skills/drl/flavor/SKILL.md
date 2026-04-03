@@ -82,6 +82,8 @@ Edit the following skill files in `.claude/skills/drl/`:
 4. **methodology-review/SKILL.md**: Calibrate reviewer expectations for the field (e.g., IV validity checks for economics, effect size reporting for psychology)
 5. **synthesis/SKILL.md**: Adjust paper structure to journal requirements, set abstract format, and configure citation style
 
+Note: The procedural skills (lit-review, decision, compile, status) are intentionally excluded from flavor customization because their workflows are field-agnostic.
+
 ### Customization Targets Within Each Skill
 
 For each skill file, look for and adapt:
