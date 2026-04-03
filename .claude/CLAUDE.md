@@ -39,6 +39,6 @@ DRL produces LaTeX papers. All generated tables and figures go to `paper/outputs
 - Decision log every methodological choice
 
 <!-- dark-research-lab:claude-ref:start -->
-## Compound Agent
+## Dark Research Lab
 See AGENTS.md for lesson capture workflow.
 <!-- dark-research-lab:claude-ref:end -->

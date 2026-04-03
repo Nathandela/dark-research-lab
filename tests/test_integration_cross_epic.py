@@ -93,7 +93,7 @@ class TestSetupInstallsAllFiles:
 
     def test_setup_creates_complete_structure(self, setup_tmpdir):
         base = setup_tmpdir / ".claude"
-        # Compound directories (installed by drl setup)
+        # DRL directories (installed by drl setup)
         assert (base / "skills" / "drl").is_dir(), "Missing drl skills"
         assert (base / "agents" / "drl").is_dir(), "Missing drl agents"
         assert (base / "commands" / "drl").is_dir(), "Missing drl commands"
@@ -560,4 +560,9 @@ class TestSetupCLAUDEMdContent:
     def test_claudemd_has_drl_section(self, setup_tmpdir):
         claude_md = setup_tmpdir / ".claude" / "CLAUDE.md"
         content = claude_md.read_text()
-        assert "Dark Research Lab" in content
+        # Extract content between markers to avoid matching top-level heading
+        start = content.find("dark-research-lab:claude-ref:start")
+        end = content.find("dark-research-lab:claude-ref:end")
+        assert start != -1 and end != -1, "Missing DRL marker block"
+        block = content[start:end]
+        assert "## Dark Research Lab" in block
