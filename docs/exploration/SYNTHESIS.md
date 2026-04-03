@@ -4,7 +4,7 @@
 
 ## 1. What We're Building
 
-A **Claude Code harness for long-duration autonomous research paper production**, targeting social science research. Distributed as its own pnpm plugin (like compound-agent's `ca`), with the command namespace `/drl:*`.
+A **Claude Code harness for long-duration autonomous research paper production**, targeting social science research. Distributed as a **PyPI package** (`dark-research-lab`) containing a platform-specific Go binary, with the command namespace `/drl:*`.
 
 The system takes a research question as input and autonomously produces a publication-ready LaTeX paper, with full methodological traceability via decision logs.
 
@@ -26,7 +26,7 @@ The system takes a research question as input and autonomously produces a public
 | Literature | PDF folder + RAG via compound-agent's embed system (Rust daemon + SQLite FTS5) | User choice |
 | Flavors | Interactive guided session where Claude edits skills/agents directly | User choice |
 | Traceability | Auto decision log + hook reminders at phase transitions | User choice |
-| Binary | Own pnpm plugin, copying ca infrastructure and adapting for research | User choice |
+| Binary | PyPI package with Go binary in platform-specific wheels, forked from ca | User choice |
 | Phases | Flexible (architect decides epic structure) + cook-it cycle inside each epic | User choice |
 | Notes | Structured channels: `researcher_notes/` (human) + `agent_notes/` (agent) | User choice |
 | Onboarding | Guided setup wizard (`/drl:onboard`) | User choice |

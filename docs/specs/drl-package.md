@@ -1,7 +1,7 @@
 # DRL Package -- System Specification
 
 *Date: 2026-04-02*
-*Status: Draft*
+*Status: Active*
 
 ## 1. System Overview
 
