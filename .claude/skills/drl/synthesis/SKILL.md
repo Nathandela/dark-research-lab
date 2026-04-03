@@ -98,7 +98,7 @@ The final phase of the DRL research pipeline. Verify the paper tells a coherent 
 
 ## Gate Criteria
 
-**Gate: Paper Compiles + All Refs Resolve**
+**Gate 5: Paper Compiles + All Refs Resolve**
 
 Before closing the epic, verify ALL of:
 
@@ -113,6 +113,16 @@ Before closing the epic, verify ALL of:
 | Lessons extracted | `drl learn` called for each insight |
 | Tests pass | `uv run python -m pytest` |
 | All sub-tasks closed | `bd list --status=open` shows only the epic |
+
+
+## Handoff Checklist
+
+| Output | Location | Format | Next Phase Retrieval |
+|--------|----------|--------|---------------------|
+| Compiled paper | `paper/main.pdf` | PDF with all references resolved | Final deliverable -- no next phase |
+| Complete decision log | `docs/decisions/NNNN-*.md` | All ADRs with accepted/deprecated status | Archived for future research cycles |
+| Lessons captured | `drl learn` entries | Memory system entries | Future cook-it cycles retrieve via `drl search` |
+| Closed epic | Beads (`bd show <epic-id>`) | Epic status = closed | Pipeline complete |
 
 ## Memory Integration
 

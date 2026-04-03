@@ -81,19 +81,30 @@ This mapping ensures every hypothesis has a clear path through the analysis pipe
 
 ## Gate Criteria
 
-**Gate: Methodology Approved**
+**Gate 2: Methodology Approved**
 
 Before proceeding to research-work, verify ALL of:
 
 | Criterion | Verification |
 |-----------|-------------|
-| Variable operationalization table is complete | Review table in plan document |
-| Model equations formally specified | Check equations have DV, IV, functional form |
-| Robustness plan covers 2+ alternatives per spec | Count alternative specifications in plan |
-| Hypothesis-analysis-output-section mapping complete | Verify every H has a table/figure and section |
-| Analysis tasks created as beads with deps | `bd list --status=open` and `bd show <task>` |
+| Variable operationalization table is complete | Table must include columns: Variable, Construct, Source, Measurement, Transform, Missing Strategy. At least one row per hypothesis variable |
+| Model equations formally specified | Each equation must name DV, IV(s), functional form, and estimation method |
+| Robustness plan covers at least 2 alternatives per main spec | Count alternative specifications in plan: minimum 2 per main model |
+| Hypothesis-analysis-output-section mapping complete | Every H row must have a non-empty Model, Output Table/Figure, and Paper Section cell |
+| Analysis tasks created as beads with deps | `bd list --status=open` returns >= 1 analysis task and `bd show <task>` shows wired dependencies |
 
 Use `AskUserQuestion` to confirm the methodology with the researcher before proceeding.
+
+
+## Handoff Checklist
+
+| Output | Location | Format | Next Phase Retrieval |
+|--------|----------|--------|---------------------|
+| Variable operationalization table | Plan document or `docs/specs/<topic>.md` | Markdown table: Variable / Construct / Source / Measurement / Transform / Missing Strategy | research-work reads the plan to map variables to code |
+| Model equations | Plan document | Formal equations with DV, IV, functional form, estimation method | research-work implements each equation in `src/analysis/econometrics.py` |
+| Robustness plan | Plan document | List of alternative specifications per main model | research-work executes robustness battery from `src/analysis/robustness.py` |
+| Hypothesis-analysis-output-section mapping | Plan document | Markdown table: H -> Model -> Variables -> Output Table/Figure -> Paper Section | research-work uses mapping to route outputs to correct files |
+| Analysis beads tasks | Beads (`bd list --status=open`) | Task beads with dependencies wired | research-work picks up tasks via `bd ready` |
 
 ## Memory Integration
 

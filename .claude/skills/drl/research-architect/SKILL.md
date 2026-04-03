@@ -141,6 +141,36 @@ A typical decomposition produces these epics (adjust based on the research quest
 5. **Paper Synthesis**: Write and compile the paper (writing-quality-reviewer + citation-checker agents)
 6. **Integration Verification**: Cross-epic consistency checks (coherence-reviewer + reproducibility-verifier agents)
 
+
+### Epic Description Format
+
+Each epic created in Phase 4 MUST use this structured format in its beads description. This ensures consistent handoff to cook-it:
+
+```markdown
+## Scope
+What is in scope and what is explicitly out of scope for this epic.
+
+## EARS
+Research EARS requirements (ubiquitous, event, state, unwanted) from the spec.
+
+## Contracts
+Interface contracts: data format, variable naming, output format, file paths.
+How this epic's outputs connect to other epics' inputs.
+
+## Assumptions
+Assumptions that must hold for this epic to succeed.
+Data availability, methodological feasibility, sample size adequacy.
+
+## Roles
+Which DRL agent roles are involved (analyst, methodology-reviewer, etc.).
+
+## Decisions
+Decision points that require ADR logging during execution.
+Known methodological choices that will need to be made.
+```
+
+This format allows cook-it to parse the epic description and route information to the correct phase.
+
 ## Advisory Fleet Integration
 
 WHERE external model CLIs are available (gemini, codex), include them in review:

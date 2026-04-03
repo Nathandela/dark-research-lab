@@ -90,7 +90,7 @@ Throughout execution, maintain progress visibility:
 
 ## Gate Criteria
 
-**Gate: All Analyses Complete**
+**Gate 3: All Analyses Complete**
 
 Before proceeding to methodology-review, verify ALL of:
 
@@ -104,6 +104,17 @@ Before proceeding to methodology-review, verify ALL of:
 | No tasks in-progress | `bd list --status=in_progress` is empty |
 | Tests pass | `uv run python -m pytest` |
 | Spec was approved | `bd show <epic>` confirms spec phase complete |
+
+
+## Handoff Checklist
+
+| Output | Location | Format | Next Phase Retrieval |
+|--------|----------|--------|---------------------|
+| Regression tables | `paper/outputs/tables/` | LaTeX `.tex` files with proper labels and notes | methodology-review reads tables for statistical validity checks |
+| Figures | `paper/outputs/figures/` | PDF or PNG files referenced via `\includegraphics` | methodology-review checks figure-text consistency |
+| Paper sections | `paper/sections/data.tex`, `paper/sections/results.tex`, `paper/sections/robustness.tex` | LaTeX with `\input{}` references to output tables | methodology-review reads sections for coherence and writing quality |
+| ADR decision log entries | `docs/decisions/NNNN-*.md` | ADR template format | methodology-review checks decision log completeness |
+| Closed analysis tasks | Beads (`bd list --status=closed`) | All analysis tasks marked done | methodology-review verifies no open work tasks remain |
 
 ## Memory Integration
 

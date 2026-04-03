@@ -102,21 +102,31 @@ Spawn `.claude/agents/drl/writing-quality-reviewer.md`:
 
 ## Gate Criteria
 
-**Gate: All Checks Pass**
+**Gate 4: All Checks Pass**
 
 Before proceeding to synthesis, verify ALL of:
 
 | Criterion | Verification |
 |-----------|-------------|
-| No critical findings unresolved | `bd list --status=open` shows no P0/P1 review issues |
+| No critical findings unresolved | `bd list --status=open` shows no P0 review issues |
 | No major findings unresolved | `bd list --status=open` shows no P1 review issues |
-| Statistical methodology sound | Methodology-reviewer subagent approved |
-| Robustness checks complete | Robustness-checker subagent approved |
-| Paper logically consistent | Coherence-reviewer subagent approved |
+| Statistical methodology sound | Methodology-reviewer confirms: (a) identification strategy stated, (b) standard error clustering justified, (c) coefficient signs match theory, (d) no untested endogeneity concerns |
+| Robustness checks complete | Robustness-checker confirms: at least 2 alternative specifications per main model executed and reported |
+| Paper logically consistent | Coherence-reviewer confirms: every hypothesis has a corresponding result, no section contradictions |
 | All citations resolve | `grep -ci "undefined" paper/main.log` returns 0 |
-| Analysis reproducible | Reproducibility-verifier subagent approved |
-| Writing meets standards | Writing-quality-reviewer subagent approved |
-| Tests pass | `uv run python -m pytest` |
+| Analysis reproducible | Reproducibility-verifier confirms: `uv run python -m pytest` passes and re-running pipeline produces identical outputs |
+| Writing meets standards | Writing-quality-reviewer confirms: abstract has background/gap/method/findings/contribution structure |
+| Tests pass | `uv run python -m pytest` exits 0 |
+
+
+## Handoff Checklist
+
+| Output | Location | Format | Next Phase Retrieval |
+|--------|----------|--------|---------------------|
+| Review findings report | Beads issue notes or dedicated review doc | Severity-classified list: critical / major / minor | synthesis reads findings to verify all resolved |
+| Fixed paper sections | `paper/sections/*.tex` (updated in place) | LaTeX with corrections applied | synthesis reads final paper sections end-to-end |
+| Fixed analysis outputs | `paper/outputs/tables/` and `paper/outputs/figures/` (updated) | Corrected LaTeX tables and figures | synthesis compiles paper with corrected outputs |
+| Review beads issues | Beads (`bd list`) | P0/P1 review issues all closed | synthesis verifies `bd list --status=open` shows only the epic |
 
 ## Memory Integration
 

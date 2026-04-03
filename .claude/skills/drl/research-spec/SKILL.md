@@ -67,19 +67,29 @@ Refine a research question into a precise specification with testable hypotheses
 
 ## Gate Criteria
 
-**Gate: RQ + Hypotheses Approved**
+**Gate 1: RQ + Hypotheses Approved**
 
 Before proceeding to research-plan, verify ALL of:
 
 | Criterion | Verification |
 |-----------|-------------|
-| Research question is specific and answerable | Review the RQ statement for specificity |
-| At least one testable hypothesis is articulated | `grep -c "^H[0-9]" docs/specs/*.md` |
-| Literature gap documented with evidence | Check `paper/sections/literature.tex` or spec notes |
-| Methodology outline identifies key variables and likely methods | Review methodology outline section |
-| Domain glossary defines core constructs | Check glossary section exists in spec |
+| Research question is specific and answerable | RQ must include: (a) a named DV, (b) at least one named IV, (c) a defined population or context. Verify with `grep -cP "^RQ:" docs/specs/*.md` returning >= 1 |
+| At least one testable hypothesis is articulated | `grep -c "^H[0-9]" docs/specs/*.md` returns >= 1 |
+| Literature gap documented with evidence | Check `paper/sections/literature.tex` or spec notes contain at least 3 cited sources supporting the gap |
+| Methodology outline identifies key variables and likely methods | Review methodology outline section contains a variable table or list |
+| Domain glossary defines core constructs | Check glossary section exists in spec with >= 3 defined terms |
 
 Use `AskUserQuestion` to confirm the research question and hypotheses with the researcher before proceeding.
+
+
+## Handoff Checklist
+
+| Output | Location | Format | Next Phase Retrieval |
+|--------|----------|--------|---------------------|
+| Research specification document | `docs/specs/<topic>.md` | Markdown with RQ:, H1:/H2: prefixed hypotheses, glossary table | research-plan reads via `cat docs/specs/<topic>.md` |
+| Literature gap notes | `paper/sections/literature.tex` or spec notes | LaTeX or Markdown prose with `\cite{}` references | research-plan and research-work reference for context |
+| Domain glossary | Embedded in spec document under "## Glossary" | Markdown table: Term / Definition / Operationalization | research-plan uses glossary for variable operationalization table |
+| Epic description updated | Beads epic (`bd show <epic-id>`) | Notes field updated with spec approval status | research-plan reads epic description for EARS requirements |
 
 ## Memory Integration
 

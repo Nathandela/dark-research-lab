@@ -14,7 +14,20 @@ Run the complete DRL research pipeline for a given epic. This is the DRL cook-it
 - Epic ID (from beads) or a research question to start from
 - If no epic exists, recommend running `/drl:architect` first to decompose the question into epics
 
-## The Five Research Phases
+## The Research Phases
+
+### Phase 0: Architecture (research-architect)
+
+**Skill**: `.claude/skills/drl/research-architect/SKILL.md`
+
+**When to use**: Before starting cook-it, if no epic exists yet. `/drl:architect` is the entry point that decomposes a research question into cook-it-ready epics. If the epic already exists with a well-formed description (Scope, EARS, Contracts, Assumptions, Roles, Decisions sections), skip Phase 0 and begin at Phase 1.
+
+**What happens**:
+- Refine the research question via Socratic dialogue
+- Decompose into naturally-scoped epic beads
+- Wire dependencies between epics
+
+This phase is a prerequisite, not part of the cook-it loop itself. Cook-it operates on a single epic produced by the architect.
 
 ### Phase 1: Specification (research-spec)
 
@@ -31,7 +44,7 @@ Run the complete DRL research pipeline for a given epic. This is the DRL cook-it
 
 **Decision logging**: Log the final research question formulation and hypothesis choices to `docs/decisions/`
 
-**Gate**: Research question approved, hypotheses articulated, literature gap documented. Human confirmation via `AskUserQuestion`.
+**Gate 1**: Research question approved, hypotheses articulated, literature gap documented. Human confirmation via `AskUserQuestion`.
 
 ### Phase 2: Planning (research-plan)
 
@@ -48,7 +61,7 @@ Run the complete DRL research pipeline for a given epic. This is the DRL cook-it
 
 **Decision logging**: Log statistical method choices, variable operationalization decisions, and robustness check design to `docs/decisions/`
 
-**Gate**: Methodology is sound, identification strategy is defensible, robustness battery is planned. Human confirmation via `AskUserQuestion`.
+**Gate 2**: Methodology is sound, identification strategy is defensible, robustness battery is planned. Human confirmation via `AskUserQuestion`.
 
 ### Phase 3: Work (research-work)
 
@@ -65,7 +78,7 @@ Run the complete DRL research pipeline for a given epic. This is the DRL cook-it
 
 **Decision logging**: Log any deviations from the plan, unexpected findings, and post-hoc decisions to `docs/decisions/`
 
-**Gate**: All planned analyses complete, tables and figures generated, results written. All work subtasks closed in beads.
+**Gate 3**: All planned analyses complete, tables and figures generated, results written. All work subtasks closed in beads.
 
 ### Phase 4: Review (methodology-review)
 
@@ -84,7 +97,7 @@ Run the complete DRL research pipeline for a given epic. This is the DRL cook-it
 
 **Decision logging**: Log any methodological corrections and their rationale to `docs/decisions/`
 
-**Gate**: No critical or major findings remain. All six review dimensions pass.
+**Gate 4**: No critical or major findings remain. All six review dimensions pass.
 
 ### Phase 5: Synthesis (synthesis)
 
@@ -102,7 +115,7 @@ Run the complete DRL research pipeline for a given epic. This is the DRL cook-it
 
 **Decision logging**: Log any final methodological reflections to `docs/decisions/`
 
-**Gate**: Paper compiles cleanly, all references resolve, decision log is complete. Epic closed in beads.
+**Gate 5**: Paper compiles cleanly, all references resolve, decision log is complete. Epic closed in beads.
 
 ## Phase Transition Protocol
 
