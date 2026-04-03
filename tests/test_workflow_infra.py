@@ -43,7 +43,7 @@ class TestADRTemplate:
 
     def test_template_body_has_required_sections(self):
         content = self.TEMPLATE.read_text()
-        for section in ["## Context", "## Decision", "## Consequences", "## Alternatives Considered"]:
+        for section in ["## Context", "## Decision", "## Rationale", "## Consequences", "## Alternatives Considered"]:
             assert section in content, f"Template missing section: {section}"
 
 
@@ -259,7 +259,17 @@ class TestAGENTSmd:
 
     def test_has_agent_roles_table(self):
         content = self.AGENTS_MD.read_text()
-        for role in ["Research Architect", "Data Analyst", "Paper Writer", "Methodology Auditor"]:
+        for role in [
+            "Research Architect",
+            "Research Analyst",
+            "Literature Analyst",
+            "Methodology Reviewer",
+            "Robustness Checker",
+            "Coherence Reviewer",
+            "Reproducibility Verifier",
+            "Citation Checker",
+            "Writing Quality Reviewer",
+        ]:
             assert role in content, f"Missing agent role: {role}"
 
     def test_has_decision_logging_guidance(self):
@@ -268,7 +278,7 @@ class TestAGENTSmd:
 
     def test_has_research_phases(self):
         content = self.AGENTS_MD.read_text()
-        for phase in ["Spec-Dev", "Plan", "Work", "Review", "Compound"]:
+        for phase in ["Spec", "Plan", "Work", "Review", "Synthesis"]:
             assert phase in content, f"Missing research phase: {phase}"
 
     def test_preserves_beads_integration(self):

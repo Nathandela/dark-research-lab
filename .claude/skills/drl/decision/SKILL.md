@@ -22,7 +22,7 @@ Files are named sequentially: `NNNN-slug.md`
 
 To find the next number:
 ```bash
-ls docs/decisions/ | sort -r | head -1
+ls docs/decisions/[0-9]*.md 2>/dev/null | sort -r | head -1
 ```
 
 ## What Decisions to Log

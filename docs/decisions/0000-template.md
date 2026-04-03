@@ -15,6 +15,10 @@ deciders: ["researcher-name"]
 
 [What is the change being proposed or decided?]
 
+## Rationale
+
+[Why this choice over alternatives? What evidence or literature supports it?]
+
 ## Consequences
 
 ### Positive
