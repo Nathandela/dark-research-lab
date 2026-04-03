@@ -105,7 +105,7 @@ class TestSetupEmptyRepo:
                 drl_binary,
                 ["setup", "--skip-hooks", "--repo-root", tmpdir],
             )
-            skills_dir = Path(tmpdir) / ".claude" / "skills" / "compound"
+            skills_dir = Path(tmpdir) / ".claude" / "skills" / "drl"
             assert skills_dir.is_dir()
             skill_dirs = [d for d in skills_dir.iterdir() if d.is_dir()]
             assert len(skill_dirs) > 0
@@ -117,7 +117,7 @@ class TestSetupEmptyRepo:
                 drl_binary,
                 ["setup", "--skip-hooks", "--repo-root", tmpdir],
             )
-            agents_dir = Path(tmpdir) / ".claude" / "agents" / "compound"
+            agents_dir = Path(tmpdir) / ".claude" / "agents" / "drl"
             assert agents_dir.is_dir()
             agent_files = list(agents_dir.glob("*.md"))
             assert len(agent_files) > 0
@@ -156,7 +156,7 @@ class TestSetupCoreSkill:
             )
             assert result.returncode == 0
 
-            skills_dir = Path(tmpdir) / ".claude" / "skills" / "compound"
+            skills_dir = Path(tmpdir) / ".claude" / "skills" / "drl"
             assert skills_dir.is_dir()
             skill_dirs = [d for d in skills_dir.iterdir() if d.is_dir()]
             assert len(skill_dirs) > 0
@@ -172,7 +172,7 @@ class TestSetupCoreSkill:
 
             # Role skills live under .claude/skills/compound/agents/
             role_skills = (
-                Path(tmpdir) / ".claude" / "skills" / "compound" / "agents"
+                Path(tmpdir) / ".claude" / "skills" / "drl" / "agents"
             )
             assert not role_skills.exists(), (
                 "Role skills (agents/) should not be installed with --core-skill"
@@ -191,9 +191,9 @@ class TestSetupAllSkill:
             )
             assert result.returncode == 0
 
-            skills_dir = Path(tmpdir) / ".claude" / "skills" / "compound"
+            skills_dir = Path(tmpdir) / ".claude" / "skills" / "drl"
             assert skills_dir.is_dir()
-            agents_dir = Path(tmpdir) / ".claude" / "agents" / "compound"
+            agents_dir = Path(tmpdir) / ".claude" / "agents" / "drl"
             assert agents_dir.is_dir()
 
     def test_all_skill_includes_role_skills(self, drl_binary):
@@ -205,7 +205,7 @@ class TestSetupAllSkill:
             )
 
             role_skills = (
-                Path(tmpdir) / ".claude" / "skills" / "compound" / "agents"
+                Path(tmpdir) / ".claude" / "skills" / "drl" / "agents"
             )
             assert role_skills.is_dir(), (
                 "--all-skill should install role skills under agents/"

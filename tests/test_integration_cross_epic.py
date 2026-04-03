@@ -94,9 +94,9 @@ class TestSetupInstallsAllFiles:
     def test_setup_creates_complete_structure(self, setup_tmpdir):
         base = setup_tmpdir / ".claude"
         # Compound directories (installed by drl setup)
-        assert (base / "skills" / "compound").is_dir(), "Missing compound skills"
-        assert (base / "agents" / "compound").is_dir(), "Missing compound agents"
-        assert (base / "commands" / "compound").is_dir(), "Missing compound commands"
+        assert (base / "skills" / "drl").is_dir(), "Missing drl skills"
+        assert (base / "agents" / "drl").is_dir(), "Missing drl agents"
+        assert (base / "commands" / "drl").is_dir(), "Missing drl commands"
 
     def test_drl_directories_exist_in_repo(self):
         """DRL-specific scaffolding exists in the repository."""
@@ -105,7 +105,7 @@ class TestSetupInstallsAllFiles:
         assert DRL_COMMANDS_DIR.is_dir(), "Missing drl commands dir"
 
     def test_setup_creates_skills_index(self, setup_tmpdir):
-        index = setup_tmpdir / ".claude" / "skills" / "compound" / "skills_index.json"
+        index = setup_tmpdir / ".claude" / "skills" / "drl" / "skills_index.json"
         assert index.is_file(), "Missing skills_index.json"
         data = json.loads(index.read_text())
         assert len(data.get("skills", [])) > 0, "skills_index.json is empty"
