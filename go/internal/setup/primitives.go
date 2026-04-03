@@ -680,6 +680,62 @@ func pruneStaleSubdirs(dir string, expected map[string]string, skip []string) (i
 	return pruned, nil
 }
 
+// installScaffoldingTree writes a scaffolding file tree into targetDir.
+// Files are keyed by relative path (slash-separated). Intermediate directories
+// are created as needed. Returns (created, updated, error).
+func installScaffoldingTree(targetDir string, files map[string]string) (int, int, error) {
+	created, updated := 0, 0
+	for relPath, content := range files {
+		filePath := filepath.Join(targetDir, filepath.FromSlash(relPath))
+		c, u, err := writeSkillFile(filePath, content)
+		if err != nil {
+			return created, updated, err
+		}
+		if c {
+			created++
+		}
+		if u {
+			updated++
+		}
+	}
+	return created, updated, nil
+}
+
+// InstallPaperScaffolding writes paper/ templates (main.tex, sections/, outputs/, etc.)
+// to the target repository root. Creates missing files and updates stale files.
+// Returns (created, updated, error).
+func InstallPaperScaffolding(repoRoot string) (int, int, error) {
+	return installScaffoldingTree(filepath.Join(repoRoot, "paper"), templates.PaperScaffolding())
+}
+
+// InstallSrcScaffolding writes src/ Python templates (config.py, data/, analysis/, etc.)
+// to the target repository root. Creates missing files and updates stale files.
+// Returns (created, updated, error).
+func InstallSrcScaffolding(repoRoot string) (int, int, error) {
+	return installScaffoldingTree(filepath.Join(repoRoot, "src"), templates.SrcScaffolding())
+}
+
+// InstallLiteratureSetup writes literature/ templates (pdfs/.gitkeep, notes/.gitkeep)
+// to the target repository root. Creates missing files and updates stale files.
+// Returns (created, updated, error).
+func InstallLiteratureSetup(repoRoot string) (int, int, error) {
+	return installScaffoldingTree(filepath.Join(repoRoot, "literature"), templates.LiteratureScaffolding())
+}
+
+// InstallDocsStructure writes docs/ templates (decisions/0000-template.md, etc.)
+// to the target repository root. Creates missing files and updates stale files.
+// Returns (created, updated, error).
+func InstallDocsStructure(repoRoot string) (int, int, error) {
+	return installScaffoldingTree(filepath.Join(repoRoot, "docs"), templates.DocsScaffolding())
+}
+
+// InstallTestsScaffolding writes tests/ templates (conftest.py, test_config.py, etc.)
+// to the target repository root. Creates missing files and updates stale files.
+// Returns (created, updated, error).
+func InstallTestsScaffolding(repoRoot string) (int, int, error) {
+	return installScaffoldingTree(filepath.Join(repoRoot, "tests"), templates.TestsScaffolding())
+}
+
 // installMapToDir writes files from a map to a directory.
 // Creates missing files and updates existing files whose content has changed.
 // Returns (created count, updated count, error).

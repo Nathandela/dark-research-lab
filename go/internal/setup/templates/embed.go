@@ -27,6 +27,9 @@ var docsFS embed.FS
 //go:embed docs/research
 var researchFS embed.FS
 
+//go:embed all:scaffolding
+var scaffoldingFS embed.FS
+
 //go:embed agents-md.md
 var agentsMdTemplate string
 
@@ -186,6 +189,49 @@ func ResearchDocs() map[string]string {
 		// Strip "docs/research/" prefix to get relative path
 		rel := strings.TrimPrefix(p, root+"/")
 		data, readErr := fs.ReadFile(researchFS, p)
+		if readErr == nil {
+			result[rel] = string(data)
+		}
+		return nil
+	})
+	return result
+}
+
+// PaperScaffolding returns a map of relative-path -> content for paper templates.
+func PaperScaffolding() map[string]string {
+	return readEmbedTree(scaffoldingFS, "scaffolding/paper")
+}
+
+// SrcScaffolding returns a map of relative-path -> content for Python source templates.
+func SrcScaffolding() map[string]string {
+	return readEmbedTree(scaffoldingFS, "scaffolding/src")
+}
+
+// LiteratureScaffolding returns a map of relative-path -> content for literature templates.
+func LiteratureScaffolding() map[string]string {
+	return readEmbedTree(scaffoldingFS, "scaffolding/literature")
+}
+
+// DocsScaffolding returns a map of relative-path -> content for docs templates.
+func DocsScaffolding() map[string]string {
+	return readEmbedTree(scaffoldingFS, "scaffolding/docs")
+}
+
+// TestsScaffolding returns a map of relative-path -> content for test templates.
+func TestsScaffolding() map[string]string {
+	return readEmbedTree(scaffoldingFS, "scaffolding/tests")
+}
+
+// readEmbedTree walks an embedded FS directory tree and returns a map
+// of relative-path -> content. Relative paths use slash separators.
+func readEmbedTree(fsys embed.FS, root string) map[string]string {
+	result := make(map[string]string)
+	_ = fs.WalkDir(fsys, root, func(p string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return err
+		}
+		rel := strings.TrimPrefix(p, root+"/")
+		data, readErr := fs.ReadFile(fsys, p)
 		if readErr == nil {
 			result[rel] = string(data)
 		}

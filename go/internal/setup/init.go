@@ -38,6 +38,16 @@ type InitResult struct {
 	ResearchInstalled   int
 	ResearchUpdated     int
 	TemplatesPruned     int
+	PaperInstalled      int
+	PaperUpdated        int
+	SrcInstalled        int
+	SrcUpdated          int
+	LiteratureInstalled int
+	LiteratureUpdated   int
+	DocsScaffInstalled  int
+	DocsScaffUpdated    int
+	TestsInstalled      int
+	TestsUpdated        int
 	AgentsMdUpdated     bool
 	ClaudeMdUpdated     bool
 	PluginCreated       bool
@@ -168,6 +178,16 @@ func installTemplateGroups(repoRoot string, version string, stack StackInfo, tie
 			func(n int) { result.DocsInstalled = n }, func(u int) { result.DocsUpdated = u }, "doc templates"},
 		{func() (int, int, error) { return InstallResearchDocs(repoRoot) },
 			func(n int) { result.ResearchInstalled = n }, func(u int) { result.ResearchUpdated = u }, "research docs"},
+		{func() (int, int, error) { return InstallPaperScaffolding(repoRoot) },
+			func(n int) { result.PaperInstalled = n }, func(u int) { result.PaperUpdated = u }, "paper scaffolding"},
+		{func() (int, int, error) { return InstallSrcScaffolding(repoRoot) },
+			func(n int) { result.SrcInstalled = n }, func(u int) { result.SrcUpdated = u }, "src scaffolding"},
+		{func() (int, int, error) { return InstallLiteratureSetup(repoRoot) },
+			func(n int) { result.LiteratureInstalled = n }, func(u int) { result.LiteratureUpdated = u }, "literature setup"},
+		{func() (int, int, error) { return InstallDocsStructure(repoRoot) },
+			func(n int) { result.DocsScaffInstalled = n }, func(u int) { result.DocsScaffUpdated = u }, "docs structure"},
+		{func() (int, int, error) { return InstallTestsScaffolding(repoRoot) },
+			func(n int) { result.TestsInstalled = n }, func(u int) { result.TestsUpdated = u }, "tests scaffolding"},
 	}
 
 	// Core tier: skills + agents

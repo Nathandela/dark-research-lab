@@ -1,0 +1,52 @@
+\documentclass[12pt,a4paper]{article}
+
+% -- Core Packages --
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{setspace}
+
+% -- Tables & Figures --
+\usepackage{siunitx}
+\usepackage{threeparttable}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{adjustbox}
+\usepackage{float}
+\usepackage{lscape}
+
+% -- Paths --
+\graphicspath{{outputs/figures/}{outputs/tables/}}
+
+% -- Metadata --
+\title{Research Paper Title}
+\author{Author Name}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+% TODO: Write abstract summarizing research question, methodology, and findings.
+\end{abstract}
+
+\doublespacing
+
+\input{sections/intro}
+\input{sections/literature}
+\input{sections/methodology}
+\input{sections/data}
+\input{sections/results}
+\input{sections/robustness}
+\input{sections/conclusion}
+
+\bibliographystyle{apalike}
+\bibliography{Ref}
+
+\end{document}
