@@ -616,6 +616,6 @@ class TestZeroCompoundInDRLTemplates:
     def test_no_compound_namespace_in_drl_skills(self):
         hits = self._scan_for_compound_refs()
         assert len(hits) == 0, (
-            f"Found /compound: references in DRL templates:\n"
+            "Found /compound: references in DRL templates:\n"
             + "\n".join(f"  {f}:{ln}: {line}" for f, ln, line in hits)
         )
