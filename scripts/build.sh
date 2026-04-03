@@ -14,6 +14,8 @@ PLATFORMS=(
     "darwin/amd64"
     "linux/arm64"
     "linux/amd64"
+    "windows/amd64"
+    "windows/arm64"
 )
 
 VERSION="${VERSION:-$(cd "$GO_DIR" && git describe --tags --always --dirty 2>/dev/null || echo "dev")}"
@@ -31,7 +33,7 @@ for platform in "${PLATFORMS[@]}"; do
         output="${output}.exe"
     fi
     echo "  -> $output"
-    GOOS="$os" GOARCH="$arch" go build -ldflags "$LDFLAGS" -o "$output" "$GO_DIR/cmd/drl/"
+    (cd "$GO_DIR" && GOOS="$os" GOARCH="$arch" go build -ldflags "$LDFLAGS" -o "$output" ./cmd/drl/)
 done
 
 echo "Done. Binaries in $DIST_DIR/"

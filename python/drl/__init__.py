@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 
-def _find_binary() -> Path:
+def _find_binary() -> Path | None:
     """Locate the drl Go binary.
 
     Resolution order:
@@ -23,6 +23,7 @@ def _find_binary() -> Path:
         p = Path(env_path)
         if p.is_file():
             return p
+        print(f"drl: warning: DRL_BINARY_PATH={env_path} is not a valid file, trying fallbacks", file=sys.stderr)
 
     # 2. Bundled binary (platform-specific wheel)
     ext = ".exe" if platform.system() == "Windows" else ""

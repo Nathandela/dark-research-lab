@@ -315,7 +315,7 @@ func InstallResearchDocs(repoRoot string) (int, int, error) {
 	return created, updated, nil
 }
 
-// UpdateAgentsMd creates or appends the Compound Agent section to AGENTS.md.
+// UpdateAgentsMd creates or appends the drl section to AGENTS.md.
 // Idempotent: returns false if section already exists.
 func UpdateAgentsMd(repoRoot string) (bool, error) {
 	agentsPath := filepath.Join(repoRoot, "AGENTS.md")
@@ -340,7 +340,7 @@ func UpdateAgentsMd(repoRoot string) (bool, error) {
 	return true, os.WriteFile(agentsPath, []byte(content), 0644)
 }
 
-// EnsureClaudeMdReference creates or appends a Compound Agent reference to .claude/CLAUDE.md.
+// EnsureClaudeMdReference creates or appends a drl reference to .claude/CLAUDE.md.
 // Idempotent: returns false if reference already present.
 func EnsureClaudeMdReference(repoRoot string) (bool, error) {
 	claudeDir := filepath.Join(repoRoot, ".claude")
@@ -355,6 +355,7 @@ func EnsureClaudeMdReference(repoRoot string) (bool, error) {
 	if err == nil {
 		// File exists — check if reference already present
 		content := string(existing)
+		// "Compound Agent" check is a migration guard for legacy compound-agent users
 		if strings.Contains(content, "Compound Agent") || strings.Contains(content, templates.ClaudeRefStartMarker) {
 			return false, nil
 		}

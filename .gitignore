@@ -2,3 +2,13 @@
 # Dolt database files (added by bd init)
 .dolt/
 *.db
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Agent runtime logs
+agent_logs/
+
+# Credential keys
+.beads/.beads-credential-key

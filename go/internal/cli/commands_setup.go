@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -452,6 +453,7 @@ func printTemplatesSummary(cmd *cobra.Command, result *setup.InitResult) {
 func resolveBinaryPath() string {
 	exe, err := os.Executable()
 	if err != nil {
+		slog.Warn("could not determine binary path, hooks will use npx fallback", "error", err)
 		return ""
 	}
 	return exe
