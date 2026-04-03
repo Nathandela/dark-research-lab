@@ -73,11 +73,10 @@ def generate_manifest(output_dir: Path | None = None) -> dict:
         "git clone <repository-url> && cd <repository>",
         "uv sync  # install exact dependency versions from uv.lock",
         "uv run python -m src.orchestrators.repro  # verify manifest",
-        "uv run paper/compile.sh  # compile the paper",
+        "bash paper/compile.sh  # compile the paper",
     ]
 
     manifest = {
-        "python_version": platform.python_version(),
         "dependencies": dependencies,
         "analysis_scripts": analysis_scripts,
         "data_files": data_files,

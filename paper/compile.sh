@@ -14,8 +14,10 @@ pdflatex --no-shell-escape -interaction=nonstopmode main.tex
 # Non-zero is reported but non-fatal since PDFs still generate without bib.
 bibtex_rc=0
 bibtex main || bibtex_rc=$?
-if [ "$bibtex_rc" -ne 0 ]; then
+if [ "$bibtex_rc" -ge 2 ]; then
     echo "Error: bibtex exited with code $bibtex_rc -- check main.blg for details" >&2
+elif [ "$bibtex_rc" -eq 1 ]; then
+    echo "Warning: bibtex exited with code 1 (warnings) -- check main.blg for details" >&2
 fi
 
 pdflatex --no-shell-escape -interaction=nonstopmode main.tex
