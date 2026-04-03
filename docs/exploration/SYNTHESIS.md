@@ -377,7 +377,7 @@ drl/
 └── .goreleaser.yaml       # GOOS/GOARCH matrix
 ```
 
-Install: `uv pip install drl` (or `pip install drl`)
+Install: `uv pip install dark-research-lab` (or `pip install dark-research-lab`)
 
 Rationale: researchers have Python, not Node.js. PyPI is the natural distribution channel for research tooling.
 

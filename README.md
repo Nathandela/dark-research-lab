@@ -7,7 +7,7 @@ LaTeX compilation.
 ## Install
 
 ```bash
-uv pip install drl
+uv pip install dark-research-lab
 ```
 
 Requires Python 3.10+.

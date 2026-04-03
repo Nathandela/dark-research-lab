@@ -5,7 +5,7 @@
 
 ## 1. System Overview
 
-The Dark Research Lab (DRL) is a PyPI-distributed CLI tool that turns any git repository into an autonomous research paper factory. It ships as a Go binary (`drl`) forked from compound-agent (`ca`), packaged inside platform-specific Python wheels (same pattern as ruff/uv). Install: `uv pip install drl`. The Go binary embeds all templates that `drl setup` installs into a project.
+The Dark Research Lab (DRL) is a PyPI-distributed CLI tool that turns any git repository into an autonomous research paper factory. It ships as a Go binary (`drl`) forked from compound-agent (`ca`), packaged inside platform-specific Python wheels (same pattern as ruff/uv). Install: `uv pip install dark-research-lab`. The Go binary embeds all templates that `drl setup` installs into a project.
 
 **Primary actor**: A single social science researcher.
 **System boundary**: The `drl` CLI + installed template files (skills, agents, commands, hooks, scaffolding).
@@ -16,7 +16,7 @@ The Dark Research Lab (DRL) is a PyPI-distributed CLI tool that turns any git re
 
 ### 2.1 Ubiquitous (always true)
 
-- **U1**: The DRL CLI SHALL be distributed as a PyPI package containing a platform-specific Go binary named `drl`, installable via `uv pip install drl`.
+- **U1**: The DRL CLI SHALL be distributed as a PyPI package containing a platform-specific Go binary named `drl`, installable via `uv pip install dark-research-lab`.
 - **U2**: All slash commands SHALL use the `/drl:*` namespace.
 - **U3**: All skill files SHALL follow the skill-as-instruction-file pattern (thin command wrapper -> Read SKILL.md).
 - **U4**: The system SHALL preserve all compound-agent subsystems: memory (JSONL), lessons, knowledge (SQLite FTS5), search (ca-embed), beads (bd), hooks, infinity loop.
