@@ -1,13 +1,13 @@
 # Research Index
 
-> Shipped by compound-agent. Source: `docs/drl/research/` in the compound-agent repo.
-> **This directory is fully managed by `ca init`.** Do not add files here -- they will be pruned on the next run. Place user-authored research in `docs/research/` instead.
+> Shipped by dark-research-lab. Source: `docs/drl/research/` in the dark-research-lab repo.
+> **This directory is fully managed by `drl init`.** Do not add files here -- they will be pruned on the next run. Place user-authored research in `docs/research/` instead.
 
 Research documents that inform project design decisions, agent methodology, and domain knowledge.
 
 ## External Articles
 
-External articles that directly influenced compound-agent's architecture.
+External articles that directly influenced dark-research-lab's architecture.
 
 | Document | Description |
 |----------|-------------|
