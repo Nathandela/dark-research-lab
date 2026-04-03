@@ -2,7 +2,7 @@
 
 > Loaded on demand. Read when referenced by SKILL.md.
 
-The infinity loop (`drl loop`) generates a standalone bash script that autonomously processes beads epics via Claude Code sessions. Each epic runs through a full `/compound:cook-it from plan` cycle. The loop handles retries, dependency ordering, memory safety, and optional multi-model review. The architect skill's Phase 5 configures and launches this loop on materialized epics.
+The infinity loop (`drl loop`) generates a standalone bash script that autonomously processes beads epics via Claude Code sessions. Each epic runs through a full `/drl:cook-it from plan` cycle. The loop handles retries, dependency ordering, memory safety, and optional multi-model review. The architect skill's Phase 5 configures and launches this loop on materialized epics.
 
 ## Configuration Parameters
 

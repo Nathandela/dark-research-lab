@@ -12,7 +12,7 @@ Skills are instructions that Claude reads before executing each phase. They live
 
 ## Phase skills
 
-### `/compound:spec-dev`
+### `/drl:spec-dev`
 
 **Purpose**: Develop precise specifications through Socratic dialogue, EARS notation, and Mermaid diagrams.
 
@@ -20,7 +20,7 @@ Skills are instructions that Claude reads before executing each phase. They live
 
 **What it does**: Guides the user through 4 phases (Explore, Understand, Specify, Hand off) to produce a rigorous spec. Spawns research subagents, uses Mermaid diagrams as thinking tools, detects NL ambiguity, writes EARS-notation requirements, and stores the consolidated spec in the beads epic description.
 
-### `/compound:plan`
+### `/drl:plan`
 
 **Purpose**: Decompose work into small testable tasks with dependencies.
 
@@ -28,7 +28,7 @@ Skills are instructions that Claude reads before executing each phase. They live
 
 **What it does**: Reviews spec-dev output, spawns analysts, decomposes into tasks with acceptance criteria, writes an epic-local Verification Contract, creates beads issues, and creates Review + Compound blocking tasks.
 
-### `/compound:work`
+### `/drl:work`
 
 **Purpose**: Team-based TDD execution with adaptive complexity.
 
@@ -36,7 +36,7 @@ Skills are instructions that Claude reads before executing each phase. They live
 
 **What it does**: Picks tasks from `bd ready`, reads the epic's Acceptance Criteria and Verification Contract, deploys an AgentTeam with test-writers and implementers, coordinates agent work, commits incrementally, and produces the required evidence before `/implementation-reviewer`.
 
-### `/compound:review`
+### `/drl:review`
 
 **Purpose**: Multi-agent review with parallel specialized reviewers.
 
@@ -44,7 +44,7 @@ Skills are instructions that Claude reads before executing each phase. They live
 
 **What it does**: Runs baseline quality gates plus contract-required build checks, verifies Acceptance Criteria and Verification Contract evidence, selects reviewer tier based on diff size (4-11 reviewers), spawns reviewers in an AgentTeam, classifies findings by severity, fixes all P1s, runs `/implementation-reviewer`.
 
-### `/compound:compound`
+### `/drl:compound`
 
 **Purpose**: Reflect on the cycle and capture lessons for future sessions.
 
@@ -52,7 +52,7 @@ Skills are instructions that Claude reads before executing each phase. They live
 
 **What it does**: Spawns an analysis pipeline (context-analyzer, lesson-extractor, pattern-matcher, solution-writer, compounding), applies quality filters, classifies items by type and severity, stores via `drl learn`, checks for verification-contract drift, and runs `drl verify-gates`.
 
-### `/compound:cook-it`
+### `/drl:cook-it`
 
 **Purpose**: Full-cycle orchestrator chaining all five phases.
 
@@ -60,7 +60,7 @@ Skills are instructions that Claude reads before executing each phase. They live
 
 **What it does**: Sequences all 5 phases with mandatory gates between them, tracks progress in beads notes, handles resumption after interruption. See [WORKFLOW.md](WORKFLOW.md) for full details.
 
-### `/compound:get-a-phd`
+### `/drl:get-a-phd`
 
 **Purpose**: Conduct deep, PhD-level research to build knowledge for working subagents.
 
@@ -68,7 +68,7 @@ Skills are instructions that Claude reads before executing each phase. They live
 
 **What it does**: Analyzes beads epics for knowledge gaps, checks existing docs coverage, proposes research topics for user confirmation, spawns parallel researcher subagents, and stores output at `docs/research/<topic>/<slug>.md`.
 
-### `/compound:agentic-audit`
+### `/drl:agentic-audit`
 
 **Purpose**: Audit a codebase against the 15-principle Agentic Codebase Manifesto.
 
@@ -76,7 +76,7 @@ Skills are instructions that Claude reads before executing each phase. They live
 
 **What it does**: Detects the project stack, scores all 15 principles (0-2) with specific evidence across 3 pillars (Codebase Memory, Implementation Feedbacks, Mapping the Context) plus cross-cutting concerns. Produces a scored report (out of 30) with prioritized actions and offers to create a beads epic for improvements.
 
-### `/compound:agentic-setup`
+### `/drl:agentic-setup`
 
 **Purpose**: Set up a codebase for agentic AI development (runs audit first).
 
@@ -84,7 +84,7 @@ Skills are instructions that Claude reads before executing each phase. They live
 
 **What it does**: Runs the full audit first, then proposes concrete remediation actions for each gap found. Creates real content (AGENTS.md, docs/, ADRs, lint configs) generated from actual codebase analysis. Asks for user approval before each file creation.
 
-### `/compound:build-great-things`
+### `/drl:build-great-things`
 
 **Purpose**: Comprehensive playbook for building world-class websites, web apps, and dashboards.
 
@@ -92,7 +92,7 @@ Skills are instructions that Claude reads before executing each phase. They live
 
 **What it does**: Guides through a 6-phase build sequence (Foundation → Structure → Craft → Motion → Performance → Launch) with separate tracks for websites and web applications. Covers brand identity, IA, typography, color, scroll animations, micro-interactions, hover effects, loading/empty/error states, accessibility, SEO, and conversion optimization. Includes a mandatory quality checklist and anti-patterns for common AI laziness. References deep research on design theory, perceptual science, and UX methodology.
 
-### `/compound:architect`
+### `/drl:architect`
 
 **Purpose**: Decompose a large system specification into cook-it-ready epic beads via DDD bounded contexts.
 
@@ -107,22 +107,22 @@ Skills are instructions that Claude reads before executing each phase. They live
 Skills are invoked as Claude Code slash commands:
 
 ```
-/compound:spec-dev         # Start spec-dev phase
-/compound:plan             # Start plan phase
-/compound:work             # Start work phase
-/compound:review           # Start review phase
-/compound:compound         # Start compound phase
-/compound:cook-it <epic-id>    # Run all phases end-to-end
-/compound:research         # Spawn research subagent
-/compound:test-clean       # Clean test artifacts
-/compound:get-a-phd <focus>       # Deep research for agent knowledge
-/compound:agentic-audit    # Audit codebase against agentic manifesto
-/compound:agentic-setup    # Audit then set up agentic infrastructure
-/compound:build-great-things   # Web design/development playbook
-/compound:architect        # System decomposition into epics
-/compound:learn-that       # Conversation-aware lesson capture with confirmation
-/compound:check-that       # Search lessons and apply to current work
-/compound:prime            # Prime session with workflow context
+/drl:spec-dev         # Start spec-dev phase
+/drl:plan             # Start plan phase
+/drl:work             # Start work phase
+/drl:review           # Start review phase
+/drl:compound         # Start compound phase
+/drl:cook-it <epic-id>    # Run all phases end-to-end
+/drl:research         # Spawn research subagent
+/drl:test-clean       # Clean test artifacts
+/drl:get-a-phd <focus>       # Deep research for agent knowledge
+/drl:agentic-audit    # Audit codebase against agentic manifesto
+/drl:agentic-setup    # Audit then set up agentic infrastructure
+/drl:build-great-things   # Web design/development playbook
+/drl:architect        # System decomposition into epics
+/drl:learn-that       # Conversation-aware lesson capture with confirmation
+/drl:check-that       # Search lessons and apply to current work
+/drl:prime            # Prime session with workflow context
 ```
 
 Each skill reads its SKILL.md file from `.claude/skills/drl/<phase>/SKILL.md` at invocation time. Skills are never executed from memory.

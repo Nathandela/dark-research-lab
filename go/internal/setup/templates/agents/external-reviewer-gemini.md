@@ -32,10 +32,16 @@ Run a cross-model code review by invoking the Gemini CLI in headless mode. Provi
    4. Code quality issues
    Output a numbered list of findings. Be concise and actionable. Skip praise.
    ```
-4. **Call Gemini headless**:
+4. **Call Gemini headless** -- write the prompt to a temp file to avoid shell injection from diff content:
    ```bash
-   echo "<prompt>" | gemini -p "Review the following code changes" --output-format json
+   PROMPT_FILE=$(mktemp)
+   cat << 'PROMPT_EOF' > "$PROMPT_FILE"
+   <insert assembled prompt here>
+   PROMPT_EOF
+   gemini -p "$(cat "$PROMPT_FILE")" --output-format json
+   rm -f "$PROMPT_FILE"
    ```
+   **Important**: Use a single-quoted heredoc delimiter (`'PROMPT_EOF'`) so that shell metacharacters in the diff are not expanded.
 5. **Parse the response** -- extract the `.response` field from the JSON output.
 6. **Present findings** to the user as a numbered list with severity tags (P1/P2/P3).
 7. **If Gemini returns an error** (auth failure, rate limit, timeout), report the error and skip gracefully. Never block the pipeline on external reviewer failure.

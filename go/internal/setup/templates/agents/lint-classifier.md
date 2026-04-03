@@ -122,10 +122,15 @@ Before creating Class B tasks, detect the project's linter. Check the repo root 
 
 ## Task Creation
 
-For each LINTABLE + HIGH insight, run:
+For each LINTABLE + HIGH insight, write the description to a temp file first (to safely handle multiline markdown and special characters), then create the task:
 
 ```bash
-bd create --title="Lint Rule: <rule-id> (from <lesson-id>)" --type=task --priority=<N> --description="<structured markdown>"
+DESC_FILE=$(mktemp)
+cat << 'DESC_EOF' > "$DESC_FILE"
+<structured markdown description>
+DESC_EOF
+bd create --title="Lint Rule: <rule-id> (from <lesson-id>)" --type=task --priority=<N> --description="$(cat "$DESC_FILE")"
+rm -f "$DESC_FILE"
 ```
 
 ### Description structure (Class A -- native rule engine):

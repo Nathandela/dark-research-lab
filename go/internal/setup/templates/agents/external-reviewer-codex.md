@@ -32,10 +32,16 @@ Run a cross-model code review by invoking the OpenAI Codex CLI in headless exec 
    4. Code quality issues
    Output a numbered list of findings. Be concise and actionable. Skip praise.
    ```
-4. **Call Codex headless**:
+4. **Call Codex headless** -- write the prompt to a temp file to avoid shell injection from diff content:
    ```bash
-   echo "<prompt>" | codex exec --quiet "Review the following code changes for bugs, security issues, and missed edge cases"
+   PROMPT_FILE=$(mktemp)
+   cat << 'PROMPT_EOF' > "$PROMPT_FILE"
+   <insert assembled prompt here>
+   PROMPT_EOF
+   cat "$PROMPT_FILE" | codex exec --quiet "Review the following code changes for bugs, security issues, and missed edge cases"
+   rm -f "$PROMPT_FILE"
    ```
+   **Important**: Use a single-quoted heredoc delimiter (`'PROMPT_EOF'`) so that shell metacharacters in the diff are not expanded.
 5. **Parse the response** -- Codex exec prints the final answer to stdout.
 6. **Present findings** to the user as a numbered list with severity tags (P1/P2/P3).
 7. **If Codex returns an error** (auth failure, rate limit, timeout), report the error and skip gracefully. Never block the pipeline on external reviewer failure.

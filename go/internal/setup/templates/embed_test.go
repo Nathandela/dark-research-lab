@@ -32,6 +32,9 @@ func TestAgentTemplates(t *testing.T) {
 		if !strings.Contains(content, "---") {
 			t.Errorf("agent %s missing frontmatter", name)
 		}
+		if !strings.Contains(content, "name:") {
+			t.Errorf("agent %s missing name: field in frontmatter", name)
+		}
 	}
 	t.Logf("agent templates: %d", len(agents))
 }

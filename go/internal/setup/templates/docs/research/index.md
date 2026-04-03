@@ -17,7 +17,7 @@ External articles that directly influenced dark-research-lab's architecture.
 
 ## PhD Research Surveys
 
-Deep research produced via `/compound:get-a-phd` for agent domain knowledge. Each follows the researcher skill template.
+Deep research produced via `/drl:get-a-phd` for agent domain knowledge. Each follows the researcher skill template.
 
 ### Code Review
 
@@ -133,7 +133,7 @@ Deep research produced via `/compound:get-a-phd` for agent domain knowledge. Eac
 
 ## How to Add Research
 
-Use `/compound:get-a-phd` to produce new research documents. The command:
+Use `/drl:get-a-phd` to produce new research documents. The command:
 1. Analyzes beads epics for knowledge gaps
 2. Checks all `docs/` for existing coverage
 3. Proposes PhD topics for user confirmation
