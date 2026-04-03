@@ -16,14 +16,14 @@ This skill organizes work around research domain boundaries: literature review, 
 
 - Beads epic ID: read epic description as input
 - Research question: provided directly or via `AskUserQuestion`
-- Literature context: search indexed papers via `ca knowledge`
+- Literature context: search indexed papers via `drl knowledge`
 
 ## Phase 1: Socratic (Research Question Refinement)
 
 **Goal**: Understand the research domain and refine the question before decomposing.
 
-1. Search memory: `ca search` for past research decisions, constraints, methodology patterns
-2. Search knowledge: `ca knowledge "relevant terms"` for indexed literature and project docs
+1. Search memory: `drl search` for past research decisions, constraints, methodology patterns
+2. Search knowledge: `drl knowledge "relevant terms"` for indexed literature and project docs
 3. **Literature sufficiency gate** (see below)
 4. Ask "why does this matter?" before "how do we test it?" -- understand the contribution
 5. Build a **domain glossary**: key variables, constructs, and their operational definitions
@@ -40,7 +40,7 @@ This skill organizes work around research domain boundaries: literature review, 
 
 After steps 1-2, evaluate whether the literature base is adequate:
 
-1. **Collect results**: Gather hits from `ca knowledge` and any PDFs in `literature/pdfs/`
+1. **Collect results**: Gather hits from `drl knowledge` and any PDFs in `literature/pdfs/`
 2. **Evaluate coverage**: Score each result for relevance to the research question
 3. **Apply threshold**: If fewer than 3 relevant sources cover the research question's domain:
    - **Insufficient**: Recommend adding more literature to `literature/pdfs/` and re-indexing with `drl index`. Use `AskUserQuestion` to confirm.
@@ -128,7 +128,7 @@ Spawn **6 parallel subagents** (via Agent tool):
 3. Wire dependencies via `bd dep add` for all relationships
 4. Store processing order as notes on the meta-epic
 5. **Create Integration Verification epic**: Validates cross-epic interfaces (shared data formats, variable naming consistency, output compatibility)
-6. Capture lessons via `ca learn`
+6. Capture lessons via `drl learn`
 
 ### Standard Research Epic Structure
 
@@ -156,9 +156,9 @@ If no advisor CLIs are available, skip. The advisory fleet is non-blocking.
 
 ## Memory Integration
 
-- `ca search` before starting each phase
-- `ca knowledge` for indexed literature and project docs
-- `ca learn` after corrections or discoveries
+- `drl search` before starting each phase
+- `drl knowledge` for indexed literature and project docs
+- `drl learn` after corrections or discoveries
 
 ## Common Pitfalls
 
