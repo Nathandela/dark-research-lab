@@ -17,7 +17,7 @@ External articles that directly influenced compound-agent's architecture.
 
 ## PhD Research Surveys
 
-Deep research produced via `/compound:get-a-phd` for agent domain knowledge. Each follows the researcher skill template.
+Deep research produced via `/drl:get-a-phd` for agent domain knowledge. Each follows the researcher skill template.
 
 ### Code Review
 
@@ -133,7 +133,7 @@ Deep research produced via `/compound:get-a-phd` for agent domain knowledge. Eac
 
 ## How to Add Research
 
-Use `/compound:get-a-phd` to produce new research documents. The command:
+Use `/drl:get-a-phd` to produce new research documents. The command:
 1. Analyzes beads epics for knowledge gaps
 2. Checks all `docs/` for existing coverage
 3. Proposes PhD topics for user confirmation
@@ -144,6 +144,6 @@ Use `/compound:get-a-phd` to produce new research documents. The command:
 
 Skills and agents reference research via `## Literature` sections. Agents can also query indexed knowledge:
 ```bash
-ca knowledge "relevant query"  # Search docs knowledge base
-ca search "relevant query"     # Search lessons memory
+drl knowledge "relevant query"  # Search docs knowledge base
+drl search "relevant query"     # Search lessons memory
 ```

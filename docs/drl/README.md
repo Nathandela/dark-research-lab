@@ -82,7 +82,7 @@ docs/drl/
 | Search docs knowledge | `drl knowledge "query"` |
 | Check plan against memory | `drl check-plan --plan "description"` |
 | View stats | `drl stats` |
-| Run full workflow | `/compound:cook-it <epic-id>` |
+| Run full workflow | `/drl:cook-it <epic-id>` |
 | Health check | `drl doctor` |
 
 ---

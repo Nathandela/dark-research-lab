@@ -6,7 +6,7 @@ summary: "The 5-phase dark-research-lab workflow and cook-it orchestrator"
 
 # Workflow
 
-Every feature or epic follows five phases. The `/compound:cook-it` skill chains them with enforcement gates.
+Every feature or epic follows five phases. The `/drl:cook-it` skill chains them with enforcement gates.
 
 ---
 
@@ -63,7 +63,7 @@ Extract and store lessons learned. This is what makes the system compound.
 
 ## Cook-it orchestrator
 
-`/compound:cook-it` chains all 5 phases with enforcement gates.
+`/drl:cook-it` chains all 5 phases with enforcement gates.
 
 ### Verification Contract
 
@@ -79,8 +79,8 @@ Later phases consume this contract directly. No repo-global config is required f
 ### Invocation
 
 ```
-/compound:cook-it <epic-id>
-/compound:cook-it <epic-id> from plan
+/drl:cook-it <epic-id>
+/drl:cook-it <epic-id> from plan
 ```
 
 ### Phase execution protocol
