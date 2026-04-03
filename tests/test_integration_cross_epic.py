@@ -476,3 +476,88 @@ class TestAgentsMdConsistency:
             assert actual.is_file(), (
                 f"AGENTS.md references agent {ref} but file does not exist"
             )
+
+
+# ---------------------------------------------------------------------------
+# Contract 10: drl setup scaffolding produces complete structure (E6)
+# ---------------------------------------------------------------------------
+
+class TestSetupScaffolding:
+    """Verify drl setup installs complete scaffolding structure."""
+
+    def test_creates_docs_decisions_template(self, setup_tmpdir):
+        assert (setup_tmpdir / "docs" / "decisions" / "0000-template.md").is_file()
+
+    def test_creates_docs_agent_notes(self, setup_tmpdir):
+        assert (setup_tmpdir / "docs" / "agent_notes").is_dir()
+
+    def test_creates_docs_researcher_notes(self, setup_tmpdir):
+        assert (setup_tmpdir / "docs" / "researcher_notes").is_dir()
+
+    def test_creates_literature_dirs(self, setup_tmpdir):
+        assert (setup_tmpdir / "literature" / "pdfs").is_dir()
+        assert (setup_tmpdir / "literature" / "notes").is_dir()
+
+    def test_creates_paper_structure(self, setup_tmpdir):
+        paper = setup_tmpdir / "paper"
+        assert (paper / "main.tex").is_file()
+        assert (paper / "Ref.bib").is_file()
+        assert (paper / "compile.sh").is_file()
+        assert os.access(paper / "compile.sh", os.X_OK)
+        assert (paper / "outputs" / "figures").is_dir()
+        assert (paper / "outputs" / "tables").is_dir()
+
+    def test_creates_paper_sections(self, setup_tmpdir):
+        sections = setup_tmpdir / "paper" / "sections"
+        assert sections.is_dir()
+        tex_files = sorted(f.name for f in sections.glob("*.tex"))
+        expected = [
+            "conclusion.tex", "data.tex", "intro.tex",
+            "literature.tex", "methodology.tex", "results.tex",
+            "robustness.tex",
+        ]
+        assert tex_files == expected
+
+    def test_creates_src_structure(self, setup_tmpdir):
+        src = setup_tmpdir / "src"
+        assert (src / "__init__.py").is_file()
+        assert (src / "config.py").is_file()
+        assert (src / "data" / "loaders.py").is_file()
+        assert (src / "data" / "cleaners.py").is_file()
+        assert (src / "analysis" / "econometrics.py").is_file()
+        assert (src / "analysis" / "descriptive.py").is_file()
+        assert (src / "analysis" / "robustness.py").is_file()
+        assert (src / "visualization" / "plots.py").is_file()
+        assert (src / "orchestrators" / "repro.py").is_file()
+        assert (src / "literature" / "extract.py").is_file()
+
+    def test_creates_scaffolding_tests(self, setup_tmpdir):
+        tests = setup_tmpdir / "tests"
+        assert (tests / "conftest.py").is_file()
+        assert (tests / "test_config.py").is_file()
+
+    def test_creates_drl_docs(self, setup_tmpdir):
+        docs = setup_tmpdir / "docs" / "drl"
+        assert docs.is_dir()
+        assert (docs / "research").is_dir()
+
+
+class TestSetupCLAUDEMdContent:
+    """Verify drl setup produces CLAUDE.md with correct markers."""
+
+    def test_claudemd_has_drl_markers(self, setup_tmpdir):
+        claude_md = setup_tmpdir / ".claude" / "CLAUDE.md"
+        assert claude_md.is_file()
+        content = claude_md.read_text()
+        assert "dark-research-lab:claude-ref:start" in content
+        assert "dark-research-lab:claude-ref:end" in content
+
+    def test_claudemd_has_no_stale_compound_markers(self, setup_tmpdir):
+        claude_md = setup_tmpdir / ".claude" / "CLAUDE.md"
+        content = claude_md.read_text()
+        assert "compound-agent:claude-ref:start" not in content
+
+    def test_claudemd_has_drl_section(self, setup_tmpdir):
+        claude_md = setup_tmpdir / ".claude" / "CLAUDE.md"
+        content = claude_md.read_text()
+        assert "Dark Research Lab" in content

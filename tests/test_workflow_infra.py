@@ -239,10 +239,10 @@ class TestCLAUDEmd:
         content = self.CLAUDE_MD.read_text()
         assert "/drl:" in content
 
-    def test_preserves_compound_agent_section(self):
+    def test_preserves_drl_section(self):
         content = self.CLAUDE_MD.read_text()
-        assert "compound-agent:claude-ref:start" in content
-        assert "compound-agent:claude-ref:end" in content
+        assert "dark-research-lab:claude-ref:start" in content
+        assert "dark-research-lab:claude-ref:end" in content
 
 
 class TestDecisionReminderDocumentation:

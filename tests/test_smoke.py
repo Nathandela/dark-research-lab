@@ -136,7 +136,7 @@ class TestSetupExistingRepo:
             assert result.returncode == 0
 
             # Skills dir may exist but should contain no skill subdirectories
-            skills_dir = Path(tmpdir) / ".claude" / "skills" / "compound"
+            skills_dir = Path(tmpdir) / ".claude" / "skills" / "drl"
             if skills_dir.exists():
                 skill_dirs = [d for d in skills_dir.iterdir() if d.is_dir()]
                 assert len(skill_dirs) == 0, (
@@ -170,7 +170,7 @@ class TestSetupCoreSkill:
             )
             assert result.returncode == 0
 
-            # Role skills live under .claude/skills/compound/agents/
+            # Role skills live under .claude/skills/drl/agents/
             role_skills = (
                 Path(tmpdir) / ".claude" / "skills" / "drl" / "agents"
             )

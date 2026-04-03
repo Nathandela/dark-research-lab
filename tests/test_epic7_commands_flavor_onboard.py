@@ -290,9 +290,9 @@ class TestCookItSkillContent:
         for phase in phases:
             assert phase in body, f"cook-it/SKILL.md must reference phase: {phase}"
 
-    def test_cook_it_references_compound_workflow(self):
+    def test_cook_it_references_workflow(self):
         body = _read_body(DRL_SKILLS_DIR / "cook-it" / "SKILL.md").lower()
-        assert "compound" in body or "cook-it" in body
+        assert "cook-it" in body
 
 
 # ---------------------------------------------------------------------------

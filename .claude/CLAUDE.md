@@ -38,7 +38,7 @@ DRL produces LaTeX papers. All generated tables and figures go to `paper/outputs
 - TDD workflow: tests first, then implementation
 - Decision log every methodological choice
 
-<!-- compound-agent:claude-ref:start -->
+<!-- dark-research-lab:claude-ref:start -->
 ## Compound Agent
 See AGENTS.md for lesson capture workflow.
-<!-- compound-agent:claude-ref:end -->
+<!-- dark-research-lab:claude-ref:end -->
