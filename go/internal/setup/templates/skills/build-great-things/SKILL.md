@@ -1,210 +1,189 @@
 ---
-name: Build Great Things
-description: Comprehensive playbook for building world-class websites, landing pages, web applications, and dashboards. Covers the full build sequence from brand identity and information architecture through layout, typography, color, scroll animations, micro-interactions, hover effects, loading states, empty states, error handling, accessibility, SEO, and conversion optimization. Use this skill whenever building a new website or web app from scratch, redesigning pages (pricing, landing, portfolio), adding polish or animations, fixing generic-looking UI, improving visual hierarchy, or when the user says anything looks "janky", "generic", "amateur", or "needs more polish". Also use when adding hover states, scroll effects, page transitions, or doing a design review pass.
+name: Build Great Research
+description: Comprehensive playbook for building rigorous, publication-quality research papers. Covers the full research output sequence from paper structure and statistical reporting through table formatting, figure design, LaTeX conventions, academic writing quality, and pre-submission review.
 phase: work
 ---
 
-# How to Build Great Things
+# How to Build Great Research
 
-You are building something that will be seen, used, and judged by real humans. Your default instinct is to get it working and move on. That instinct produces mediocre output. This skill exists to override that instinct.
+You are producing a research paper that will be read, reviewed, and cited by academics. Your default instinct is to get the analysis working and move on. That instinct produces mediocre output. This skill exists to override that instinct.
 
-**The north star is taste and judgment.** World-class products are not just functional — they are intentional in every detail: typography that reads beautifully, spacing that breathes, motion that guides, states that never surprise. The difference between "works" and "exceptional" is not talent — it is the discipline to never skip the steps that feel optional but aren't.
+**The north star is rigor and clarity.** Publication-quality papers are not just correct -- they are intentional in every detail: tables that communicate findings precisely, figures that reveal patterns, prose that argues cleanly, and methods sections that enable replication. The difference between "technically correct" and "publishable" is the discipline to never skip the steps that feel optional but are not.
 
-**You have unlimited time.** You are a long-running agent. There is no deadline pressure. There is no excuse for cutting corners. Every phase below exists because skipping it produces output that a discerning human will immediately recognize as AI-generated slop.
-
----
-
-## Design Philosophy
-
-Two intellectual foundations underpin this skill — one for code architecture, one for visual design. Together they provide the *why* behind every principle in the phases that follow.
-
-### Complexity is the root cause (Ousterhout)
-
-John Ousterhout's *A Philosophy of Software Design* identifies a single organizing insight: **complexity is the root cause of nearly all difficulty in software**. It manifests as three symptoms — change amplification (one conceptual change requires edits in many places), cognitive load (the reader must hold too much context to understand the code), and unknown unknowns (it is not obvious what needs to change). Every architectural decision you make either contains complexity or leaks it.
-
-The principles that follow from this:
-
-- **Deep modules, not shallow ones.** A component should have a simple interface that hides substantial internal complexity — the same philosophy as headless primitives (Radix, React Aria). A `<DatePicker>` with 30 props is a shallow module; one with 3 props that internally handles timezone, locale, and parsing is deep. *Measure interface cost against hidden complexity.*
-- **Pull complexity downward.** When complexity must exist, push it into the implementation rather than exporting it through configuration props, environment variables, or required setup steps. It is more important for a module to have a simple interface than a simple implementation.
-- **Different layer, different abstraction.** Each layer should add genuine conceptual value. A pass-through component that merely forwards props to a child is the UI equivalent of a pass-through method — it adds indirection without adding abstraction. Token layers (primitive → semantic → component) should each represent a distinct level of design decision.
-- **Define errors out of existence.** Instead of handling every possible validation error, design flows and APIs so entire categories of errors cannot occur — autofill defaults, constrained input types, smart type coercion. The best error message is one that never needs to appear.
-- **Strategic, not tactical.** A tactical programmer (or a tactical AI) gets things working and moves on. A strategic one invests 10-20% additional effort in good structure, knowing it compounds. This skill exists to make you strategic.
-- **Design it twice.** Before committing to a component API, state architecture, or page layout, sketch two meaningfully different approaches and compare their trade-offs. The first design that comes to mind is rarely the best.
-
-*Full survey: `docs/drl/research/development/software-design/philosophy-of-software-design.md`*
-
-### Constraint-based design (Wathan & Schoger)
-
-Refactoring UI's core insight is that **visual design becomes programmable when reduced to constrained decision spaces**. Instead of choosing from infinite possibilities for spacing, type size, color, and shadow, you define a finite scale and pick only from that scale. This is especially powerful for an AI agent — constrained decision spaces produce more consistent output than open-ended aesthetic judgment.
-
-The perceptual science behind the constraints:
-
-- **Weber-Fechner law** justifies geometric (multiplicative) spacing scales. Equal arithmetic increments (4px, 8px, 12px, 16px) do not produce perceptually equal steps — the jump from 8→12 is far more visible than 48→52. A geometric scale (4, 8, 16, 24, 32, 48, 64) produces perceptually uniform increments because perceived intensity scales logarithmically with physical magnitude.
-- **Preattentive processing** (Treisman) explains visual hierarchy. The human visual system processes color, size, and weight in parallel in under 200ms — before conscious attention engages. Hierarchy works through three channels (size, weight, color), and **de-emphasis is as important as emphasis**: reducing the salience of secondary elements increases the relative salience of the primary element without adding visual noise.
-- **Gestalt proximity** is the most powerful grouping principle — it overrides color and shape similarity. Maintain more space *between* groups than *within* groups, and the structure communicates itself without borders or dividers.
-- **Border alternatives.** Borders are a crutch. Spacing, background color differences, and shadows separate content more elegantly and with less visual clutter. Reach for a border only after trying these three alternatives.
-
-*Full survey: `docs/drl/research/design/web-apps/refactoring-ui-design-principles.md`*
+**You have unlimited time.** You are a long-running agent. There is no deadline pressure. There is no excuse for cutting corners. Every phase below exists because skipping it produces output that a reviewer will immediately flag.
 
 ---
 
-## How to Use This Skill
+## Research Quality Philosophy
 
-Read the **routing table** below to find the sections relevant to your current task. Read those sections before writing code. Run the **quality checklist** before declaring any build complete.
+Two intellectual foundations underpin this skill -- one for methodological rigor, one for presentation clarity.
 
-### Routing Table
+### Reproducibility is non-negotiable
 
-| If you are... | Read... |
-|---|---|
-| Starting a new website from scratch | `references/website/01-foundation.md` (then each phase in order) |
-| Starting a new web application from scratch | `references/webapp/01-foundation.md` (then each phase) |
-| Choosing brand, fonts, colors, identity | `references/website/01-foundation.md` |
-| Building layout, grid systems | `references/website/02-structure.md` |
-| Making it responsive | `references/website/02-structure.md` |
-| Structuring components, sections | `references/website/02-structure.md` |
-| Fine-tuning typography | `references/website/03-craft.md` |
-| Applying color, dark mode | `references/website/03-craft.md` |
-| Working with images, icons, media | `references/website/03-craft.md` |
-| Tuning spacing, visual weight, hierarchy | `references/website/03-craft.md` |
-| Adding scroll animations | `references/website/04-motion-and-interaction.md` |
-| Adding hover effects, cursor craft | `references/website/04-motion-and-interaction.md` |
-| Adding micro-interactions, feedback | `references/website/04-motion-and-interaction.md` |
-| Adding page transitions | `references/website/04-motion-and-interaction.md` |
-| Optimizing loading, perceived speed | `references/website/05-performance-and-polish.md` |
-| Handling empty, error, loading states | `references/website/05-performance-and-polish.md` |
-| Doing an accessibility pass | `references/website/05-performance-and-polish.md` |
-| Optimizing for search engines | `references/website/05-performance-and-polish.md` |
-| Adding analytics, tracking | `references/website/06-launch-and-growth.md` |
-| Optimizing conversion | `references/website/06-launch-and-growth.md` |
-| Adding testimonials, trust signals | `references/website/06-launch-and-growth.md` |
-| Doing final review before launch | `references/website/05-performance-and-polish.md` + `06-launch-and-growth.md` |
-| "Make it look better" / "it looks generic" | `references/website/03-craft.md` + `04-motion-and-interaction.md` |
-| "Needs more polish" | `references/website/04-motion-and-interaction.md` + `05-performance-and-polish.md` |
-| Building a complex web app (data-dense, state-heavy) | `references/webapp/` (all phases, in order) |
-| Designing forms, data tables, dashboards | `references/webapp/03-craft.md` |
-| Adding drag-and-drop, real-time updates | `references/webapp/04-motion-and-interaction.md` |
-| Designing onboarding flows | `references/webapp/06-launch-and-growth.md` |
+Every result in the paper must be traceable from raw data to final output. This means:
+
+- **Pipeline over manual steps.** Every number in the paper is generated by code, never manually entered. A reviewer should be able to run the pipeline and get identical results.
+- **Decisions are logged.** Every methodological choice (estimation method, variable operationalization, sample restriction) is documented in `docs/decisions/` with rationale.
+- **Seeds are pinned.** Any stochastic process (bootstrap, simulation, imputation) uses documented random seeds for exact reproducibility.
+- **Dependencies are locked.** The Python environment is fully reproducible via `uv.lock`.
+
+### Clarity compounds (Strunk & White for academics)
+
+- **Every sentence earns its place.** Cut words that do not add information. "It is important to note that" adds nothing. Say the thing directly.
+- **Tables and figures stand alone.** A reader should understand any table or figure without reading the surrounding text. Titles, notes, and labels must be self-contained.
+- **Methods enable replication.** Another researcher with the same data should reproduce your results using only the methods section.
+- **Structure guides the reader.** Section flow follows the logic of the argument, not the chronology of the analysis.
 
 ---
 
 ## The Build Sequence
 
-Every great build follows this sequence. **Do not skip phases.** Do not jump to code before finishing Foundation. Do not ship without completing Polish.
+Every great paper follows this sequence. **Do not skip phases.** Do not jump to results before the methodology is solid. Do not submit without completing the polish phase.
 
-### Website
+| Phase | Focus |
+|---|---|
+| 01 -- Foundation | Research question, hypotheses, variable operationalization, data source selection |
+| 02 -- Structure | Paper outline, section dependencies, argument flow, LaTeX skeleton |
+| 03 -- Analysis | Estimation, robustness checks, sensitivity analysis, all results generated via pipeline |
+| 04 -- Tables and Figures | Formatted outputs in `paper/outputs/tables/` and `paper/outputs/figures/` |
+| 05 -- Writing | Methods section, results narration, introduction, conclusion, abstract (in that order) |
+| 06 -- Polish | Internal consistency check, reference verification, formatting review, pre-submission audit |
 
-| Phase | Section | Focus |
-|---|---|---|
-| 01 | [Foundation](references/website/01-foundation.md) | Brand identity, positioning, IA, content strategy. Everything before a pixel is placed. |
-| 02 | [Structure](references/website/02-structure.md) | Layout systems, responsive architecture, component hierarchy, page templates. The skeleton. |
-| 03 | [Craft](references/website/03-craft.md) | Typography, color application, imagery, visual hierarchy. Where design becomes intentional. |
-| 04 | [Motion & Interaction](references/website/04-motion-and-interaction.md) | Scroll choreography, micro-interactions, transitions, hover states. The texture that separates award-level from competent. |
-| 05 | [Performance & Polish](references/website/05-performance-and-polish.md) | Loading UX, edge states, accessibility, SEO. The professional finish. |
-| 06 | [Launch & Growth](references/website/06-launch-and-growth.md) | Analytics, conversion optimization, social proof. Getting it into the world. |
+### Phase 01: Foundation
+- Define the research question precisely
+- State hypotheses with expected direction and mechanism
+- Operationalize all variables (measurement, source, transformation) -- document in variable codebook
+- Select data sources and document in `docs/decisions/`
+- Define the sample and exclusion criteria with justification
 
-### Web Application
+### Phase 02: Structure
+- Create `paper/main.tex` with section skeleton
+- Organize sections in `paper/sections/` (introduction.tex, literature.tex, methodology.tex, results.tex, discussion.tex, conclusion.tex)
+- Map the argument flow: each section should have a clear purpose statement
+- Set up `paper/outputs/tables/` and `paper/outputs/figures/` directories
+- Configure bibliography in `paper/references.bib`
 
-| Phase | Section | Focus |
-|---|---|---|
-| 01 | [Foundation](references/webapp/01-foundation.md) | Product vision, user mental models, IA for complex apps, design system strategy, state architecture. |
-| 02 | [Structure](references/webapp/02-structure.md) | Layout systems, navigation patterns, routing, component architecture, responsive strategy for complex UIs. |
-| 03 | [Craft](references/webapp/03-craft.md) | Typography in data-dense contexts, color systems for modes/themes, form design, data visualization. |
-| 04 | [Motion & Interaction](references/webapp/04-motion-and-interaction.md) | Micro-interactions, state transitions, drag-and-drop, real-time feedback, keyboard shortcuts. |
-| 05 | [Performance & Polish](references/webapp/05-performance-and-polish.md) | Perceived performance, skeleton screens, optimistic UI, edge states, accessibility, offline resilience. |
-| 06 | [Launch & Growth](references/webapp/06-launch-and-growth.md) | Onboarding flows, progressive disclosure, analytics, retention mechanics, feature adoption. |
+### Phase 03: Analysis
+- Implement analysis pipeline in `src/analysis/` with modular scripts
+- Run main estimation and store results programmatically
+- Execute robustness checks (alternative specifications, subsamples, different estimators)
+- Run sensitivity analysis for key assumptions
+- All outputs written to `paper/outputs/` -- never manually entered into LaTeX
+
+### Phase 04: Tables and Figures
+- Tables use consistent formatting: clear headers, aligned decimals, standard error notation, significance stars with footnote legend
+- Figures use readable labels, appropriate scales, colorblind-safe palettes
+- Every table and figure has a descriptive title and explanatory notes
+- Outputs are generated by pipeline scripts, not manually created
+- File naming convention: `table_01_descriptive_stats.tex`, `figure_01_main_effect.pdf`
+
+### Phase 05: Writing
+Write sections in this order (not document order):
+1. **Methodology**: Write first while analysis is fresh. Enable replication.
+2. **Results**: Narrate findings. Reference tables and figures. State magnitudes, not just significance.
+3. **Discussion**: Interpret results. Address limitations honestly. Compare with prior literature.
+4. **Literature review**: Position the contribution. Only include papers that inform the argument.
+5. **Introduction**: Write last among body sections. Motivate, preview, and hook.
+6. **Conclusion**: Summarize contribution, limitations, and future work.
+7. **Abstract**: Write dead last. 150-250 words covering question, method, key finding, implication.
+
+### Phase 06: Polish
+- Verify all cross-references resolve (`\ref`, `\cite`, `\label`)
+- Check internal consistency: numbers in text match tables
+- Verify all tables and figures are referenced in the text
+- Run `drl:compile` to verify LaTeX builds cleanly
+- Check formatting against target journal guidelines
+- Proofread for clarity, concision, and academic tone
+
+---
+
+## Statistical Reporting Standards
+
+### Regression Tables
+- Report coefficients with standard errors (in parentheses) or confidence intervals
+- Include number of observations, R-squared (or pseudo-R-squared), and F-statistic
+- Note clustering level for standard errors
+- Use stars sparingly: *** p<0.01, ** p<0.05, * p<0.10 (or state chosen threshold)
+- Always include a table note explaining the specification
+
+### Descriptive Statistics
+- Report N, mean, SD, min, max for continuous variables
+- Report N, proportion for categorical variables
+- Note missing data counts and handling strategy
+
+### Figures
+- Label axes with variable name and units
+- Include data source in figure notes
+- Use consistent styling across all figures
+- Export as PDF (vector) for print quality, not PNG
 
 ---
 
 ## Mandatory Quality Checklist
 
-**Run this before declaring ANY build complete.** Every unchecked item is a sign of lazy craft.
+**Run this before declaring ANY paper build complete.**
 
-### States
-- [ ] Every page has a loading state (skeleton, shimmer, or spinner — never a blank screen)
-- [ ] Every data-dependent view has an empty state with illustration, copy, and CTA
-- [ ] Error states exist for all failure modes (network, auth, validation, 404, 500)
-- [ ] Offline/degraded states are handled gracefully
-- [ ] Partial data states render correctly (not just full-data and empty)
+### Reproducibility
+- [ ] All numbers in the paper are generated by pipeline code, never manually entered
+- [ ] Pipeline runs end-to-end from raw data to compiled PDF
+- [ ] Random seeds documented and pinned
+- [ ] Dependencies locked in `uv.lock`
+- [ ] Every methodological decision logged in `docs/decisions/`
 
-### Interaction
-- [ ] Every interactive element has distinct hover, active, focus, and disabled states
-- [ ] Focus styles are visible and keyboard-navigable (not just browser defaults)
-- [ ] Buttons have press feedback (scale, color shift, or both)
-- [ ] Form inputs have clear validation feedback (inline, not just on submit)
-- [ ] Page transitions are not hard cuts (fade, slide, or morph)
+### Tables and Figures
+- [ ] Every table has a descriptive title and explanatory notes
+- [ ] Standard errors or confidence intervals reported for all estimates
+- [ ] Significance levels documented with clear threshold legend
+- [ ] Figures use colorblind-safe palettes
+- [ ] All outputs in `paper/outputs/tables/` and `paper/outputs/figures/`
+- [ ] File naming is consistent and descriptive
 
-### Visual Craft
-- [ ] Typography uses at least 3 levels of visual hierarchy (not just font size — weight and color too)
-- [ ] De-emphasis used for secondary content (muted color, lighter weight, smaller size) — not just emphasis for primary content
-- [ ] Spacing uses a geometric scale (4/8/16/24/32/48/64 — not arbitrary values)
-- [ ] No borders used purely for separation where spacing, background color, or shadow would suffice
-- [ ] Shadows follow a consistent elevation scale (not arbitrary box-shadow values)
-- [ ] Color has semantic meaning beyond decoration
-- [ ] At least one scroll-triggered animation exists per long page
-- [ ] Images are optimized (WebP/AVIF, responsive srcset, lazy loading)
-- [ ] Icons are consistent in style, weight, and size
+### Writing
+- [ ] Methods section enables replication by another researcher
+- [ ] Results report magnitudes, not just statistical significance
+- [ ] Limitations discussed honestly
+- [ ] All claims supported by evidence (table/figure reference or citation)
+- [ ] Abstract is 150-250 words covering question, method, finding, implication
 
-### Responsiveness
-- [ ] Mobile is a first-class experience, not a shrunken desktop
-- [ ] Touch targets are at least 44x44px on mobile
-- [ ] Typography is fluid (clamp-based, not fixed breakpoints only)
-- [ ] No horizontal scroll on any viewport
+### Internal Consistency
+- [ ] Numbers in prose match corresponding table cells
+- [ ] All tables and figures referenced in the text
+- [ ] All `\ref` and `\cite` commands resolve
+- [ ] LaTeX compiles without warnings via `drl:compile`
+- [ ] Bibliography entries complete (no missing fields)
 
-### Performance
-- [ ] Core Web Vitals pass (LCP < 2.5s, INP < 200ms, CLS < 0.1)
-- [ ] Fonts load without visible flash (font-display strategy in place)
-- [ ] Above-the-fold content renders without JS dependency where possible
-
-### Accessibility
-- [ ] Semantic HTML used throughout (not div soup)
-- [ ] ARIA labels only where HTML semantics fall short
-- [ ] Color contrast meets WCAG AA minimum (4.5:1 text, 3:1 large text)
-- [ ] Reduced motion preference respected (prefers-reduced-motion)
-- [ ] Screen reader announcement for dynamic content changes
-
-### Completeness
-- [ ] 404 page is designed, not default
-- [ ] Favicon and Open Graph meta tags are set
-- [ ] Print styles exist if content is printable
-- [ ] Footer is complete (links, legal, contact)
+### Robustness
+- [ ] At least one alternative specification reported
+- [ ] Sensitivity to sample restrictions tested
+- [ ] Results direction and magnitude stable across specifications
 
 ---
 
-## Common AI Laziness Patterns
+## Common Pitfalls
 
-Ousterhout calls the programmer who optimizes for speed-of-shipping over structure a "tactical tornado" — someone who gets things working fast but leaves a wake of complexity for every future change. These are the specific ways you will default to tactical tornado behavior if you don't actively resist:
-
-1. **Tactical component design**: Shallow components with sprawling prop interfaces that leak implementation complexity upward. *Instead*: Design deep components — simple interfaces hiding substantial internal complexity. Pull complexity downward.
-
-2. **Generic UI**: Using default Tailwind colors, Inter font, standard component library look. *Instead*: Every project deserves a curated palette, specific typeface pairing, and deliberate whitespace system built from constrained scales.
-
-3. **Skipping the polish phase**: Getting features working and declaring done. *Instead*: Phase 04 (Motion) and Phase 05 (Polish) are not optional. They are where "works" becomes "exceptional."
-
-4. **First-design-only**: Implementing the first approach that comes to mind without considering alternatives. *Instead*: Design it twice. Sketch two meaningfully different approaches for any non-trivial component, layout, or state architecture before committing.
-
-5. **Ignoring visual hierarchy**: Content is present but layout, spacing, and typography don't guide the eye. *Instead*: Use all three hierarchy channels (size, weight, color). De-emphasize secondary elements rather than over-emphasizing primary ones.
-
-6. **Missing edge states**: Only building the happy path. *Instead*: Empty, loading, error, partial, and offline states are not edge cases — they are the states users encounter most. Define errors out of existence where possible; design graceful recovery where not.
-
-7. **Flat interactions**: No hover effects, no transitions, no feedback. *Instead*: Every click, hover, and scroll should feel responsive. Silence from the UI feels broken.
-
-8. **Cookie-cutter layouts**: Every section looks like every other section. *Instead*: Visual rhythm requires variation — alternate section structures, vary content density, use negative space as a design element.
-
-9. **Borders everywhere**: Reaching for `border-b` to separate every section and list item. *Instead*: Try spacing, background color differences, or subtle shadows first. Borders add visual noise; the alternatives communicate structure more cleanly.
-
-10. **Afterthought mobile**: Responsive is not "the same thing smaller." *Instead*: Mobile often needs different IA, different content priority, different interaction patterns.
-
-11. **Ignoring font loading**: Fonts flash, shift, or render as system fallbacks for seconds. *Instead*: Font-display strategy, preloading critical fonts, size-adjust fallbacks.
-
-12. **Arbitrary spacing**: Using whatever pixel value "looks right" without a system. *Instead*: Define a geometric spacing scale (4, 8, 16, 24, 32, 48, 64) and use only those values. Weber-Fechner law: perceptually uniform steps require multiplicative increments.
+1. **Manual number entry**: Copying results from console output into LaTeX. Pipeline must generate all outputs programmatically.
+2. **Significance-only reporting**: Reporting p-values without effect sizes and confidence intervals. Always report magnitudes.
+3. **Missing robustness**: Reporting only the specification that "works." Reviewers will ask for alternatives.
+4. **Opaque methods**: Writing methods that describe what was done but not how to replicate it. Include estimation equations, software versions, and exact variable definitions.
+5. **Orphaned outputs**: Tables or figures in `paper/outputs/` that are not referenced in the text, or references to outputs that do not exist.
+6. **Inconsistent notation**: Switching between variable names, abbreviations, or symbols across sections. Define once, use consistently.
+7. **Abstract first**: Writing the abstract before the paper is complete. The abstract should be the last thing written.
+8. **Monolithic analysis scripts**: Single files mixing data cleaning, estimation, and output generation. Separate into modular pipeline stages.
 
 ---
 
-## Research Library
+## Memory Integration
 
-Deep survey papers that ground this skill's two intellectual foundations. Each phase also has its own `references/REFERENCES.md` with topic-specific papers.
+- Before starting: `drl search "research paper"` for relevant lessons
+- After completing: offer `drl learn` to capture insights about what worked
 
-| Paper | What it provides |
-|-------|-----------------|
-| `docs/drl/research/development/software-design/philosophy-of-software-design.md` | Ousterhout's 13 principles (deep modules, complexity management, information hiding, define errors out of existence, strategic programming) — the code architecture philosophy |
-| `docs/drl/research/design/web-apps/refactoring-ui-design-principles.md` | Wathan & Schoger's systematic visual design (hierarchy, spacing, typography, color, shadows, border alternatives) — the visual design philosophy |
+## Quality Criteria
+
+- All 6 phases completed in order
+- Pipeline generates all paper outputs programmatically
+- Every methodological decision logged in `docs/decisions/`
+- Tables and figures follow statistical reporting standards
+- LaTeX compiles cleanly via `drl:compile`
+- Internal consistency verified (prose matches tables)
+- At least one robustness check reported
+- Quality checklist completed with all items checked

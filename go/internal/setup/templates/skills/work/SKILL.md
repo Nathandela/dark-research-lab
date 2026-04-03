@@ -1,96 +1,168 @@
 ---
-name: Work
-description: Team-based TDD execution with adaptive complexity and agent delegation
+name: Research Work
+description: Execute analysis pipeline, generate tables and figures, write paper sections, and auto-log decisions
 phase: work
 ---
 
-# Work Skill
+# Research Work Skill
 
 ## Overview
-Execute implementation through an AgentTeam using adaptive TDD. The lead coordinates and delegates -- agents write code.
+
+Execute the approved research plan. Run the statistical analysis pipeline, produce publication-ready tables and figures, write paper sections, and auto-log all methodological decisions. This phase turns the plan into concrete research outputs.
+
+## Input
+
+- Approved research plan from the plan phase
+- Beads tasks: `bd ready` for analysis tasks to execute
+- Variable operationalization table and model equations from the plan
+- Hypothesis-analysis-output-section mapping
 
 ## Methodology
-1. Pick tasks from `bd ready` or `$ARGUMENTS`
-2. Mark tasks in progress: `bd update <id> --status=in_progress`
-3. Read the epic description (`bd show <epic>`) for spec context -- EARS requirements guide what "done" looks like
-4. **Read Acceptance Criteria**: Locate the `## Acceptance Criteria` table in the parent epic description. Each AC row defines a testable criterion that the implementation must satisfy. If no AC section exists, flag as a process gap and proceed using EARS requirements directly.
-5. **Read Verification Contract**: Locate the `## Verification Contract` section in the parent epic description.
-   - Treat `Required evidence` as the epic's definition of done.
-   - Use `Profile`, `Surfaces`, and `Risks` to decide what evidence must be produced during implementation, not just at review time.
-   - If the contract is **missing**: flag it as a process gap and fall back to the acceptance criteria, EARS requirements, and legacy `test` + `lint` gates.
-6. Run `drl search` per agent/subtask for targeted context. Display results.
-7. Assess parallelization: identify independent tasks that can be worked simultaneously
-8. Deploy an **AgentTeam** (TeamCreate + Task with `team_name`) with MULTIPLE test-writers and implementers:
-   - Role skills: `.claude/skills/drl/agents/{test-writer,implementer}/SKILL.md`
-   - Scale teammate count to independent tasks; pairs coordinate via SendMessage on shared interfaces
-9. Agents communicate via SendMessage when working on overlapping areas.
-10. Lead coordinates: review agent outputs, resolve conflicts, verify tests pass. Do not write code directly.
-11. If implementation diverges from spec requirements, acceptance criteria, or the Verification Contract, stop and discuss with user via AskUserQuestion before proceeding.
-12. If blocked, use AskUserQuestion to get user direction.
-13. Shut down the team when done: send shutdown_request to all teammates.
-14. Commit incrementally as tests pass.
-15. Run full test suite for regressions.
-16. Close tasks: `bd close <id>`
+
+### Step 1: Claim and Organize Work
+
+1. Run `bd ready` to find available analysis tasks
+2. Claim tasks: `bd update <id> --claim`
+3. Read the parent epic (`bd show <epic>`) for EARS requirements and the research plan
+4. **Verify spec approval** (hard check): Run `bd show <epic>` and confirm the spec phase status is complete. Look for spec-phase closure or notes confirming approval. If the spec phase is not complete, do NOT proceed -- flag the blocker via `AskUserQuestion`
+
+### Step 2: Execute Analysis Pipeline
+
+Spawn **analyst** subagent (`.claude/agents/drl/analyst.md`) for each analysis task:
+
+1. **Data loading and cleaning** (`src/data/`):
+   - Load raw data using `src/data/loaders.py`
+   - Apply cleaning rules from `src/data/cleaners.py`
+   - Validate against the operationalization table
+   - Write analysis-ready datasets
+
+2. **Descriptive statistics** (`src/analysis/descriptive.py`):
+   - Summary statistics (mean, sd, min, max, N)
+   - Correlation matrices
+   - Distribution checks
+   - Output to `paper/outputs/tables/`
+
+3. **Main regressions** (`src/analysis/econometrics.py`):
+   - Implement each model equation from the plan
+   - Follow variable operationalization exactly
+   - Output regression tables to `paper/outputs/tables/`
+   - Output figures to `paper/outputs/figures/`
+
+4. **Robustness checks** (`src/analysis/robustness.py`):
+   - Execute the robustness plan from the plan phase
+   - Run alternative specifications
+   - Output robustness tables to `paper/outputs/tables/`
+
+### Step 3: Write Paper Sections
+
+For each section in the hypothesis-analysis-output-section mapping:
+
+1. Write LaTeX content to `paper/sections/{section}.tex`
+2. Reference the generated tables and figures
+3. Interpret results in the context of the hypotheses
+4. Flag any unexpected findings for human review
+
+Paper section files:
+- `paper/sections/data.tex` -- sample description, descriptive stats
+- `paper/sections/results.tex` -- main findings per hypothesis
+- `paper/sections/robustness.tex` -- alternative specification results
+
+### Step 4: Auto-Log Decisions
+
+Every methodological choice made during execution MUST be logged:
+
+1. Create an ADR in `docs/decisions/` using the template (`docs/decisions/0000-template.md`). Use `/drl:decision` for guided logging
+2. Log decisions including:
+   - Variable transformations applied
+   - Outlier handling choices
+   - Sample exclusion decisions
+   - Estimation method refinements
+   - Any deviation from the original plan
+3. Use sequential numbering: check existing ADRs and increment
+
+### Step 5: Agent Progress Notes
+
+Throughout execution, maintain progress visibility:
+
+1. Update beads task notes: `bd update <id> --notes="Progress: ..."`
+2. Flag blockers immediately: unexpected data quality issues, failed assumptions
+3. If a planned analysis cannot proceed as specified, stop and use `AskUserQuestion`
+
+## Gate Criteria
+
+**Gate 3: All Analyses Complete**
+
+Before proceeding to methodology-review, verify ALL of:
+
+| Criterion | Verification |
+|-----------|-------------|
+| All analysis tasks executed | `bd list --status=open` shows no analysis tasks |
+| Tables generated | `ls paper/outputs/tables/` |
+| Figures generated | `ls paper/outputs/figures/` |
+| Paper sections written | `ls paper/sections/*.tex` |
+| All decisions logged as ADRs | `ls docs/decisions/` (one per decision) |
+| No tasks in-progress | `bd list --status=in_progress` is empty |
+| Tests pass | `uv run python -m pytest` |
+| Spec was approved | `bd show <epic>` confirms spec phase complete |
+
+
+## Handoff Checklist
+
+| Output | Location | Format | Next Phase Retrieval |
+|--------|----------|--------|---------------------|
+| Regression tables | `paper/outputs/tables/` | LaTeX `.tex` files with proper labels and notes | methodology-review reads tables for statistical validity checks |
+| Figures | `paper/outputs/figures/` | PDF or PNG files referenced via `\includegraphics` | methodology-review checks figure-text consistency |
+| Paper sections | `paper/sections/data.tex`, `paper/sections/results.tex`, `paper/sections/robustness.tex` | LaTeX with `\input{}` references to output tables | methodology-review reads sections for coherence and writing quality |
+| ADR decision log entries | `docs/decisions/NNNN-*.md` | ADR template format | methodology-review checks decision log completeness |
+| Closed analysis tasks | Beads (`bd list --status=closed`) | All analysis tasks marked done | methodology-review verifies no open work tasks remain |
 
 ## Memory Integration
-- Run `drl search` per delegated subtask with the subtask's specific description
-- Each agent receives memory items tailored to their assigned task, not a shared blob
-- Run `drl learn` after corrections or novel discoveries
 
-## MANDATORY VERIFICATION -- DO NOT CLOSE TASK WITHOUT THIS
-Before `bd close`, you MUST:
-1. Read the parent epic's `Required evidence` list and satisfy every listed item. The minimum legacy floor is `test` and `lint`.
-2. Run `{{QUALITY_GATE_TEST}}` then `{{QUALITY_GATE_LINT}}`
-3. If `Required evidence` includes `build`, run `{{QUALITY_GATE_BUILD}}`
-4. Produce the contract-specific evidence needed for the touched surfaces:
-   - `browser_evidence` / `responsive_check` / `edge_states_check` / `a11y_smoke`: capture runtime/browser proof and summarize it in the review handoff
-   - `contract_checks` / `contract_examples`: run representative requests/examples and record outcomes
-   - `command_transcript`: record happy-path and bad-input CLI flows
-   - `examples_run` / `docs_examples_sync`: run or update public examples alongside the code
-5. Run `/implementation-reviewer` on changed code -- wait for APPROVED
-If REJECTED: fix ALL issues, re-run required evidence, resubmit. INVIOLABLE per CLAUDE.md.
+- `drl search` before each analysis task for relevant patterns
+- `drl learn` after corrections, unexpected results, or novel findings
+- Log progress notes to beads tasks
 
-The full 8-step pipeline (invariant-designer through implementation-reviewer) is recommended
-for complex changes. For all changes, `/implementation-reviewer` is the minimum required gate.
+## Failure and Recovery
 
-## Beads Lifecycle
-- `bd ready` to find available tasks
-- `bd update <id> --status=in_progress` when starting
-- `bd close <id>` when all tests pass
+If the work phase fails mid-execution:
 
-## Parallelization Strategy
-- **Always prefer parallel work**: independent tasks should be assigned to different teammate pairs simultaneously
-- **Scale the team adaptively**: deploy multiple test-writer + implementer pairs proportional to independent task count
-- **Subagent spawning within teammates**: each teammate should spawn opus subagents for independent subtasks (e.g., a test-writer spawning subagents to write tests for multiple modules in parallel)
-- **Coordinate on shared interfaces**: teammates working on overlapping APIs must communicate via SendMessage before implementing
+1. **Analysis code fails** (runtime errors, data issues):
+   - Check data loading and cleaning steps first
+   - Verify variable operationalization matches the plan
+   - Log any data issues discovered to `docs/decisions/`
+   - Fix and re-run -- do not skip failed analyses
 
-## Literature
-- Consult `docs/drl/research/tdd/` for TDD methodology, test-first development evidence, and best practices
-- Consult `docs/drl/research/property-testing/` for property-based testing theory and invariant design
-- Run `drl knowledge "TDD test-first"` for indexed knowledge on testing methodology
-- Run `drl search "testing"` for lessons from past TDD cycles
+2. **Tests fail** (`uv run python -m pytest` returns errors):
+   - Read the test output and fix the failing tests or the code they exercise
+   - Do not proceed to review with failing tests
+
+3. **Unexpected results** (sign flips, non-significance):
+   - Do NOT discard or hide unfavorable results
+   - Log the unexpected finding to `docs/decisions/`
+   - Flag for human review via `AskUserQuestion`
+   - Report all results in the paper, including unexpected ones
+
+4. **Partial completion** (some tasks done, agent interrupted):
+   - Check `bd list --status=in_progress` for unfinished tasks
+   - Resume from the last incomplete task -- completed work is preserved in `paper/outputs/`
 
 ## Common Pitfalls
-- Lead writing code instead of delegating to agents
-- Not injecting memory context into agent prompts
-- Modifying tests to make them pass instead of fixing implementation
-- Not running the full test suite after agent work completes
-- Ignoring acceptance criteria from the parent epic
-- Ignoring the Verification Contract and closing work with only test/lint evidence
+
+- Running analyses without verifying the research spec was approved
+- Not following the variable operationalization table exactly
+- Forgetting to log decisions as ADRs
+- Modifying the analysis plan without documenting the change
+- Generating tables without proper labels, units, or source notes
+- Not flagging unexpected results for human review
+- Fabricating or simulating data in production code
 
 ## Quality Criteria
-- Tests existed before implementation code
-- Agents received relevant memory context
-- Lead coordinated without writing implementation code
-- Incremental commits made as tests pass
-- All tests pass after refactoring
-- Task lifecycle tracked via beads (`bd`)
-- Implementation aligns with spec requirements from epic
-- **Implementation satisfies acceptance criteria from parent epic**
-- **Implementation produced the evidence required by the parent epic's Verification Contract**
 
-## PHASE GATE 3 -- MANDATORY
-Before starting Review, verify ALL work tasks are closed:
-- `bd list --status=in_progress` must return empty
-- `bd list --status=open` should only have Review and Compound tasks remaining
-If any work tasks remain open, DO NOT proceed. Complete them first.
+- [ ] Analysis code is testable (functions in `src/`, not scripts)
+- [ ] Analyst subagent executed analysis per the plan
+- [ ] All outputs in correct directories (`paper/outputs/tables/`, `paper/outputs/figures/`)
+- [ ] Results are reproducible (fixed seeds, documented transforms)
+- [ ] Paper sections reference generated outputs
+- [ ] Every decision logged to `docs/decisions/`
+- [ ] Agent progress notes maintained in beads
+- [ ] All tests pass

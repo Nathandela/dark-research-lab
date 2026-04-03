@@ -100,10 +100,10 @@ func TestInstallPhaseSkills(t *testing.T) {
 		t.Errorf("missing spec-dev/SKILL.md: %v", err)
 	}
 
-	// Verify reference files exist
-	specGuide := filepath.Join(dir, ".claude", "skills", "drl", "spec-dev", "references", "spec-guide.md")
-	if _, err := os.Stat(specGuide); err != nil {
-		t.Errorf("missing spec-dev/references/spec-guide.md: %v", err)
+	// Verify architect reference files exist (infrastructure references kept for DRL)
+	advisoryFleet := filepath.Join(dir, ".claude", "skills", "drl", "architect", "references", "advisory-fleet.md")
+	if _, err := os.Stat(advisoryFleet); err != nil {
+		t.Errorf("missing architect/references/advisory-fleet.md: %v", err)
 	}
 
 	// Verify idempotency
@@ -530,29 +530,19 @@ func TestInstallPhaseSkills_SubstitutesQualityGates(t *testing.T) {
 		t.Fatalf("InstallPhaseSkills: %v", err)
 	}
 
-	// Check that a skill with quality gate placeholders got them substituted
+	// DRL research skills use hardcoded uv/pytest commands instead of quality gate placeholders
 	workSkill := filepath.Join(dir, ".claude", "skills", "drl", "work", "SKILL.md")
 	content, err := os.ReadFile(workSkill)
 	if err != nil {
 		t.Fatalf("read work/SKILL.md: %v", err)
 	}
-	if strings.Contains(string(content), "{{QUALITY_GATE_TEST}}") {
-		t.Error("work/SKILL.md still has {{QUALITY_GATE_TEST}} placeholder")
+	// Verify no leftover quality gate placeholders
+	if strings.Contains(string(content), "{{QUALITY_GATE_") {
+		t.Error("work/SKILL.md still has quality gate placeholders")
 	}
-	if strings.Contains(string(content), "{{QUALITY_GATE_LINT}}") {
-		t.Error("work/SKILL.md still has {{QUALITY_GATE_LINT}} placeholder")
-	}
-	if strings.Contains(string(content), "{{QUALITY_GATE_BUILD}}") {
-		t.Error("work/SKILL.md still has {{QUALITY_GATE_BUILD}} placeholder")
-	}
-	if !strings.Contains(string(content), "go test ./...") {
-		t.Error("work/SKILL.md missing substituted test command")
-	}
-	if !strings.Contains(string(content), "golangci-lint run ./...") {
-		t.Error("work/SKILL.md missing substituted lint command")
-	}
-	if !strings.Contains(string(content), "go build ./...") {
-		t.Error("work/SKILL.md missing substituted build command")
+	// DRL work skill should contain pytest reference
+	if !strings.Contains(string(content), "pytest") {
+		t.Error("work/SKILL.md missing pytest reference")
 	}
 }
 
@@ -590,61 +580,46 @@ func TestInstallDocTemplates_SubstitutesQualityGates(t *testing.T) {
 	}
 }
 
-func TestInstallPhaseSkills_StackChangeUpdatesContent(t *testing.T) {
+func TestInstallPhaseSkills_ContentPreservedAcrossInstalls(t *testing.T) {
 	t.Parallel()
 	dir := t.TempDir()
 
-	// Install with Node/npm stack
-	npmStack := StackInfo{
-		TestCmd:  "npm test",
-		LintCmd:  "npm run lint",
-		BuildCmd: "npm run build",
-	}
-	_, _, err := InstallPhaseSkills(dir, npmStack)
+	// DRL skills use hardcoded Python commands, not quality gate placeholders.
+	// Stack changes don't affect skill content since there are no placeholders
+	// to substitute. This test verifies content stability.
+	_, _, err := InstallPhaseSkills(dir, StackInfo{})
 	if err != nil {
-		t.Fatalf("InstallPhaseSkills (npm): %v", err)
+		t.Fatalf("InstallPhaseSkills: %v", err)
 	}
 
-	// Verify npm commands are in the file
 	workSkill := filepath.Join(dir, ".claude", "skills", "drl", "work", "SKILL.md")
-	content, err := os.ReadFile(workSkill)
+	content1, err := os.ReadFile(workSkill)
 	if err != nil {
 		t.Fatalf("read work/SKILL.md: %v", err)
 	}
-	if !strings.Contains(string(content), "npm test") {
-		t.Fatal("work/SKILL.md should contain npm test after first install")
-	}
 
-	// Re-install with Go stack (simulates user adding go.mod)
+	// Re-install with a different stack (should not change DRL skills)
 	goStack := StackInfo{
 		TestCmd:  "go test ./...",
 		LintCmd:  "golangci-lint run ./...",
 		BuildCmd: "go build ./...",
 	}
-	_, updated, err := InstallPhaseSkills(dir, goStack)
+	_, _, err = InstallPhaseSkills(dir, goStack)
 	if err != nil {
 		t.Fatalf("InstallPhaseSkills (go): %v", err)
 	}
-	if updated == 0 {
-		t.Error("expected skills to be updated when stack changed")
+
+	content2, err := os.ReadFile(workSkill)
+	if err != nil {
+		t.Fatalf("read work/SKILL.md after reinstall: %v", err)
 	}
 
-	// Verify Go commands replaced npm commands
-	content, err = os.ReadFile(workSkill)
-	if err != nil {
-		t.Fatalf("read work/SKILL.md after update: %v", err)
+	// DRL work skill should still reference pytest (not go test)
+	if !strings.Contains(string(content2), "pytest") {
+		t.Error("work/SKILL.md should retain pytest reference (DRL is Python-only)")
 	}
-	if strings.Contains(string(content), "npm test") {
-		t.Error("work/SKILL.md should no longer contain npm test")
-	}
-	if !strings.Contains(string(content), "go test ./...") {
-		t.Error("work/SKILL.md should contain go test ./... after stack change")
-	}
-	if strings.Contains(string(content), "npm run build") {
-		t.Error("work/SKILL.md should no longer contain npm run build")
-	}
-	if !strings.Contains(string(content), "go build ./...") {
-		t.Error("work/SKILL.md should contain go build ./... after stack change")
+	if string(content1) != string(content2) {
+		t.Error("work/SKILL.md content should be identical after reinstall (no placeholders to substitute)")
 	}
 }
 
@@ -892,8 +867,8 @@ func TestPruneStaleTemplates_RemovesStalePhaseReferenceEntries(t *testing.T) {
 		t.Fatalf("InstallPhaseSkills: %v", err)
 	}
 
-	// Add retired entries inside a still-valid phase directory.
-	phaseDir := filepath.Join(dir, ".claude", "skills", "drl", "spec-dev")
+	// Add retired entries inside a still-valid phase directory (architect has references).
+	phaseDir := filepath.Join(dir, ".claude", "skills", "drl", "architect")
 	staleRef := filepath.Join(phaseDir, "references", "retired.md")
 	if err := os.WriteFile(staleRef, []byte("# old ref\n"), 0644); err != nil {
 		t.Fatalf("write retired ref: %v", err)
@@ -922,7 +897,7 @@ func TestPruneStaleTemplates_RemovesStalePhaseReferenceEntries(t *testing.T) {
 	}
 
 	// Current reference file must remain.
-	currentRef := filepath.Join(phaseDir, "references", "spec-guide.md")
+	currentRef := filepath.Join(phaseDir, "references", "advisory-fleet.md")
 	if _, err := os.Stat(currentRef); err != nil {
 		t.Errorf("current reference file should be preserved: %v", err)
 	}
@@ -969,8 +944,11 @@ func TestPruneStaleTemplates_RemovesStaleAgentRoleReferenceEntries(t *testing.T)
 	}
 
 	// Add retired entries inside a still-valid role directory.
-	roleDir := filepath.Join(dir, ".claude", "skills", "drl", "agents", "runtime-verifier")
+	roleDir := filepath.Join(dir, ".claude", "skills", "drl", "agents", "repo-analyst")
 	staleRef := filepath.Join(roleDir, "references", "retired.md")
+	if err := os.MkdirAll(filepath.Dir(staleRef), 0755); err != nil {
+		t.Fatalf("mkdir references: %v", err)
+	}
 	if err := os.WriteFile(staleRef, []byte("# old ref\n"), 0644); err != nil {
 		t.Fatalf("write retired ref: %v", err)
 	}
@@ -995,12 +973,6 @@ func TestPruneStaleTemplates_RemovesStaleAgentRoleReferenceEntries(t *testing.T)
 	}
 	if _, err := os.Stat(staleDir); !os.IsNotExist(err) {
 		t.Error("retired nested directory should be removed")
-	}
-
-	// Current reference file must remain.
-	currentRef := filepath.Join(roleDir, "references", "playwright-patterns.md")
-	if _, err := os.Stat(currentRef); err != nil {
-		t.Errorf("current reference file should be preserved: %v", err)
 	}
 
 	// Current SKILL.md must remain.

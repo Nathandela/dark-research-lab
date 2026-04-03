@@ -1,74 +1,174 @@
 ---
-name: Compound
-description: Reflect on the cycle and capture high-quality lessons for future sessions
+name: Synthesis
+description: Ensure cross-section coherence, clarify contribution, review decision log, extract lessons, and compile final LaTeX paper
 phase: compound
 ---
 
-# Compound Skill
+# Synthesis Skill
 
 ## Overview
-Extract and store lessons learned during the cycle, and update project documentation. This is what makes the system compound -- each session leaves the next one better equipped.
 
-**CRITICAL**: Store all lessons via `drl learn` -- NOT via MEMORY.md, NOT via markdown files.
-Lessons go to `.claude/lessons/index.jsonl` through the CLI. MEMORY.md is a different system and MUST NOT be used for compounding.
+The final phase of the DRL research pipeline. Verify the paper tells a coherent story, the contribution is clear, the decision log is complete, and the LaTeX paper compiles cleanly with all references resolved. Extract lessons for future research cycles.
+
+## Input
+
+- Reviewed paper from the methodology-review phase
+- Paper sections in `paper/sections/`
+- Generated outputs in `paper/outputs/tables/` and `paper/outputs/figures/`
+- Decision log in `docs/decisions/`
+- Beads epic: `bd show <epic>` for original scope and hypotheses
 
 ## Methodology
-1. Review what happened during this cycle (git diff, test results, plan context)
-2. Detect spec drift: compare final implementation against original EARS requirements in the epic description (`bd show <epic>`). Note any divergences -- what changed, why, was it justified. If drift reveals a spec was wrong or incomplete, flag that for lesson extraction.
-3. Detect **verification drift**: compare the work and review evidence against the epic's `## Verification Contract`. If review had to escalate the contract, or if planned evidence was too weak/too strong, capture that as a workflow-quality lesson.
-4. Spawn the analysis pipeline in an **AgentTeam** (TeamCreate + Task with `team_name`):
-   - Role skills: `.claude/skills/drl/agents/{context-analyzer,lesson-extractor,pattern-matcher,solution-writer,compounding}/SKILL.md`
-   - For large diffs, deploy MULTIPLE context-analyzers and lesson-extractors
-   - Pipeline: context-analyzers -> lesson-extractors -> pattern-matcher + solution-writer -> compounding
-   - Agents coordinate via SendMessage throughout the pipeline
-5. Agents pass results through the pipeline via `SendMessage`. The lead coordinates: context-analyzer and lesson-extractor feed pattern-matcher and solution-writer, which feed compounding.
-6. Apply quality filters: novelty check (>0.98 cosine similarity = skip), specificity check
-7. Classify each item by type: lesson, solution, pattern, or preference
-8. Classify severity: high (data loss/security/contradictions), medium (workflow/patterns), low (style/optimizations)
-9. Use `AskUserQuestion` to confirm high-severity items with the user before storing; medium/low items are auto-stored
-10. Store via `drl learn` with supersedes/related links where applicable.
-   At minimum, capture 1 lesson per significant decision made during this cycle
-11. **Lint graduation**: Spawn the `lint-classifier` subagent (`.claude/agents/drl/lint-classifier.md`). Pass it the list of newly captured insights from step 10 via SendMessage (each with id, insight text, and severity). The subagent classifies each as LINTABLE, PARTIAL, or NOT_LINTABLE. For LINTABLE + HIGH confidence items, it detects the project's linter and creates beads tasks under a "Linting Improvement" epic. All insights remain stored as lessons regardless of classification.
-12. Delegate to the `compounding` subagent to run synthesis: cluster accumulated lessons by similarity and write CCT patterns to `.claude/lessons/cct-patterns.jsonl`
-13. Update outdated docs and deprecate superseded ADRs (set status to `deprecated`)
 
-## Docs Integration
-- doc-gardener checks if `docs/` content is outdated after the cycle
-- Check `docs/decisions/` for ADRs contradicted by the work done
-- Set ADR status to `deprecated` if a decision was reversed, referencing the new ADR
+### Step 1: Cross-Section Coherence
 
-## Literature
-- Consult `docs/drl/research/learning-systems/` for knowledge compounding theory, spaced repetition, and lesson extraction methodology
-- Run `drl knowledge "knowledge compounding"` for indexed knowledge on learning systems
-- Run `drl search "compound"` for lessons from past compounding cycles
+1. Read all paper sections in order:
+   - `paper/sections/intro.tex`
+   - `paper/sections/literature.tex`
+   - `paper/sections/methodology.tex`
+   - `paper/sections/data.tex`
+   - `paper/sections/results.tex`
+   - `paper/sections/robustness.tex`
+   - `paper/sections/conclusion.tex`
+2. Verify the narrative arc:
+   - Introduction states the RQ and previews findings
+   - Literature review motivates the RQ and methodology
+   - Methodology section matches the actual analysis performed
+   - Data section describes exactly what the analysis used
+   - Results address every hypothesis
+   - Robustness section strengthens (or qualifies) the main findings
+   - Conclusion does not overclaim beyond the evidence
+3. Check that the abstract in `paper/main.tex` accurately summarizes the full paper
+
+### Step 2: Contribution Clarity
+
+1. Verify the paper clearly states what is new:
+   - What gap does this fill?
+   - How do findings advance understanding?
+   - What are the practical or theoretical implications?
+2. Check that the contribution claim is proportionate to the evidence
+3. Ensure limitations are honestly acknowledged
+
+### Step 3: Decision Log Review
+
+1. Read all ADRs in `docs/decisions/`
+2. Verify completeness:
+   - Every methodological choice in the paper has a corresponding ADR
+   - ADR statuses are current (proposed/accepted/deprecated)
+   - Alternatives considered are documented
+3. Flag any undocumented decisions and create ADRs for them using the ADR template (`docs/decisions/0000-template.md`). Use `/drl:decision` for guided logging
+
+### Step 4: Final LaTeX Compilation
+
+**This is a hard gate (H4 mitigation).**
+
+1. Run the LaTeX compile script:
+   ```bash
+   bash paper/compile.sh
+   ```
+2. Verify:
+   - `paper/main.pdf` is generated without errors
+   - No undefined references (ref or cite warnings)
+   - All tables and figures render correctly
+   - Bibliography compiles without BibTeX warnings
+   - All input sections files exist and are included
+3. If compilation fails:
+   - Fix LaTeX errors (missing packages, syntax issues)
+   - Resolve undefined references
+   - Re-run compilation until clean
+
+### Step 5: Lesson Extraction
+
+1. Review the full research cycle:
+   - What worked well in the methodology?
+   - What required unexpected changes from the plan?
+   - Which robustness checks were most informative?
+   - What would you do differently next time?
+2. Capture lessons via `drl learn` for each significant insight
+3. Check for patterns that apply to future research projects
+
+### Step 6: Final Verification
+
+1. Run the test suite: `uv run python -m pytest`
+2. Verify all beads tasks are closed: `bd list --status=open` should only show the epic itself
+3. Verify the reproducibility package:
+   - Analysis code in `src/` is complete
+   - Data pipeline is documented
+   - Dependencies pinned in `uv.lock`
+
+## Gate Criteria
+
+**Gate 5: Paper Compiles + All Refs Resolve**
+
+Before closing the epic, verify ALL of:
+
+| Criterion | Verification |
+|-----------|-------------|
+| Paper compiles without errors | `bash paper/compile.sh` exits 0 |
+| No undefined ref/cite references | `grep -ci "undefined" paper/main.log` returns 0 |
+| Bibliography resolves all citations | `grep -ci "warning" paper/main.blg` returns 0 |
+| Cross-section coherence verified | Read all sections end-to-end |
+| Contribution clearly stated | Review intro and conclusion sections |
+| Decision log complete | `ls docs/decisions/` matches decisions in paper |
+| Lessons extracted | `drl learn` called for each insight |
+| Tests pass | `uv run python -m pytest` |
+| All sub-tasks closed | `bd list --status=open` shows only the epic |
+
+
+## Handoff Checklist
+
+| Output | Location | Format | Next Phase Retrieval |
+|--------|----------|--------|---------------------|
+| Compiled paper | `paper/main.pdf` | PDF with all references resolved | Final deliverable -- no next phase |
+| Complete decision log | `docs/decisions/NNNN-*.md` | All ADRs with accepted/deprecated status | Archived for future research cycles |
+| Lessons captured | `drl learn` entries | Memory system entries | Future cook-it cycles retrieve via `drl search` |
+| Closed epic | Beads (`bd show <epic-id>`) | Epic status = closed | Pipeline complete |
+
+## Memory Integration
+
+- `drl search` for patterns from prior synthesis cycles
+- `drl learn` for each lesson extracted
+- Update or deprecate stale ADRs in `docs/decisions/`
+
+## Failure and Recovery
+
+If the synthesis phase fails mid-execution:
+
+1. **LaTeX compilation fails**:
+   - Read the compile output for specific errors (missing packages, syntax, undefined refs)
+   - Fix one error at a time and re-compile -- LaTeX errors cascade
+   - Check that all `\input{sections/*.tex}` files exist
+
+2. **Undefined references** (`\ref` or `\cite` warnings):
+   - For `\cite`: verify the key exists in `paper/Ref.bib` and run BibTeX
+   - For `\ref`: verify the label exists in the referenced section file
+   - Re-compile after each fix
+
+3. **Decision log incomplete** (undocumented choices found):
+   - Create the missing ADRs before closing the epic
+   - Do not close the epic with undocumented methodological decisions
+
+4. **Cross-section incoherence** (narrative arc broken):
+   - Identify the specific sections that conflict
+   - Fix the downstream section to match the upstream one (not vice versa)
+   - Re-read end-to-end after fixes
 
 ## Common Pitfalls
-- Not spawning the analysis team (analyzing solo misses cross-cutting patterns)
-- Capturing without checking for duplicates via `drl search`
-- Skipping supersedes/related linking when an item updates prior knowledge
-- Not checking if docs or ADRs need updating after the cycle
-- Requiring user confirmation for every item (only high-severity needs it)
-- Not classifying items by type (lesson/solution/pattern/preference)
-- Capturing vague lessons ("be careful with X") -- be specific and concrete
-- Not capturing when the Verification Contract was too weak or over-specified for the actual work
+
+- Not reading the paper end-to-end (reviewing sections in isolation)
+- Conclusion overclaiming beyond the evidence
+- Missing undocumented methodological decisions
+- Skipping the LaTeX compile gate ("it compiled last time")
+- Not extracting lessons (losing the compounding benefit)
+- Leaving orphan references or unreferenced tables/figures
 
 ## Quality Criteria
-- Analysis team was spawned and agents coordinated via pipeline
-- Quality filters applied (novelty + specificity)
-- Duplicates checked via `drl search` before capture
-- Items classified by type (lesson/solution/pattern/preference)
-- Supersedes/related links set where applicable
-- Outdated docs and ADRs were updated or deprecated
-- User confirmed high-severity items
-- Beads checked for related issues (`bd`)
-- Each item gives clear, concrete guidance for future sessions
-- Spec drift analyzed and captured
-- Verification drift analyzed and captured when the contract needed adjustment
 
-## FINAL GATE -- EPIC CLOSURE
-Before closing the epic:
-- Run `drl verify-gates <epic-id>` -- must return PASS for both gates
-- Run `{{QUALITY_GATE_TEST}}` and `{{QUALITY_GATE_LINT}}` -- must pass
-- Read the epic's `## Verification Contract` and run every required evidence item that remains applicable. If `build` is required, run `{{QUALITY_GATE_BUILD}}`
-If verify-gates fails, the missing phase was SKIPPED. Go back and complete it.
-CRITICAL: 3/5 phases is NOT success. All 5 phases are required.
+- [ ] All paper sections read end-to-end for coherence
+- [ ] Contribution statement is clear and proportionate
+- [ ] Decision log is complete with no undocumented choices
+- [ ] LaTeX compiles cleanly (hard gate)
+- [ ] All references resolve (no warnings)
+- [ ] Lessons captured for future research cycles
+- [ ] Reproducibility package is complete
+- [ ] Epic closure criteria met

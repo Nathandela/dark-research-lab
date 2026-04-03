@@ -1,118 +1,151 @@
 ---
-name: Plan
-description: Decompose work into small testable tasks with clear dependencies
+name: Research Plan
+description: Specify statistical methodology, variable operationalization, model equations, robustness plan, and hypothesis-to-section mapping
 phase: plan
 ---
 
-# Plan Skill
+# Research Plan Skill
 
 ## Overview
-Create a concrete implementation plan by decomposing work into small, testable tasks with dependencies and acceptance criteria.
+
+Translate the approved research specification into a concrete analysis plan. Define exactly how each hypothesis will be tested: which variables, which models, which robustness checks, and which paper section reports each result.
+
+## Input
+
+- Approved research spec from the spec phase
+- Beads epic: `bd show <epic-id>` for scope and EARS requirements
+- Literature context: `drl knowledge` for methodological precedent
 
 ## Methodology
-1. Read the spec from the epic description (`bd show <epic>`) for EARS requirements, decisions, and open questions. Verify its type is `epic` -- if it was created as `task`, fix with `bd update <id> --type=epic`
-2. Search memory with `drl search` and docs with `drl knowledge "relevant topic"` for architectural patterns and past mistakes
-3. Spawn **subagents** via Task tool in parallel for research (lightweight, no inter-agent coordination):
-   - Available agents: `.claude/agents/drl/repo-analyst.md`, `memory-analyst.md`
-   - For complex features, deploy MULTIPLE analysts per domain area
-   - Synthesize all findings before decomposing into tasks
-4. For decisions requiring deep technical grounding, invoke the **researcher skill** to produce a survey document. Review findings before decomposing into tasks.
-5. Synthesize research findings into a coherent approach. Flag conflicts between ADRs and proposed plan.
-6. Use `AskUserQuestion` to resolve ambiguities, conflicting constraints, or priority trade-offs before decomposing
-7. Decompose into tasks small enough to verify individually
-8. Define acceptance criteria for each task
-9. Ensure each task traces back to a spec requirement for traceability
-10. **Generate Acceptance Criteria table**: Extract testable criteria from EARS requirements and append to the epic description. Use this format:
 
-    ```markdown
-    ## Acceptance Criteria
-    | ID | Source Req | Criterion | Verification Method |
-    |----|-----------|-----------|---------------------|
-    | AC-1 | EARS-N | When X, system shall Y within Z | unit test / manual / integration |
-    ```
+### Step 1: Variable Operationalization
 
-    Rules:
-    - Each EARS requirement MUST map to at least one AC row
-    - Criteria MUST be testable (no vague adjectives like "fast" or "good")
-    - Verification method MUST be specified
-    - Write the AC table to the epic via `bd update <epic-id> --description="<existing desc + AC section>"`
-    - The AC section is **append-only** after plan phase; review annotates pass/fail
-11. **Generate Verification Contract**: Derive a minimal, per-epic definition of done and append it to the epic description after the Acceptance Criteria section. Use this format:
+1. For each construct in the domain glossary, define:
+   - **Operational definition**: How it is measured (exact formula, scale, coding)
+   - **Data source**: Where the raw values come from
+   - **Transformations**: Log, standardize, winsorize, categorical encoding
+   - **Missing data strategy**: Listwise deletion, imputation, or exclusion criteria
+2. Produce a **variable operationalization table**:
 
-    ```markdown
-    ## Verification Contract
-    Profile: webapp | api | cli | library | service | mixed
-    Surfaces:
-    - ui_surface
-    Risks:
-    - user_visible_quality
-    Required evidence:
-    - test
-    - lint
-    - build
-    ```
+| Variable | Construct | Source | Measurement | Transform | Missing Strategy |
+|----------|-----------|--------|-------------|-----------|------------------|
+| ...      | ...       | ...    | ...         | ...       | ...              |
 
-    Rules:
-    - Detect the profile from repo signals plus the epic's actual scope. If architect/spec work noted a default profile, use it as advisory input only.
-    - Keep the contract **local to this epic**. Do NOT create repo-global config for this.
-    - Start from a baseline and then tailor:
-      - `webapp` -> `test`, `lint`, `build`, `runtime_startup`, `browser_evidence`
-      - `api` -> `test`, `lint`, `build`, `runtime_startup`, `contract_checks`
-      - `cli` -> `test`, `lint`, `build`, `help_version_check`, `command_transcript`
-      - `library` -> `test`, `lint`, `build`, `examples_run`, `public_api_review`
-      - `service` -> `test`, `lint`, `build`, `runtime_startup`, `config_validation`
-    - Add contract-specific evidence from touched surfaces and risks:
-      - `ui_surface` -> `responsive_check`, `edge_states_check`, `console_network_clean`, `a11y_smoke`, `design_craft_check`
-      - `public_api` -> `contract_examples`, `backward_compat_review`
-      - `persistence_schema` -> `roundtrip_test`, `migration_check`, `backcompat_check`
-      - `packaging_or_distribution` -> `package_build`, `install_smoke`
-      - `docs_or_examples` -> `docs_examples_sync`
-      - `auth_or_security` -> `auth_failure_paths`
-      - `performance_sensitive` -> `performance_budget_check`
-    - Use a small, explicit vocabulary for `Surfaces` and `Risks`; prefer consistency over novelty.
-    - If the profile is ambiguous **and** the choice materially changes required evidence, resolve it with `AskUserQuestion` once before finalizing the plan.
-    - Write the Verification Contract to the epic via `bd update <epic-id> --description="<existing desc + AC section + Verification Contract section>"`
-    - The Verification Contract is **append-only** after plan; review may escalate it explicitly if risk was underestimated.
-12. Map dependencies between tasks
-13. Create beads issues: `bd create --title="..." --type=task`
-14. Create review and compound blocking tasks (`bd create` + `bd dep add`) that depend on work tasks — these survive compaction and surface via `bd ready` after work completes
+### Step 2: Model Equations
+
+1. Write out the statistical model(s) formally:
+   - Dependent variable(s)
+   - Independent variables and controls
+   - Functional form (linear, logistic, panel, etc.)
+   - Estimation method (OLS, IV, MLE, etc.)
+2. For each equation, note:
+   - Which hypothesis it tests
+   - Key identifying assumptions
+   - Expected coefficient signs
+
+### Step 3: Robustness Plan
+
+1. For each main specification, plan at least two alternative specifications:
+   - Alternative variable operationalizations
+   - Alternative sample restrictions (trimming, subgroup analysis)
+   - Alternative estimation methods
+2. Plan diagnostic checks:
+   - Multicollinearity (VIF)
+   - Heteroscedasticity tests
+   - Normality of residuals (where relevant)
+   - Influence diagnostics (Cook distance, leverage)
+3. Plan falsification or placebo tests where applicable
+
+### Step 4: Hypothesis-Analysis-Output-Section Mapping
+
+Create a traceability table linking each hypothesis to its analysis pipeline and paper output:
+
+| Hypothesis | Model | Key Variables | Output Table/Figure | Paper Section |
+|------------|-------|---------------|---------------------|---------------|
+| H1         | Eq. 1 | X1, X2       | Table 1             | results.tex   |
+| H2         | Eq. 2 | X1, Z1       | Table 2, Figure 1   | results.tex   |
+| ...        | ...   | ...           | ...                 | robustness.tex|
+
+This mapping ensures every hypothesis has a clear path through the analysis pipeline to a paper section.
+
+### Step 5: Analysis Task Breakdown
+
+1. Decompose the plan into implementable tasks:
+   - Data loading and cleaning
+   - Descriptive statistics
+   - Main regressions (one per hypothesis)
+   - Robustness checks
+   - Figure generation
+2. Create beads tasks: `bd create --title="..." --type=task --priority=<N>`
+3. Wire dependencies: data cleaning before analysis, analysis before robustness
+
+## Gate Criteria
+
+**Gate 2: Methodology Approved**
+
+Before proceeding to research-work, verify ALL of:
+
+| Criterion | Verification |
+|-----------|-------------|
+| Variable operationalization table is complete | Table must include columns: Variable, Construct, Source, Measurement, Transform, Missing Strategy. At least one row per hypothesis variable |
+| Model equations formally specified | Each equation must name DV, IV(s), functional form, and estimation method |
+| Robustness plan covers at least 2 alternatives per main spec | Count alternative specifications in plan: minimum 2 per main model |
+| Hypothesis-analysis-output-section mapping complete | Every H row must have a non-empty Model, Output Table/Figure, and Paper Section cell |
+| Analysis tasks created as beads with deps | `bd list --status=open` returns >= 1 analysis task and `bd show <task>` shows wired dependencies |
+
+Use `AskUserQuestion` to confirm the methodology with the researcher before proceeding.
+
+
+## Handoff Checklist
+
+| Output | Location | Format | Next Phase Retrieval |
+|--------|----------|--------|---------------------|
+| Variable operationalization table | Plan document or `docs/specs/<topic>.md` | Markdown table: Variable / Construct / Source / Measurement / Transform / Missing Strategy | research-work reads the plan to map variables to code |
+| Model equations | Plan document | Formal equations with DV, IV, functional form, estimation method | research-work implements each equation in `src/analysis/econometrics.py` |
+| Robustness plan | Plan document | List of alternative specifications per main model | research-work executes robustness battery from `src/analysis/robustness.py` |
+| Hypothesis-analysis-output-section mapping | Plan document | Markdown table: H -> Model -> Variables -> Output Table/Figure -> Paper Section | research-work uses mapping to route outputs to correct files |
+| Analysis beads tasks | Beads (`bd list --status=open`) | Task beads with dependencies wired | research-work picks up tasks via `bd ready` |
 
 ## Memory Integration
-- Run `drl search` and `drl knowledge "relevant topic"` for patterns related to the feature area
-- Look for past planning mistakes (missing dependencies, unclear criteria)
-- Check for preferred architectural patterns in this codebase
 
-## Docs Integration
-- Spawn docs-analyst to scan `docs/` for relevant specs, standards, and research
-- Check `docs/decisions/` for existing ADRs that constrain or inform the plan
-- If the plan contradicts an ADR, flag it for the user before proceeding
+- `drl search` for past methodology decisions in this domain
+- `drl knowledge` for statistical methodology references
+- `drl learn` after methodology choices are made
+- Log each methodological decision to `docs/decisions/` using the ADR template (`docs/decisions/0000-template.md`). Use `/drl:decision` for guided logging
+
+## Failure and Recovery
+
+If the plan phase fails mid-execution:
+
+1. **Methodology reviewer rejects the approach**:
+   - Log the rejection rationale to `docs/decisions/`
+   - Revise the methodology based on feedback
+   - Re-submit for review -- do not skip the gate
+
+2. **Variable operationalization blocked** (data source unavailable):
+   - Document the missing data as a beads note
+   - Propose alternative operationalizations with available data
+   - Log the pivot decision to `docs/decisions/`
+
+3. **Human gate times out**:
+   - Save the current plan to the epic description/notes
+   - Update beads: `bd update <id> --notes="Plan draft complete, awaiting approval"`
 
 ## Common Pitfalls
-- Creating too many fine-grained tasks (aim for 3-7 per feature)
-- Unclear acceptance criteria ("make it work" is not a criterion)
-- Missing dependencies between tasks
-- Not checking memory for past architectural decisions
-- Not reviewing existing ADRs and docs for constraints
-- Making architectural decisions without research backing (use the researcher skill for complex domains)
-- Planning implementation details too early (stay at task level)
-- Not generating Acceptance Criteria table from EARS requirements
-- Not generating a Verification Contract, leaving later phases to guess what evidence is required
+
+- Defining variables without specifying the exact measurement
+- Missing the hypothesis-to-section traceability chain
+- Robustness plan that only tests trivial alternatives
+- Not logging methodology decisions as ADRs
+- Analysis tasks without proper dependency ordering
+- Specifying methods beyond what the data can support
 
 ## Quality Criteria
-- Each task has clear acceptance criteria
-- Dependencies are mapped and no circular dependencies exist
-- Tasks are ordered so each can be verified independently
-- Memory was searched for relevant patterns and past mistakes
-- Existing docs and ADRs were checked for constraints
-- Ambiguities resolved via `AskUserQuestion` before decomposing
-- Complexity estimates are realistic (no "should be quick")
-- Each task traces back to a spec requirement
-- **Acceptance Criteria table generated and appended to epic description**
-- **Verification Contract generated and appended to epic description**
 
-## POST-PLAN VERIFICATION -- MANDATORY
-After creating all tasks, verify review and compound tasks exist:
-- Run `bd list --status=open` and check for a "Review:" task and a "Compound:" task
-- If either is missing, CREATE THEM NOW. The plan is NOT complete without these gates.
-- **Verify AC table**: Run `bd show <epic-id>` and confirm the `## Acceptance Criteria` section exists in the description. If missing, the plan is NOT complete.
-- **Verify contract**: Run `bd show <epic-id>` and confirm the `## Verification Contract` section exists in the description. If missing, the plan is NOT complete.
+- [ ] Every construct has a concrete operationalization
+- [ ] Model equations are written formally, not just described
+- [ ] Robustness plan is substantive (not just "run it again")
+- [ ] Traceability mapping covers all hypotheses end-to-end
+- [ ] Beads tasks created and dependency-ordered
+- [ ] Methodology decisions logged to `docs/decisions/`
+- [ ] Human approved methodology via gate

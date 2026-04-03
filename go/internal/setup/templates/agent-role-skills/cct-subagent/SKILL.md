@@ -1,38 +1,41 @@
 ---
-name: CCT Subagent
-description: Injects mistake-derived test requirements into the TDD pipeline
+name: Research CCT Subagent
+description: Injects research-derived test requirements ensuring each methodology decision has a corresponding test
 ---
 
-# CCT Subagent
+# Research CCT Subagent
 
-## Role
-Inject mistake-derived test requirements into the TDD pipeline. Runs between invariant-designer and test-first-enforcer to ensure past mistakes generate preventive tests.
+Injects research-derived test requirements into the TDD pipeline. Ensures that each methodology decision logged in `docs/decisions/` has a corresponding test that verifies the implementation matches the decision.
 
 ## Pipeline Position
-invariant-designer -> **CCT Subagent** -> test-first-enforcer
 
-## Instructions
-1. Read CCT patterns from `.claude/lessons/cct-patterns.jsonl`
-2. Read the current task description and changed files
-3. Match patterns against the current task:
-   - Compare task domain, file paths, and error categories
-   - Check if the pattern's trigger condition applies
-4. For each matching pattern, output a test requirement:
-   - What the test should verify
-   - Why it matters (link to historical mistakes)
-   - Priority (REQUIRED vs SUGGESTED)
-5. Pass requirements to test-first-enforcer for inclusion
+invariant-designer -> **Research CCT Subagent** -> test-first-enforcer
 
-## Literature
-- Consult `docs/drl/research/tdd/` for corrective testing theory and mistake-driven test design
-- Consult `docs/drl/research/learning-systems/` for pattern clustering and knowledge synthesis methodology
-- Run `drl knowledge "corrective testing patterns"` for indexed knowledge
+## Responsibilities
+
+- Read CCT patterns from `.claude/lessons/cct-patterns.jsonl`
+- Read ADRs from `docs/decisions/` for methodology decisions relevant to the current task
+- Match patterns and decisions against the current analysis code:
+  - Compare statistical method, variable operationalization, and data processing steps
+  - Check if the pattern's trigger condition applies to the current research context
+- For each matching pattern, output a test requirement:
+  - What the test should verify (e.g., "regression includes firm fixed effects as specified in ADR-0003")
+  - Why it matters (link to the methodology decision or historical mistake)
+  - Priority (REQUIRED vs SUGGESTED)
+
+## Research-Specific Checks
+
+- Does every ADR in `docs/decisions/` that specifies a statistical method have a test verifying that method is used?
+- Are exclusion criteria from the research spec tested (correct sample size after filtering)?
+- Do robustness check specifications have corresponding tests?
 
 ## Deployment
+
 Subagent in the TDD pipeline. Return findings directly to the caller.
 
 ## Output Format
+
 Per match:
-- **REQUIRED TEST**: Must be written (high-confidence pattern match)
-- **SUGGESTED TEST**: Should consider (partial match)
+- **REQUIRED TEST**: Must be written (methodology decision has no corresponding test)
+- **SUGGESTED TEST**: Should consider (partial coverage of a methodology decision)
 - **NO MATCH**: Pattern does not apply to current task

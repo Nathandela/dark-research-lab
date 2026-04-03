@@ -26,7 +26,9 @@ var expectedPhaseMapping = map[string]string{
 	"test-cleaner":       "review",
 	"build-great-things": "work",
 	"qa-engineer":        "review",
+	"loop-launcher":      "architect",
 	// cook-it: no phase (orchestrator, REQ-S3 fallback)
+	// lit-review, flavor, onboard, compile, decision, status: no phase (utility skills)
 }
 
 // extractPhase extracts the phase field from YAML frontmatter.
@@ -110,7 +112,10 @@ func TestPhaseSkills_PhaseValuesMatchPhaseState(t *testing.T) {
 // for orchestrator skills (cook-it).
 func TestPhaseSkills_FrontmatterHasRequiredFields(t *testing.T) {
 	skills := PhaseSkills()
-	orchestrators := map[string]bool{"cook-it": true}
+	orchestrators := map[string]bool{
+		"cook-it": true, "lit-review": true, "flavor": true,
+		"onboard": true, "compile": true, "decision": true, "status": true,
+	}
 
 	for dir, content := range skills {
 		lines := strings.Split(content, "\n")

@@ -1,100 +1,269 @@
 ---
 name: Cook It
-description: Full-cycle orchestrator chaining all five phases with gates and controls
+description: Orchestrate the full DRL research workflow from specification through paper synthesis
 ---
 
-# Cook It Skill
+# DRL Research Workflow Orchestrator
 
 ## Overview
 
-Chain all 5 phases end-to-end: Spec Dev, Plan, Work, Review, Compound. This skill governs the orchestration -- phase sequencing, gates, progress tracking, and error recovery.
+Run the complete DRL research pipeline for a given epic. This is the DRL cook-it workflow, adapting the compound cook-it pattern for social science research. It chains five research phases in sequence, enforcing gate criteria between each transition. Each phase uses a dedicated DRL skill and involves specialized research agents.
 
-## CRITICAL RULE -- READ BEFORE EXECUTE
-Before starting EACH phase, you MUST use the Read tool to open its skill file:
-- .claude/skills/drl/spec-dev/SKILL.md
-- .claude/skills/drl/plan/SKILL.md
-- .claude/skills/drl/work/SKILL.md
-- .claude/skills/drl/review/SKILL.md
-- .claude/skills/drl/compound/SKILL.md
+## Prerequisites
 
-Do NOT proceed from memory. Read the skill, then follow it exactly.
+Before running cook-it, verify these dependencies are in place:
 
-## Session Start
-When a cooking session begins, IMMEDIATELY print the banner below (copy it verbatim):
+1. **Hooks configured** in `.claude/settings.json`:
+   - `UserPromptSubmit` must include `decision-reminder.sh` (ADR reminders on phase transitions)
+   - `PreToolUse` must include `phase-guard` (prevents writes during wrong phase)
+   - Verify: `cat .claude/settings.json | python3 -c "import json,sys; h=json.load(sys.stdin)['hooks']; assert any('decision-reminder' in hook['command'] for entry in h['UserPromptSubmit'] for hook in entry['hooks']), 'Missing decision-reminder hook'; print('OK: hooks configured')"`
 
-         o
-        /|\
-       o-o-o
-      /|\ /|\
-     o-o-o-o-o
-      \|/ \|/
-       o-o-o
-        \|/
-         o
+2. **Hook script** exists and is executable:
+   - `scripts/hooks/decision-reminder.sh` must be present and executable
+   - Verify: `test -x scripts/hooks/decision-reminder.sh && echo 'OK: hook executable'`
 
-Then proceed with the protocol below.
+3. **ADR template** exists:
+   - `docs/decisions/0000-template.md` must be present
+   - Verify: `test -f docs/decisions/0000-template.md && echo 'OK: template exists'`
 
-## Phase Execution Protocol
-0. Initialize state: `drl phase-check init <epic-id>`
-For each phase:
-1. Announce: "[Phase N/5] PHASE_NAME"
-2. Start state: `drl phase-check start <phase>`
-3. Read the phase skill file (see above)
-4. Run `drl search` and `drl knowledge` with the current goal -- display results before proceeding
-5. Execute the phase following the skill instructions
-6. Update epic state: `bd update <epic-id> --notes="Phase: NAME COMPLETE | Next: NEXT"`
-7. Verify phase gate before proceeding to the next phase
+4. **Beads** is initialized:
+   - An epic must exist in beads for the research project
+   - Verify: `bd show <epic-id>`
 
-## Phase Gates (MANDATORY)
-- **After Plan**: Run `bd list --status=open` and verify Review + Compound tasks exist, then run `drl phase-check gate post-plan`
-- **After Plan (AC Gate)**: Run `bd show <epic-id>` and verify the `## Acceptance Criteria` section exists in the epic description. If missing, the plan phase MUST be re-entered to generate the AC table before proceeding to Work. This gate ensures the contract between plan and work is fulfilled.
-- **After Plan (Verification Contract Gate)**: Run `bd show <epic-id>` and verify the `## Verification Contract` section exists in the epic description. If missing, the plan phase MUST be re-entered to define the epic-local proof of done before proceeding to Work.
-- **After Work (GATE 3)**: `bd list --status=in_progress` must be empty. Then run `drl phase-check gate gate-3`
-- **After Review (GATE 4)**: /implementation-reviewer must have returned APPROVED. Then run `drl phase-check gate gate-4`
-- **After Compound (FINAL GATE)**: Run `drl verify-gates <epic-id>` (must PASS), `{{QUALITY_GATE_TEST}}`, and `{{QUALITY_GATE_LINT}}`. Then read the epic's `## Verification Contract` and run every required evidence item that remains open, including `{{QUALITY_GATE_BUILD}}` when `build` is required, before running `drl phase-check gate final` (auto-cleans phase state)
+## State File Schema: `.drl-phase-state.json`
 
-If a gate fails, DO NOT proceed. Fix the issue first.
+The cook-it workflow tracks its state in `.claude/.drl-phase-state.json`. This file is the coordination point between the orchestrator and the decision-reminder hook.
 
-## Phase Control
-- **Skip phases**: Parse arguments for "from PHASE" (e.g., "from plan"). Skip earlier phases.
-- **Resume**: After interruption, run `bd show <epic-id>` and read notes for phase state. Resume from that phase.
-- **Retry**: If a phase fails, report and ask user to retry, skip, or abort via AskUserQuestion.
-- **Progress**: Always announce current phase number before starting.
+| Field | Type | Valid Values | Description |
+|-------|------|--------------|-------------|
+| `cookit_active` | bool | `true` / `false` | Whether a cook-it session is currently running |
+| `current_phase` | string | `"spec"`, `"plan"`, `"work"`, `"review"`, `"synthesis"` | The active workflow phase |
+| `epic_id` | string | A beads issue ID (e.g. `"dark-research-lab-xxx"`) | The bead ID of the parent epic |
 
-## Stop Conditions
-- Spec dev reveals goal is unclear -- stop, ask user
-- Tests produce unresolvable failures -- stop, report
-- Review finds critical security issues -- stop, report
+**Who creates it**: The cook-it orchestrator creates and updates this file at each phase transition.
+**Who reads it**: `decision-reminder.sh` reads it on every `UserPromptSubmit` to detect phase changes and emit ADR reminders. The `phase-guard` hook reads it to restrict file writes to the current phase's scope.
+**Lifecycle**: Created when cook-it starts, updated at each phase transition, and should be deleted (or set `cookit_active: false`) when the session ends. The companion file `.claude/.drl-last-phase` is automatically cleaned up by `decision-reminder.sh` when it detects `cookit_active` is `false`.
+
+## Input
+
+- Epic ID (from beads) or a research question to start from
+- If no epic exists, recommend running `/drl:architect` first to decompose the question into epics
+
+## The Research Phases
+
+### Phase 0: Architecture (research-architect)
+
+**Skill**: `.claude/skills/drl/research-architect/SKILL.md`
+
+**When to use**: Before starting cook-it, if no epic exists yet. `/drl:architect` is the entry point that decomposes a research question into cook-it-ready epics. If the epic already exists with a well-formed description (Scope, EARS, Contracts, Assumptions, Roles, Decisions sections), skip Phase 0 and begin at Phase 1.
+
+**What happens**:
+- Refine the research question via Socratic dialogue
+- Decompose into naturally-scoped epic beads
+- Wire dependencies between epics
+
+This phase is a prerequisite, not part of the cook-it loop itself. Cook-it operates on a single epic produced by the architect.
+
+### Phase 1: Specification (research-spec)
+
+**Skill**: `.claude/skills/drl/research-spec/SKILL.md`
+
+**What happens**:
+- Refine the research question into a precise formulation
+- Generate testable hypotheses with theoretical grounding
+- Survey indexed literature to identify the gap
+- Produce a methodology outline (not the full plan)
+- Build a domain glossary of key constructs
+
+**Agents involved**: literature-analyst (for gap identification)
+
+**Decision logging**: Log the final research question formulation and hypothesis choices to `docs/decisions/`
+
+**Gate 1**: Research question approved, hypotheses articulated, literature gap documented. Human confirmation via `AskUserQuestion`.
+
+### Phase 2: Planning (research-plan)
+
+**Skill**: `.claude/skills/drl/research-plan/SKILL.md`
+
+**What happens**:
+- Design the full analytical methodology
+- Specify the identification strategy for causal claims
+- Define the variable operationalization (how constructs become measurable)
+- Plan the robustness battery (alternative specifications, sensitivity checks)
+- Create beads subtasks for each analysis step
+
+**Agents involved**: methodology-reviewer (for plan validation)
+
+**Decision logging**: Log statistical method choices, variable operationalization decisions, and robustness check design to `docs/decisions/`
+
+**Gate 2**: Methodology is sound, identification strategy is defensible, robustness battery is planned. Human confirmation via `AskUserQuestion`.
+
+### Phase 3: Work (research-work)
+
+**Skill**: `.claude/skills/drl/research-work/SKILL.md`
+
+**What happens**:
+- Execute the analysis plan: data cleaning, transformation, modeling
+- Generate tables and figures to `paper/outputs/tables/` and `paper/outputs/figures/`
+- Write results interpretation in paper sections
+- Run the robustness battery and report all results (including unfavorable ones)
+- Close beads subtasks as each analysis step completes
+
+**Agents involved**: analyst (execution), robustness-checker (robustness battery)
+
+**Decision logging**: Log any deviations from the plan, unexpected findings, and post-hoc decisions to `docs/decisions/`
+
+**Gate 3**: All planned analyses complete, tables and figures generated, results written. All work subtasks closed in beads.
+
+### Phase 4: Review (methodology-review)
+
+**Skill**: `.claude/skills/drl/methodology-review/SKILL.md`
+
+**What happens**:
+- Six parallel reviewers audit the completed work:
+  1. Statistical validity (methodology-reviewer)
+  2. Robustness assessment (robustness-checker)
+  3. Logical consistency (coherence-reviewer)
+  4. Citation accuracy (citation-checker)
+  5. Reproducibility (reproducibility-verifier)
+  6. Writing quality (writing-quality-reviewer)
+- Findings classified by severity: critical, major, minor
+- Critical and major findings must be resolved before proceeding
+
+**Decision logging**: Log any methodological corrections and their rationale to `docs/decisions/`
+
+**Gate 4**: No critical or major findings remain. All six review dimensions pass.
+
+### Phase 5: Synthesis (synthesis)
+
+**Skill**: `.claude/skills/drl/synthesis/SKILL.md`
+
+**What happens**:
+- Verify cross-section coherence (the paper tells one story)
+- Clarify the contribution statement
+- Review the decision log for completeness
+- Compile the LaTeX paper via `paper/compile.sh`
+- Verify all references resolve (no undefined refs or missing citations)
+- Extract lessons for future research cycles
+
+**Agents involved**: writing-quality-reviewer, citation-checker, coherence-reviewer
+
+**Decision logging**: Log any final methodological reflections to `docs/decisions/`
+
+**Gate 5**: Paper compiles cleanly, all references resolve, decision log is complete. Epic closed in beads.
+
+## Phase Transition Protocol
+
+Between each phase:
+1. Verify the current phase gate criteria are met
+2. Use `AskUserQuestion` to get human approval before proceeding
+3. Update the beads epic status
+4. Search memory (`drl search`) for relevant context entering the next phase
+5. Log any phase-transition decisions to `docs/decisions/` using the ADR template (`docs/decisions/0000-template.md`). Use `/drl:decision` for guided logging
+
+**Decision logging hook**: The `decision-reminder.sh` hook fires automatically on UserPromptSubmit when a phase transition is detected. It reads `.claude/.drl-phase-state.json` to track the current phase and emits a reminder to log decisions to `docs/decisions/`. This is a shell hook, not an orchestrator prompt -- it runs automatically without agent action.
+
+## Phase Failure Recovery
+
+When a phase fails mid-execution:
+
+1. **Save state**: Write current progress to `.drl-phase-state.json` and update the beads task notes with what completed
+2. **Log partial decisions**: Any methodological decisions made before the failure must still be logged to `docs/decisions/` using the ADR template (`docs/decisions/0000-template.md`). Use `/drl:decision` for guided logging
+3. **Create a recovery bead task**: `bd create --title="Recovery: <phase> phase interrupted" --description="<what was completed, what remains>" --type=task --priority=1`
+4. **Resume guidance**: On next `cook-it` invocation:
+   - Read `.drl-phase-state.json` to determine the interrupted phase
+   - Check `bd list --status=in_progress` for the recovery task
+   - Resume from the last incomplete step (completed work is preserved)
+   - Do not re-run steps that completed successfully
+
+### Scenario: Mid-phase failure (agent crash, context exhaustion)
+
+The session died while a phase was running (e.g., context window hit, network failure).
+
+```bash
+# 1. Check where you left off
+cat .claude/.drl-phase-state.json
+bd show <epic-id>
+
+# 2. Check which subtasks completed
+bd list --status=closed --parent=<epic-id>
+bd list --status=in_progress --parent=<epic-id>
+
+# 3. Resume from the interrupted phase
+/drl:cook-it <epic-id> from <interrupted-phase>
+```
+
+The orchestrator reads `.drl-phase-state.json` and picks up from the last incomplete step. Already-closed subtasks are not re-run.
+
+### Scenario: State file corruption or missing
+
+The `.claude/.drl-phase-state.json` file is corrupted, empty, or deleted.
+
+```bash
+# 1. Delete the corrupted state file
+rm .claude/.drl-phase-state.json
+
+# 2. Determine the last completed phase from beads notes
+bd show <epic-id>
+# Look for "Phase: <NAME> COMPLETE | Next: <NEXT>" in the notes
+
+# 3. Re-initialize phase state and resume
+drl phase-check init <epic-id>
+drl phase-check start <phase-to-resume>
+/drl:cook-it <epic-id> from <phase-to-resume>
+```
+
+If beads notes are also missing, inspect closed subtasks and git history to determine where the workflow stopped.
+
+### Scenario: Interrupted session (user stopped, machine restart)
+
+The user stopped the session or the machine restarted mid-workflow.
+
+```bash
+# 1. Check phase state and beads status
+drl phase-check status
+bd show <epic-id>
+
+# 2. Check for in-progress tasks left dangling
+bd list --status=in_progress
+
+# 3. If the interrupted task's work is committed, close it
+bd close <task-id>
+
+# 4. If the interrupted task's work is lost, reset and re-run
+bd update <task-id> --status=open
+
+# 5. Resume the workflow
+/drl:cook-it <epic-id> from <current-phase>
+```
+
+To fully reset and start a phase from scratch (nuclear option):
+
+```bash
+drl phase-check clean
+drl phase-check init <epic-id>
+drl phase-check start <phase>
+/drl:cook-it <epic-id> from <phase>
+```
+
+## Beads Integration
+
+- Track progress via `bd show <epic-id>` at each phase
+- Close subtasks as they complete: `bd close <task-id>`
+- Create new tasks if unexpected work emerges: `bd create --title="..." --parent=<epic-id>`
+- Check for blocked work: `bd blocked`
+
+## Memory Integration
+
+- `drl search` at the start of each phase
+- `drl knowledge` for literature context throughout
+- `drl learn` after corrections, discoveries, or phase completions
 
 ## Common Pitfalls
-- Skipping the Read step for a phase skill (NON-NEGOTIABLE)
-- Not running phase gates between phases
-- Not announcing progress ("[Phase N/5]")
-- Proceeding after a failed gate
-- Not updating epic notes with phase state (loses resume ability)
-- Batching all commits to the end instead of committing incrementally
-- Not verifying AC table exists after plan phase before starting work
-- Not verifying the Verification Contract exists after plan phase before starting work
 
-## Quality Criteria
-- All 5 phases were executed (3/5 is NOT success)
-- Each phase skill was Read before execution
-- Phase gates verified between each transition
-- **AC table verified present after plan phase**
-- **Verification Contract verified present after plan phase**
-- Epic notes updated after each phase
-- Memory searched at the start of each phase
-- `drl verify-gates` passed at the end
-
-## Verification Contract
-Cook-it does not invent "done" late in the cycle. The `## Verification Contract` written during plan is the epic-local source of truth for:
-- product profile (`webapp`, `api`, `cli`, `library`, `service`, or `mixed`)
-- touched surfaces
-- principal risks
-- required evidence
-
-If the contract is missing, stop and go back to plan. The fallback to legacy `test` + `lint` exists for older epics, not for newly planned work.
-
-## SESSION CLOSE -- INVIOLABLE
-Before saying "done": git status, git add, bd sync, git commit, bd sync, git push.
-If phase state gets stuck, use the escape hatch: `drl phase-check clean` (or `drl phase-clean`).
+- Skipping the specification phase and jumping to analysis
+- Not enforcing gate criteria between phases (letting problems accumulate)
+- Forgetting to log decisions at each phase transition
+- Not running the full review fleet (shortcutting to synthesis)
+- Proceeding past the review phase with unresolved critical findings
+- Not checking beads status before phase transitions

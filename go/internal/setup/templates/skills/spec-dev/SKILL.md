@@ -1,107 +1,134 @@
 ---
-name: Spec Dev
-description: Develop precise specifications through Socratic dialogue, EARS notation, and Mermaid diagrams
+name: Research Spec
+description: Define research question, hypotheses, methodology outline, and literature gap
 phase: spec-dev
 ---
 
-# Spec Dev Skill
+# Research Spec Skill
 
 ## Overview
-Develop unambiguous, testable specifications before implementation. Structured 4-phase process producing EARS-notation requirements, architecture diagrams, and a beads epic.
 
-Scale formality to risk: skip for trivial (<1h), lightweight (EARS + epic) for small, full 4-phase for medium+. Use `AskUserQuestion` early to gauge scope.
+Refine a research question into a precise specification with testable hypotheses, a methodology outline, and a clear literature gap. This is the first phase of the DRL research pipeline -- nothing proceeds without an approved RQ and hypotheses.
 
-## Methodology: 4-Phase Spec Development
+## Input
 
-### Phase 1: Explore
-**Goal**: Map the problem domain before narrowing.
-1. Ask "why" before "how" -- understand the real need
-2. Search memory: `drl search` for past features, constraints, decisions
-3. Search knowledge: `drl knowledge "relevant terms"`
-4. Spawn subagents for research (`.claude/agents/drl/repo-analyst.md`, `memory-analyst.md`, or `subagent_type: Explore`)
-5. For deep domain knowledge, consider `/get-a-phd`
-6. Build a discovery mindmap (Mermaid `mindmap`) -- makes implicit assumptions visible
-7. Use `AskUserQuestion` to clarify scope and preferences
+- Beads epic ID: read epic description via `bd show <epic-id>`
+- Research question: from epic description or via `AskUserQuestion`
+- Literature context: search indexed papers via `drl knowledge`
 
-**Iteration trigger**: If research reveals the problem is fundamentally different, restart Explore.
+## Methodology
 
-### Phase 2: Understand
-**Goal**: Crystallize requirements through Socratic dialogue.
-1. For each capability, ask: triggers? edge cases? constraints? acceptance criteria?
-2. Use Mermaid diagrams (`sequenceDiagram`, `stateDiagram-v2`) to expose hidden structure
-3. Detect ambiguities: vague adjectives, unclear pronouns, passive voice, compound requirements. See `references/spec-guide.md` for full checklist
-4. Build a domain glossary for ambiguous terms
-5. Use `AskUserQuestion` to resolve each ambiguity
+### Step 1: Literature Landscape
 
-**Iteration trigger**: If specifying reveals missing knowledge, loop back to Explore.
+1. Search memory: `drl search` for prior research decisions and constraints
+2. Search knowledge: `drl knowledge "relevant terms"` for indexed literature
+3. Spawn **literature-analyst** subagent (`.claude/agents/drl/literature-analyst.md`) to:
+   - Survey indexed literature for the research domain
+   - Identify gaps the RQ addresses
+   - Extract methodological approaches from related studies
+   - Flag conflicting findings
 
-### Phase 3: Specify
-**Goal**: Produce formal, testable requirements.
-1. Write each requirement using **EARS notation**:
-   - Ubiquitous: `The system shall <action>.`
-   - Event-driven: `When <trigger>, the system shall <action>.`
-   - State-driven: `While <state>, the system shall <action>.`
-   - Unwanted behavior: `If <condition>, then the system shall <action>.`
-   - Optional: `Where <feature>, the system shall <action>.`
-   - Combined ordering: `Where > While > When > If/then > shall`
-2. Verify each requirement: no vague adjectives, edge cases covered, quantities specified, testable
-3. Document trade-offs when requirements conflict (see `references/spec-guide.md`)
-4. Produce architecture diagrams (`erDiagram`, `C4Context`, `flowchart`)
-5. Create ADRs in `docs/decisions/` for significant decisions
-6. **Generate scenario table** from EARS requirements and Mermaid diagrams:
-   - For each EARS requirement: at least one **happy** scenario + one **error** scenario
-   - For quantified parameters: **boundary** scenarios (min, max, just-beyond)
-   - From sequence diagrams: one scenario per message path including alt/opt fragments
-   - From state diagrams: each transition + at least one invalid transition (**adversarial**)
-   - For multi-parameter requirements: **combinatorial** scenarios using pairwise (2-way) coverage
-   - For external interfaces: **adversarial** scenarios per applicable STRIDE category (Spoofing, Tampering, Repudiation, Information Disclosure, DoS, Elevation of Privilege)
-   - Use sequential IDs (S1, S2...) and this table format:
+### Step 2: Research Question Refinement
 
-   | ID | Source | Category | Precondition | Trigger | Expected Outcome |
-   |----|--------|----------|--------------|---------|------------------|
-   | S1 | R1 | happy | precondition | action | assertion |
+1. Start with the working RQ from the epic description
+2. Ask "why does this matter?" before "how do we test it?"
+3. Build a **domain glossary**: key variables, constructs, operational definitions
+4. Check that the RQ is:
+   - Answerable with available or obtainable data
+   - Specific enough to guide hypothesis formation
+   - Connected to a clear literature gap
 
-   Categories: `happy`, `error`, `boundary`, `combinatorial`, `adversarial`
+### Step 3: Hypothesis Generation
 
-**Iteration trigger**: If contradictions or gaps emerge, loop back to Understand.
+1. Derive testable hypotheses from the refined RQ
+2. For each hypothesis, specify:
+   - The expected relationship (direction, mechanism)
+   - The theoretical basis (which literature supports this expectation)
+   - The observable implication (what would confirm/disconfirm)
+3. Distinguish between primary and secondary hypotheses
 
-### Phase 4: Hand off
-1. Create beads epic if needed (`bd create --title="..." --type=epic --priority=<N>`)
-2. Store spec in the epic description (`bd update <epic-id> --description="..."`) -- single source of truth, including both EARS requirements and scenario table
-3. **Note on downstream contracts**: The EARS requirements you write here are the source material for both the Acceptance Criteria table and the Verification Contract. The plan phase will extract testable AC rows and derive the epic-local proof of done from the product profile, touched surfaces, and risks. Write EARS requirements with testability in mind, and call out user-visible surfaces, public APIs, persistence changes, packaging concerns, and operational risks explicitly.
-4. Flag open questions for plan phase
-5. Capture lessons: `drl learn`
+### Step 4: Methodology Outline
+
+1. Sketch the analytical approach (not the full specification -- that is the plan phase)
+2. Identify:
+   - Key dependent and independent variables
+   - Likely statistical methods (descriptive, regression, causal inference)
+   - Data requirements (sources, sample, timeframe)
+   - Potential threats to validity
+3. This outline guides the research-plan phase but does not lock in methods
+
+### Step 5: Literature Gap Statement
+
+1. Synthesize literature-analyst findings into a gap statement:
+   - What is known (prior findings)
+   - What is not known (the gap)
+   - How this research fills the gap (the contribution)
+2. Ensure the gap is genuine, not manufactured by ignoring existing work
+
+## Gate Criteria
+
+**Gate 1: RQ + Hypotheses Approved**
+
+Before proceeding to research-plan, verify ALL of:
+
+| Criterion | Verification |
+|-----------|-------------|
+| Research question is specific and answerable | RQ must include: (a) a named DV, (b) at least one named IV, (c) a defined population or context. Verify with `grep -cP "^RQ:" docs/specs/*.md` returning >= 1 |
+| At least one testable hypothesis is articulated | `grep -c "^H[0-9]" docs/specs/*.md` returns >= 1 |
+| Literature gap documented with evidence | Check `paper/sections/literature.tex` or spec notes contain at least 3 cited sources supporting the gap |
+| Methodology outline identifies key variables and likely methods | Review methodology outline section contains a variable table or list |
+| Domain glossary defines core constructs | Check glossary section exists in spec with >= 3 defined terms |
+
+Use `AskUserQuestion` to confirm the research question and hypotheses with the researcher before proceeding.
+
+
+## Handoff Checklist
+
+| Output | Location | Format | Next Phase Retrieval |
+|--------|----------|--------|---------------------|
+| Research specification document | `docs/specs/<topic>.md` | Markdown with RQ:, H1:/H2: prefixed hypotheses, glossary table | research-plan reads via `cat docs/specs/<topic>.md` |
+| Literature gap notes | `paper/sections/literature.tex` or spec notes | LaTeX or Markdown prose with `\cite{}` references | research-plan and research-work reference for context |
+| Domain glossary | Embedded in spec document under "## Glossary" | Markdown table: Term / Definition / Operationalization | research-plan uses glossary for variable operationalization table |
+| Epic description updated | Beads epic (`bd show <epic-id>`) | Notes field updated with spec approval status | research-plan reads epic description for EARS requirements |
 
 ## Memory Integration
-- `drl search` before generating approaches
-- `drl knowledge` for indexed project docs
+
+- `drl search` before starting
+- `drl knowledge` for literature context
 - `drl learn` after corrections or discoveries
 
-## Reference Material
-Read `.claude/skills/drl/spec-dev/references/spec-guide.md` on demand for EARS patterns, Mermaid templates, ambiguity checklists, and trade-off frameworks.
+## Failure and Recovery
+
+If the spec phase fails mid-execution:
+
+1. **Literature search fails** (no indexed papers, `drl knowledge` returns nothing):
+   - Verify `literature/pdfs/` has PDF files and run `drl index`
+   - If no papers available, ask the researcher to provide initial literature
+   - Do not proceed without at least one relevant source
+
+2. **Human gate times out** (no response to `AskUserQuestion`):
+   - Save the current draft spec to `docs/specs/` as a working draft
+   - Update beads with progress notes: `bd update <id> --notes="Spec draft saved, awaiting human approval"`
+   - The next cook-it invocation can resume from the draft
+
+3. **RQ cannot be refined** (too broad, no data available):
+   - Log the blocker as a beads note
+   - Recommend running `/drl:architect` for structured decomposition
+   - Do not force a spec when the RQ is not yet answerable
 
 ## Common Pitfalls
-- Jumping to solutions before exploring the problem
-- Skipping diagrams -- they reveal hidden assumptions
-- Vague requirements without EARS patterns
-- Not searching memory for past patterns and pitfalls
-- Over-specifying trivial tasks
-- Ignoring iteration signals when gaps emerge
-- Not creating the beads epic
-- Specifying implementation instead of requirements
-- Skipping scenario table generation after EARS requirements
-- Writing EARS requirements that cannot be mapped to testable acceptance criteria
-- Hiding important surfaces or risks in prose so plan cannot derive a clean Verification Contract
+
+- Defining hypotheses before understanding the literature landscape
+- RQ too broad to guide analysis ("What affects X?")
+- Confusing the methodology outline with the full research plan
+- Ignoring contradictory findings in the literature
+- Not distinguishing primary from secondary hypotheses
 
 ## Quality Criteria
-- [ ] Requirements use EARS notation
-- [ ] Ambiguities detected and resolved via dialogue
-- [ ] Mermaid diagrams used as thinking tools
-- [ ] Memory searched (`drl search`)
-- [ ] Trade-offs documented with rationale
-- [ ] User engaged via `AskUserQuestion` at decisions
-- [ ] Scenario table generated from EARS requirements and diagrams
-- [ ] Spec and scenario table stored in beads epic description
-- [ ] ADRs created for significant decisions
-- [ ] **EARS requirements are testable and can map to acceptance criteria**
-- [ ] **Important surfaces and risks are explicit enough for plan to derive a Verification Contract**
+
+- [ ] Literature-analyst subagent was consulted
+- [ ] RQ is refined from the initial working version
+- [ ] Hypotheses are testable and theoretically grounded
+- [ ] Literature gap is evidenced, not asserted
+- [ ] Methodology outline is a sketch, not a locked-in plan
+- [ ] Human approved RQ and hypotheses via gate

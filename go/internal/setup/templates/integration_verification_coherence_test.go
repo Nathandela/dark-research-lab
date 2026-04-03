@@ -1,101 +1,79 @@
 package templates
 
 import (
-	"regexp"
-	"strconv"
 	"strings"
 	"testing"
 )
 
-// TestIntegrationVerification_PhDGateContract verifies the research sufficiency
-// gate in architect Phase 1.
-// AC-4: Architect template Phase 1 contains research sufficiency gate with
-// 0.7+ threshold.
-func TestIntegrationVerification_PhDGateContract(t *testing.T) {
+// TestIntegrationVerification_LiteratureSufficiencyGate verifies the research
+// sufficiency gate in architect Phase 1.
+func TestIntegrationVerification_LiteratureSufficiencyGate(t *testing.T) {
 	architect := requireSkill(t, PhaseSkills(), "architect")
 
-	t.Run("research_gate_exists", func(t *testing.T) {
-		assertContains(t, architect, "Research Sufficiency Gate", "missing gate section")
+	t.Run("gate_exists", func(t *testing.T) {
+		assertContains(t, architect, "Literature Sufficiency Gate", "missing gate section")
 	})
-	t.Run("relevance_threshold", func(t *testing.T) {
-		assertContains(t, architect, "0.7+", "missing 0.7+ threshold")
+	t.Run("3_source_minimum", func(t *testing.T) {
+		assertContains(t, architect, "fewer than 3", "missing 3-source minimum")
 	})
-	t.Run("3_result_minimum", func(t *testing.T) {
-		assertContains(t, architect, "fewer than 3 results", "missing 3-result minimum")
-	})
-	t.Run("time_budget", func(t *testing.T) {
-		assertContains(t, architect, "15 minutes", "missing 15-minute budget")
-		assertContains(t, architect, "3 research rounds", "missing 3-round limit")
-	})
-	t.Run("get_a_phd_reference", func(t *testing.T) {
-		assertContains(t, architect, "get-a-phd", "missing get-a-phd reference")
-	})
-	t.Run("relevance_over_count", func(t *testing.T) {
-		assertContains(t, architect, "relevance, not just count", "missing STPA H2.1")
+	t.Run("search_round_cap", func(t *testing.T) {
+		assertContains(t, architect, "3 search rounds", "missing search round limit")
 	})
 }
 
 // TestIntegrationVerification_IVCreationContract verifies that architect Phase 4
 // creates an Integration Verification epic with dependency wiring.
-// AC-5: Architect template Phase 4 contains IV epic creation with deps.
 func TestIntegrationVerification_IVCreationContract(t *testing.T) {
 	architect := requireSkill(t, PhaseSkills(), "architect")
 
 	t.Run("IV_section_exists", func(t *testing.T) {
 		assertContains(t, architect, "Integration Verification", "missing IV section")
 	})
-	t.Run("IV_after_phase_4", func(t *testing.T) {
+	t.Run("IV_in_phase_4", func(t *testing.T) {
 		phase4Idx := strings.Index(architect, "## Phase 4")
-		ivIdx := strings.Index(architect, "Integration Verification Epic")
+		ivIdx := strings.Index(architect, "Integration Verification")
 		if phase4Idx < 0 || ivIdx < 0 {
-			t.Fatal("missing Phase 4 or IV Epic section")
+			t.Fatal("missing Phase 4 or IV section")
 		}
 		if ivIdx < phase4Idx {
-			t.Error("IV Epic section appears before Phase 4")
+			t.Error("IV section appears before Phase 4")
 		}
 	})
 	t.Run("dependency_wiring", func(t *testing.T) {
 		assertContains(t, architect, "bd dep add", "missing dep wiring instruction")
 	})
-	t.Run("scope_classification", func(t *testing.T) {
-		hasAll := strings.Contains(architect, "LIGHT") &&
-			strings.Contains(architect, "MEDIUM") &&
-			strings.Contains(architect, "FULL")
-		if !hasAll {
-			t.Error("missing scope classification (LIGHT/MEDIUM/FULL)")
-		}
-	})
-	t.Run("contracts_under_test_table", func(t *testing.T) {
-		has := strings.Contains(architect, "Contracts under test") ||
-			strings.Contains(architect, "contracts-under-test")
-		if !has {
-			t.Error("missing contracts-under-test table reference")
-		}
-	})
 	t.Run("cook_it_pipeline", func(t *testing.T) {
-		assertContains(t, architect, "cook-it", "missing cook-it reference for IV")
+		assertContains(t, architect, "cook-it", "missing cook-it reference")
 	})
 }
 
 // TestIntegrationVerification_ReviewCoherence verifies that the review SKILL.md
-// is internally consistent after modifications from both Epic 3 (AC protocol)
-// and Epic 4 (LCR + RV).
-// AC-6: Epic 3 and Epic 4 sections don't conflict; methodology steps are
-// sequentially numbered.
+// is internally consistent with 6 reviewer fleet and severity classification.
 func TestIntegrationVerification_ReviewCoherence(t *testing.T) {
 	review := requireSkill(t, PhaseSkills(), "review")
 
-	t.Run("methodology_steps_sequential", func(t *testing.T) {
-		verifySequentialSteps(t, review)
+	t.Run("methodology_steps_present", func(t *testing.T) {
+		assertContains(t, review, "### Step 1", "missing Step 1")
+		assertContains(t, review, "### Step 2", "missing Step 2")
+		assertContains(t, review, "### Step 3", "missing Step 3")
+		assertContains(t, review, "### Step 4", "missing Step 4")
 	})
-	t.Run("AC_and_LCR_both_present", func(t *testing.T) {
-		assertContains(t, review, "Check Acceptance Criteria", "missing AC (Epic 3)")
-		assertContains(t, review, "Lesson-Calibrated Review", "missing LCR (Epic 4)")
-		assertContains(t, review, "Runtime Verification", "missing RV (Epic 4)")
+	t.Run("six_reviewers_present", func(t *testing.T) {
+		assertContains(t, review, "methodology-reviewer", "missing methodology-reviewer")
+		assertContains(t, review, "robustness-checker", "missing robustness-checker")
+		assertContains(t, review, "coherence-reviewer", "missing coherence-reviewer")
+		assertContains(t, review, "citation-checker", "missing citation-checker")
+		assertContains(t, review, "reproducibility-verifier", "missing reproducibility-verifier")
+		assertContains(t, review, "writing-quality-reviewer", "missing writing-quality-reviewer")
+	})
+	t.Run("severity_classification_present", func(t *testing.T) {
+		assertContains(t, review, "Critical", "missing Critical severity")
+		assertContains(t, review, "Major", "missing Major severity")
+		assertContains(t, review, "Minor", "missing Minor severity")
 	})
 	t.Run("no_duplicate_sections", func(t *testing.T) {
 		for _, section := range []string{
-			"## Methodology", "## Quality Criteria",
+			"## Gate Criteria", "## Quality Criteria",
 			"## Common Pitfalls", "## Memory Integration",
 		} {
 			if c := strings.Count(review, section); c > 1 {
@@ -103,140 +81,60 @@ func TestIntegrationVerification_ReviewCoherence(t *testing.T) {
 			}
 		}
 	})
-	t.Run("quality_criteria_covers_all_epics", func(t *testing.T) {
-		qcIdx := strings.Index(review, "## Quality Criteria")
-		if qcIdx < 0 {
-			t.Fatal("missing Quality Criteria section")
-		}
-		qc := review[qcIdx:]
-		assertContains(t, qc, "acceptance criteria", "QC missing AC (Epic 3)")
-		if !strings.Contains(qc, "LCR") && !strings.Contains(qc, "calibrated") {
-			t.Error("QC missing LCR reference (Epic 4)")
-		}
-		assertContains(t, qc, "Runtime verifier", "QC missing RV (Epic 4)")
-	})
-	t.Run("phase_gate_includes_AC", func(t *testing.T) {
-		gateIdx := strings.Index(review, "PHASE GATE 4")
-		if gateIdx < 0 {
-			t.Fatal("missing PHASE GATE 4")
-		}
-		assertContains(t, review[gateIdx:], "acceptance criteria", "gate missing AC")
-	})
 }
 
-// verifySequentialSteps checks that numbered methodology steps are in order.
-func verifySequentialSteps(t *testing.T, review string) {
-	t.Helper()
-	methodIdx := strings.Index(review, "## Methodology")
-	if methodIdx < 0 {
-		t.Fatal("missing Methodology section")
-	}
-	rest := review[methodIdx+len("## Methodology"):]
-	if end := strings.Index(rest, "\n## "); end > 0 {
-		rest = rest[:end]
-	}
-
-	stepRe := regexp.MustCompile(`(?m)^(\d+)\. `)
-	matches := stepRe.FindAllStringSubmatch(rest, -1)
-	if len(matches) == 0 {
-		t.Fatal("no numbered steps found")
-	}
-
-	lastStep := 0
-	for _, m := range matches {
-		n, err := strconv.Atoi(m[1])
-		if err != nil {
-			t.Errorf("invalid step number: %s", m[1])
-			continue
-		}
-		if n <= lastStep {
-			t.Errorf("step %d not sequential (follows %d)", n, lastStep)
-		}
-		lastStep = n
-	}
-	if lastStep < 10 {
-		t.Errorf("expected >=10 methodology steps, got %d", lastStep)
-	}
-}
-
-// TestIntegrationVerification_SmokeTestMarkers verifies that each of the 4
-// improvements has a verifiable marker in its template or test output.
-// AC-8: Each improvement has a verifiable marker.
+// TestIntegrationVerification_SmokeTestMarkers verifies that each DRL phase
+// skill has key verifiable markers.
 func TestIntegrationVerification_SmokeTestMarkers(t *testing.T) {
 	skills := PhaseSkills()
-	roles := AgentRoleSkills()
-	refs := PhaseSkillReferences()
 
-	// Epic 1: FE lesson search (Go-level verified by failure_integration_test)
-	t.Run("epic1_FE_template_annotation", func(t *testing.T) {
-		assertContains(t, skills["review"], "drl search", "review missing lesson search")
+	t.Run("spec_has_hypothesis_generation", func(t *testing.T) {
+		assertContains(t, skills["spec-dev"], "Hypothesis Generation", "spec missing hypothesis generation")
 	})
-	// Epic 2: Architect intelligence
-	t.Run("epic2_PhD_gate", func(t *testing.T) {
-		assertContains(t, skills["architect"], "Research Sufficiency Gate", "missing PhD gate")
+	t.Run("plan_has_variable_operationalization", func(t *testing.T) {
+		assertContains(t, skills["plan"], "Variable Operationalization", "plan missing operationalization")
 	})
-	t.Run("epic2_IV_creation", func(t *testing.T) {
-		assertContains(t, skills["architect"], "Integration Verification Epic", "missing IV")
+	t.Run("work_has_analysis_pipeline", func(t *testing.T) {
+		assertContains(t, skills["work"], "Analysis Pipeline", "work missing analysis pipeline")
 	})
-	// Epic 3: Acceptance criteria
-	t.Run("epic3_AC_plan", func(t *testing.T) {
-		assertContains(t, skills["plan"], "Generate Acceptance Criteria table", "plan missing AC")
+	t.Run("review_has_review_fleet", func(t *testing.T) {
+		assertContains(t, skills["review"], "Spawn Review Fleet", "review missing review fleet")
 	})
-	t.Run("epic3_AC_review", func(t *testing.T) {
-		assertContains(t, skills["review"], "Acceptance Criteria Review Protocol", "review missing AC")
+	t.Run("compound_has_latex_compile", func(t *testing.T) {
+		assertContains(t, skills["compound"], "LaTeX Compilation", "compound missing LaTeX compilation")
 	})
-	t.Run("epic3_AC_work", func(t *testing.T) {
-		assertContains(t, skills["work"], "Read Acceptance Criteria", "work missing AC")
+	t.Run("architect_has_socratic_phase", func(t *testing.T) {
+		assertContains(t, skills["architect"], "Socratic", "architect missing Socratic phase")
 	})
-	// Epic 4: Review intelligence
-	t.Run("epic4_LCR", func(t *testing.T) {
-		assertContains(t, skills["review"], "Lesson-Calibrated Review (LCR)", "missing LCR")
-	})
-	t.Run("epic4_LCR_reference", func(t *testing.T) {
-		if _, ok := refs["review/references/lesson-calibration.md"]; !ok {
-			t.Error("missing lesson-calibration.md reference")
-		}
-	})
-	t.Run("epic4_RV_role_skill", func(t *testing.T) {
-		rv, ok := roles["runtime-verifier"]
-		if !ok {
-			t.Fatal("missing runtime-verifier role skill")
-		}
-		assertContains(t, rv, "Runtime Verifier Agent", "RV missing agent title")
-	})
-	t.Run("epic4_RV_in_review", func(t *testing.T) {
-		assertContains(t, skills["review"], "Runtime Verification Integration", "missing RV section")
+	t.Run("cook_it_has_five_phases", func(t *testing.T) {
+		assertContains(t, skills["cook-it"], "Phase 1: Specification", "cook-it missing Phase 1")
+		assertContains(t, skills["cook-it"], "Phase 5: Synthesis", "cook-it missing Phase 5")
 	})
 }
 
-// TestIntegrationVerification_CookItACGate verifies that cook-it has the AC
-// gate between plan and work phases (positional check).
-func TestIntegrationVerification_CookItACGate(t *testing.T) {
+// TestIntegrationVerification_CookItGatesBetweenPhases verifies that cook-it
+// has gate criteria between research phases.
+func TestIntegrationVerification_CookItGatesBetweenPhases(t *testing.T) {
 	cookIt := requireSkill(t, PhaseSkills(), "cook-it")
 
-	t.Run("AC_gate_exists", func(t *testing.T) {
-		assertContains(t, cookIt, "Acceptance Criteria", "missing AC gate reference")
+	t.Run("gate_criteria_mentioned", func(t *testing.T) {
+		assertContains(t, cookIt, "Gate", "missing gate references")
 	})
+	t.Run("phases_in_order", func(t *testing.T) {
+		specIdx := strings.Index(cookIt, "Phase 1: Specification")
+		planIdx := strings.Index(cookIt, "Phase 2: Planning")
+		workIdx := strings.Index(cookIt, "Phase 3: Work")
+		reviewIdx := strings.Index(cookIt, "Phase 4: Review")
+		synthIdx := strings.Index(cookIt, "Phase 5: Synthesis")
 
-	t.Run("AC_gate_positioned_after_plan_before_work", func(t *testing.T) {
-		planGateIdx := strings.Index(cookIt, "After Plan")
-		acIdx := strings.Index(cookIt, "Acceptance Criteria")
-		workGateIdx := strings.Index(cookIt, "After Work")
-
-		if planGateIdx < 0 {
-			t.Fatal("cook-it missing 'After Plan' gate")
+		if specIdx < 0 || planIdx < 0 || workIdx < 0 || reviewIdx < 0 || synthIdx < 0 {
+			t.Fatal("missing one or more phase section headers")
 		}
-		if acIdx < 0 {
-			t.Fatal("cook-it missing AC reference")
+		if specIdx > planIdx || planIdx > workIdx || workIdx > reviewIdx || reviewIdx > synthIdx {
+			t.Error("phases are not in expected order: spec -> plan -> work -> review -> synthesis")
 		}
-		if workGateIdx < 0 {
-			t.Fatal("cook-it missing 'After Work' gate")
-		}
-		if acIdx < planGateIdx {
-			t.Error("AC gate appears before plan gate")
-		}
-		if acIdx > workGateIdx {
-			t.Error("AC gate appears after work gate")
-		}
+	})
+	t.Run("decision_logging_integration", func(t *testing.T) {
+		assertContains(t, cookIt, "docs/decisions/", "cook-it missing decision log path")
 	})
 }

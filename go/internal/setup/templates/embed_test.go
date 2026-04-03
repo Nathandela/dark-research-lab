@@ -66,7 +66,8 @@ func TestPhaseSkills(t *testing.T) {
 	expected := []string{
 		"spec-dev", "plan", "work", "review", "compound",
 		"cook-it", "researcher", "test-cleaner", "agentic", "architect",
-		"qa-engineer",
+		"qa-engineer", "loop-launcher", "build-great-things",
+		"lit-review", "flavor", "onboard", "compile", "decision", "status",
 	}
 	for _, phase := range expected {
 		content, ok := skills[phase]
@@ -81,55 +82,42 @@ func TestPhaseSkills(t *testing.T) {
 	t.Logf("phase skills: %d", len(skills))
 }
 
-func TestPhaseSkills_QualityGatePlaceholders(t *testing.T) {
+func TestPhaseSkills_ResearchGateCriteria(t *testing.T) {
 	skills := PhaseSkills()
 
-	// Skills that must have quality gate placeholders
-	needsPlaceholders := []string{"cook-it", "review", "work", "compound", "agentic", "test-cleaner"}
-	for _, phase := range needsPlaceholders {
+	// DRL skills use Gate Criteria sections with hardcoded Python/uv commands
+	// instead of quality gate placeholders (DRL always targets Python)
+	needsGate := []string{"work", "review", "compound", "cook-it"}
+	for _, phase := range needsGate {
 		content, ok := skills[phase]
 		if !ok {
 			t.Errorf("missing phase skill: %s", phase)
 			continue
 		}
-		if !strings.Contains(content, "{{QUALITY_GATE_TEST}}") {
-			t.Errorf("phase skill %s missing {{QUALITY_GATE_TEST}} placeholder", phase)
-		}
-		if !strings.Contains(content, "{{QUALITY_GATE_LINT}}") {
-			t.Errorf("phase skill %s missing {{QUALITY_GATE_LINT}} placeholder", phase)
-		}
-		// Verify no hardcoded pnpm commands remain
-		if strings.Contains(content, "pnpm test") || strings.Contains(content, "pnpm lint") {
-			t.Errorf("phase skill %s still has hardcoded pnpm commands", phase)
+		if !strings.Contains(content, "## Gate Criteria") && !strings.Contains(content, "## Phase") {
+			t.Errorf("phase skill %s missing gate criteria or phase section", phase)
 		}
 	}
 
-	needsBuildPlaceholder := []string{"cook-it", "review", "work", "compound"}
-	for _, phase := range needsBuildPlaceholder {
-		content, ok := skills[phase]
-		if !ok {
-			t.Errorf("missing phase skill: %s", phase)
-			continue
-		}
-		if !strings.Contains(content, "{{QUALITY_GATE_BUILD}}") {
-			t.Errorf("phase skill %s missing {{QUALITY_GATE_BUILD}} placeholder", phase)
-		}
-		if strings.Contains(content, "pnpm build") {
-			t.Errorf("phase skill %s still has hardcoded pnpm build", phase)
+	// Verify no hardcoded pnpm commands remain (DRL uses uv/pytest)
+	for phase, content := range skills {
+		if strings.Contains(content, "pnpm test") || strings.Contains(content, "pnpm lint") || strings.Contains(content, "pnpm build") {
+			t.Errorf("phase skill %s still has hardcoded pnpm commands", phase)
 		}
 	}
 }
 
-func TestPhaseSkills_VerificationContractInstructions(t *testing.T) {
+func TestPhaseSkills_GateCriteriaInstructions(t *testing.T) {
 	skills := PhaseSkills()
-	for _, phase := range []string{"plan", "work", "review", "cook-it"} {
+	// DRL research skills use Gate Criteria instead of Verification Contract
+	for _, phase := range []string{"plan", "work", "review", "compound"} {
 		content, ok := skills[phase]
 		if !ok {
 			t.Errorf("missing phase skill: %s", phase)
 			continue
 		}
-		if !strings.Contains(content, "## Verification Contract") {
-			t.Errorf("phase skill %s missing Verification Contract guidance", phase)
+		if !strings.Contains(content, "## Gate Criteria") {
+			t.Errorf("phase skill %s missing Gate Criteria section", phase)
 		}
 	}
 }
@@ -140,29 +128,12 @@ func TestPhaseSkillReferences(t *testing.T) {
 		t.Fatal("expected phase skill references, got none")
 	}
 
-	// Verify spec-dev reference
-	if _, ok := refs["spec-dev/references/spec-guide.md"]; !ok {
-		t.Error("missing spec-dev/references/spec-guide.md")
-	}
-
-	// Verify architect advisory-fleet reference
+	// Verify architect advisory-fleet reference (infrastructure, kept for DRL)
 	if _, ok := refs["architect/references/advisory-fleet.md"]; !ok {
 		t.Error("missing architect/references/advisory-fleet.md")
 	}
 
-	// Verify qa-engineer references
-	expectedQAEngineer := []string{
-		"qa-engineer/references/exploratory-testing.md",
-		"qa-engineer/references/browser-automation.md",
-		"qa-engineer/references/constitution-schema.md",
-	}
-	for _, refPath := range expectedQAEngineer {
-		if _, ok := refs[refPath]; !ok {
-			t.Errorf("missing %s", refPath)
-		}
-	}
-
-	// Verify architect infinity-loop reference directory (nested)
+	// Verify architect infinity-loop reference directory (infrastructure, kept for DRL)
 	expectedInfinityLoop := []string{
 		"architect/references/infinity-loop/README.md",
 		"architect/references/infinity-loop/pre-flight.md",
@@ -186,7 +157,7 @@ func TestAgentRoleSkills(t *testing.T) {
 		t.Fatal("expected agent role skills, got none")
 	}
 
-	// Verify expected roles exist
+	// Verify expected roles exist (research-adapted)
 	expected := []string{
 		"repo-analyst", "memory-analyst", "security-reviewer",
 		"architecture-reviewer", "performance-reviewer",
@@ -197,6 +168,7 @@ func TestAgentRoleSkills(t *testing.T) {
 		"drift-detector", "scenario-coverage-reviewer",
 		"security-injection", "security-secrets", "security-auth",
 		"security-data", "security-deps",
+		"design-craft-reviewer", "runtime-verifier",
 	}
 	for _, role := range expected {
 		content, ok := roles[role]

@@ -1,33 +1,25 @@
 ---
 name: Researcher
-description: Deep research producing structured survey documents for informed decision-making
+description: Deep domain research producing structured literature surveys and methodology references for working research agents
 phase: spec-dev
 ---
 
 # Researcher Skill
 
 ## Overview
-Conduct deep research on a topic and produce a structured survey document following the project's research template. This skill spawns parallel research subagents to gather comprehensive information, then synthesizes findings into a PhD-depth document stored in `docs/research/`.
+Conduct deep domain research and produce a structured survey document for use by research agents. This skill spawns parallel research subagents to gather comprehensive academic literature, methodology conventions, and data source information, then synthesizes findings into a PhD-depth document stored in `docs/research/`.
 
 ## Methodology
-1. Identify the research question, scope, and exclusions
+1. Identify the research question, scope, field boundaries, and exclusions
 2. Search memory with `drl search` for existing knowledge on the topic
 3. Spawn parallel research subagents via Task tool:
-   - **Web search specialist**: Uses WebSearch/WebFetch for academic papers, blog posts, benchmarks, and tools
-   - **Codebase explorer**: Uses `subagent_type: Explore` to find relevant existing code patterns
-   - **Docs scanner**: Reads `docs/` for prior research, ADRs, and standards that inform the topic
+   - **Literature specialist**: Uses WebSearch/WebFetch for academic papers, working papers, meta-analyses, and replication studies
+   - **Methodology specialist**: Searches for field-specific conventions (estimation techniques, identification strategies, standard controls)
+   - **Data source specialist**: Identifies available datasets, their coverage, access requirements, and known limitations
+   - **Codebase explorer**: Uses `subagent_type: Explore` to find relevant existing analysis patterns in `src/analysis/`
+   - **Docs scanner**: Reads `docs/` for prior research, ADRs, and methodology standards that inform the topic
 4. Collect and deduplicate findings from all subagents
-5. Synthesize into TEMPLATE_FOR_RESEARCH.md format:
-   - Abstract (2-3 paragraphs)
-   - Introduction (problem statement, scope, definitions)
-   - Foundations (theoretical background)
-   - Taxonomy of Approaches (classification framework, visual table/tree)
-   - Analysis (one subsection per approach with theory, evidence, implementations, strengths/limitations)
-   - Comparative Synthesis (cross-cutting trade-off table)
-   - Open Problems & Gaps
-   - Conclusion
-   - References (full citations)
-   - Practitioner Resources (annotated tools/repos)
+5. Synthesize into the research survey format (see Output Format below)
 6. Store output at `docs/research/<topic-slug>.md` (kebab-case filename)
 7. Report key findings back for upstream skill (spec-dev/plan) to act on
 
@@ -50,58 +42,66 @@ Every research document MUST follow this exact structure:
 *[Date]*
 
 ## Abstract
-2-3 paragraph summary: what this survey covers, main approaches, key trade-offs.
+2-3 paragraph summary: what this survey covers, main approaches found in the literature, key methodological trade-offs.
 
 ## 1. Introduction
-- Problem statement
-- Scope: covered and excluded
-- Key definitions
+- Research question and motivation
+- Scope: covered fields, time period, excluded topics
+- Key definitions and operationalization of core concepts
 
-## 2. Foundations
-Theoretical background. Assume technical reader, not domain specialist.
+## 2. Theoretical Foundations
+Background theory relevant to the research question. Assume a reader trained in social science but not a domain specialist.
 
 ## 3. Taxonomy of Approaches
-Classification framework. Present visually (table or tree) before details.
+Classification of methodological approaches found in the literature. Present visually (table or tree) before diving into details. Organize by: identification strategy, estimation technique, or data type.
 
-## 4. Analysis
+## 4. Literature Analysis
 One subsection per approach:
 ### 4.x [Approach Name]
-- **Theory & mechanism**
-- **Literature evidence**
-- **Implementations & benchmarks**
-- **Strengths & limitations**
+- **Theoretical basis**: Why this approach addresses the research question
+- **Key papers**: Seminal and recent contributions with findings
+- **Data requirements**: What data this approach needs, typical sources used
+- **Identification strategy**: How causal claims are supported (if applicable)
+- **Strengths and limitations**: Internal/external validity trade-offs
 
-## 5. Comparative Synthesis
-Cross-cutting trade-off table. No recommendations.
+## 5. Data Landscape
+Available datasets for this research question:
+- Source, coverage, access method, known limitations
+- Cross-reference with approaches that use each dataset
 
-## 6. Open Problems & Gaps
-Unsolved, under-researched, or risky areas.
+## 6. Comparative Synthesis
+Cross-cutting trade-off table comparing approaches on: data requirements, identification strength, external validity, computational cost. No recommendations.
 
-## 7. Conclusion
-Synthesis. No verdict.
+## 7. Open Problems and Gaps
+Under-researched areas, methodological debates, replication failures, data limitations.
+
+## 8. Conclusion
+Synthesis of the landscape. No verdict -- the ADR process decides methodology.
 
 ## References
-Full citations with URLs.
+Full academic citations with DOIs/URLs where available.
 
 ## Practitioner Resources
-Annotated tools, repos, articles grouped by category.
+Annotated tools, replication packages, datasets, and codebooks grouped by category.
 
 ## Common Pitfalls
-- Shallow treatment: each approach needs theory, evidence, AND implementation examples
+- Shallow treatment: each approach needs theory, key papers, AND data requirements
 - Missing taxonomy: always classify approaches before diving into analysis
-- Recommendation bias: present trade-offs, never recommend (ADR process decides)
-- Ignoring gaps: explicitly state where evidence is thin or conflicting
+- Recommendation bias: present trade-offs, never recommend (the `drl:decision` ADR process decides)
+- Ignoring data limitations: explicitly state where data coverage is thin or access is restricted
 - Not deduplicating subagent findings (leads to repetitive content)
 - Skipping the comparative synthesis table
+- Confusing correlation with identification: always note the identification strategy
 
 ## Quality Criteria
-- PhD academic depth (reads like a technical survey paper)
+- PhD academic depth (reads like a published literature review)
 - Multiple research subagents were deployed in parallel
 - Memory was searched for existing knowledge
-- Existing docs/research were checked for overlap
-- Every approach has: theory, evidence, implementations, strengths/limitations
+- Existing `docs/research/` was checked for overlap
+- Every approach has: theory, key papers, data requirements, identification strategy, strengths/limitations
+- Data landscape section present with source details
 - Comparative synthesis table present with clear trade-offs
 - Open problems honestly identified
-- Full references with URLs
+- Full references with DOIs/URLs
 - Practitioner resources annotated
 - No recommendations -- landscape presentation only
