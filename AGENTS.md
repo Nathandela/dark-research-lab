@@ -28,11 +28,14 @@ All agents MUST log methodological decisions to `docs/decisions/` using the ADR 
 ### Research Phases
 
 Research follows the compound-agent cook-it workflow adapted for academic work:
-1. **Spec-Dev**: Define research question, hypotheses, methodology
-2. **Plan**: Decompose into data collection, analysis, and writing tasks
-3. **Work**: Execute analysis pipeline with TDD
-4. **Review**: Verify statistical rigor, reproducibility, and academic standards
-5. **Compound**: Extract lessons for future research projects
+
+| Phase | Skill File | Gate |
+|-------|-----------|------|
+| Spec | `.claude/skills/drl/research-spec/SKILL.md` | RQ + hypotheses approved |
+| Plan | `.claude/skills/drl/research-plan/SKILL.md` | Methodology approved |
+| Work | `.claude/skills/drl/research-work/SKILL.md` | All analyses complete |
+| Review | `.claude/skills/drl/methodology-review/SKILL.md` | All checks pass |
+| Synthesis | `.claude/skills/drl/synthesis/SKILL.md` | Paper compiles + all refs resolve |
 
 ## Quick Reference
 
