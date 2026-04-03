@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "drl"
+name = "dark-research-lab"
 version = "0.1.0"
 description = "Dark Research Lab - autonomous research paper factory"
 readme = "README.md"
