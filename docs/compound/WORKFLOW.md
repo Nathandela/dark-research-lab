@@ -1,7 +1,7 @@
 ---
 version: "2.6.1"
 last-updated: "2026-04-03"
-summary: "The 5-phase compound-agent workflow and cook-it orchestrator"
+summary: "The 5-phase dark-research-lab workflow and cook-it orchestrator"
 ---
 
 # Workflow
@@ -55,8 +55,8 @@ Multi-agent code review with severity classification.
 Extract and store lessons learned. This is what makes the system compound.
 
 - Analyze what happened during the cycle
-- Capture lessons via `ca learn`
-- Cluster patterns via `ca compound`
+- Capture lessons via `drl learn`
+- Cluster patterns via `drl compound`
 - Update outdated docs and ADRs
 
 ---
@@ -88,9 +88,9 @@ Later phases consume this contract directly. No repo-global config is required f
 For each phase, cook-it:
 
 1. Announces progress: `[Phase N/5] PHASE_NAME`
-2. Initializes state: `ca phase-check start <phase>`
+2. Initializes state: `drl phase-check start <phase>`
 3. Reads the phase skill file (non-negotiable -- never from memory)
-4. Runs `ca search` with the current goal
+4. Runs `drl search` with the current goal
 5. Executes the phase following skill instructions
 6. Updates epic notes: `bd update <epic-id> --notes="Phase: NAME COMPLETE | Next: NEXT"`
 7. Verifies the phase gate before proceeding
@@ -102,7 +102,7 @@ For each phase, cook-it:
 | Post-plan | After Plan | `bd list --status=open` shows Review + Compound tasks, and `bd show <epic-id>` contains both `## Acceptance Criteria` and `## Verification Contract` |
 | Gate 3 | After Work | `bd list --status=in_progress` returns empty |
 | Gate 4 | After Review | `/implementation-reviewer` returned APPROVED |
-| Final | After Compound | `ca verify-gates <epic-id>` passes, `detect and run the project's test suite` and `detect and run the project's linter` pass, and the remaining required evidence from the Verification Contract is satisfied (including `detect and run the project's build/package verification when the verification contract requires it` when required) |
+| Final | After Compound | `drl verify-gates <epic-id>` passes, `detect and run the project's test suite` and `detect and run the project's linter` pass, and the remaining required evidence from the Verification Contract is satisfied (including `detect and run the project's build/package verification when the verification contract requires it` when required) |
 
 If any gate fails, cook-it stops. You must fix the issue before proceeding.
 
@@ -118,8 +118,8 @@ If interrupted, cook-it can resume:
 Cook-it persists state in `.claude/.drl-phase-state.json`. Useful commands:
 
 ```bash
-ca phase-check status      # See current phase state
-ca phase-check clean       # Reset phase state (escape hatch)
+drl phase-check status      # See current phase state
+drl phase-check clean       # Reset phase state (escape hatch)
 ```
 
 ### Session close

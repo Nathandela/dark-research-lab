@@ -176,6 +176,76 @@ When a phase fails mid-execution:
    - Resume from the last incomplete step (completed work is preserved)
    - Do not re-run steps that completed successfully
 
+### Scenario: Mid-phase failure (agent crash, context exhaustion)
+
+The session died while a phase was running (e.g., context window hit, network failure).
+
+```bash
+# 1. Check where you left off
+cat .claude/.drl-phase-state.json
+bd show <epic-id>
+
+# 2. Check which subtasks completed
+bd list --status=closed --parent=<epic-id>
+bd list --status=in_progress --parent=<epic-id>
+
+# 3. Resume from the interrupted phase
+/drl:cook-it <epic-id> from <interrupted-phase>
+```
+
+The orchestrator reads `.drl-phase-state.json` and picks up from the last incomplete step. Already-closed subtasks are not re-run.
+
+### Scenario: State file corruption or missing
+
+The `.claude/.drl-phase-state.json` file is corrupted, empty, or deleted.
+
+```bash
+# 1. Delete the corrupted state file
+rm .claude/.drl-phase-state.json
+
+# 2. Determine the last completed phase from beads notes
+bd show <epic-id>
+# Look for "Phase: <NAME> COMPLETE | Next: <NEXT>" in the notes
+
+# 3. Re-initialize phase state and resume
+drl phase-check init <epic-id>
+drl phase-check start <phase-to-resume>
+/drl:cook-it <epic-id> from <phase-to-resume>
+```
+
+If beads notes are also missing, inspect closed subtasks and git history to determine where the workflow stopped.
+
+### Scenario: Interrupted session (user stopped, machine restart)
+
+The user stopped the session or the machine restarted mid-workflow.
+
+```bash
+# 1. Check phase state and beads status
+drl phase-check status
+bd show <epic-id>
+
+# 2. Check for in-progress tasks left dangling
+bd list --status=in_progress
+
+# 3. If the interrupted task's work is committed, close it
+bd close <task-id>
+
+# 4. If the interrupted task's work is lost, reset and re-run
+bd update <task-id> --status=open
+
+# 5. Resume the workflow
+/drl:cook-it <epic-id> from <current-phase>
+```
+
+To fully reset and start a phase from scratch (nuclear option):
+
+```bash
+drl phase-check clean
+drl phase-check init <epic-id>
+drl phase-check start <phase>
+/drl:cook-it <epic-id> from <phase>
+```
+
 ## Beads Integration
 
 - Track progress via `bd show <epic-id>` at each phase

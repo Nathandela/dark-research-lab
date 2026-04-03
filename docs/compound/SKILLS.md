@@ -6,7 +6,7 @@ summary: "Phase skills and agent role skills reference"
 
 # Skills Reference
 
-Skills are instructions that Claude reads before executing each phase. They live in `.claude/skills/compound/` and are auto-installed by `ca setup`.
+Skills are instructions that Claude reads before executing each phase. They live in `.claude/skills/compound/` and are auto-installed by `drl setup`.
 
 ---
 
@@ -50,7 +50,7 @@ Skills are instructions that Claude reads before executing each phase. They live
 
 **When invoked**: After review is approved.
 
-**What it does**: Spawns an analysis pipeline (context-analyzer, lesson-extractor, pattern-matcher, solution-writer, compounding), applies quality filters, classifies items by type and severity, stores via `ca learn`, checks for verification-contract drift, and runs `ca verify-gates`.
+**What it does**: Spawns an analysis pipeline (context-analyzer, lesson-extractor, pattern-matcher, solution-writer, compounding), applies quality filters, classifies items by type and severity, stores via `drl learn`, checks for verification-contract drift, and runs `drl verify-gates`.
 
 ### `/compound:cook-it`
 

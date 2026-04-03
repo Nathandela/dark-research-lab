@@ -28,6 +28,9 @@ agent_logs/
 # Ephemeral hook state
 .claude/.drl-last-phase
 
+# Stale worktree debris
+drltmp/
+
 # LaTeX build artifacts
 paper/*.aux
 paper/*.log
