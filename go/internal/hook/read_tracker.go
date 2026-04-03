@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-var skillPathPattern = regexp.MustCompile(`(?:^|/)\.claude/skills/drl/([^/]+)/SKILL\.md$`)
+var skillPathPattern = regexp.MustCompile(`(?:^|/)\.claude/skills/(?:drl|compound)/([^/]+)/SKILL\.md$`)
 
 // ProcessReadTracker tracks skill file reads and updates phase state.
 func ProcessReadTracker(repoRoot, toolName string, toolInput map[string]interface{}) {
@@ -33,10 +33,11 @@ func ProcessReadTracker(repoRoot, toolName string, toolInput map[string]interfac
 	}
 
 	canonicalPath := fmt.Sprintf(".claude/skills/drl/%s/SKILL.md", match[1])
+	legacyPath := fmt.Sprintf(".claude/skills/compound/%s/SKILL.md", match[1])
 
-	// Deduplicate
+	// Deduplicate against both canonical and legacy paths
 	for _, s := range state.SkillsRead {
-		if s == canonicalPath {
+		if s == canonicalPath || s == legacyPath {
 			return
 		}
 	}

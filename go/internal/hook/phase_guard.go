@@ -19,8 +19,9 @@ func ProcessPhaseGuard(repoRoot, toolName string, toolInput map[string]interface
 	}
 
 	expectedSkillPath := ResolveSkillPath(state.CurrentPhase)
+	expectedSkillPathLegacy := fmt.Sprintf(".claude/skills/compound/%s/SKILL.md", state.CurrentPhase)
 	for _, s := range state.SkillsRead {
-		if s == expectedSkillPath {
+		if s == expectedSkillPath || s == expectedSkillPathLegacy {
 			return PhaseGuardResult{}
 		}
 	}

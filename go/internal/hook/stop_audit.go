@@ -20,9 +20,10 @@ func hasTransitionEvidence(state *PhaseState) bool {
 	}
 	nextPhase := Phases[state.PhaseIndex] // 0-indexed, so PhaseIndex gives the next phase
 	nextSkillPath := fmt.Sprintf(".claude/skills/drl/%s/SKILL.md", nextPhase)
+	nextSkillPathLegacy := fmt.Sprintf(".claude/skills/compound/%s/SKILL.md", nextPhase)
 
 	for _, s := range state.SkillsRead {
-		if s == nextSkillPath {
+		if s == nextSkillPath || s == nextSkillPathLegacy {
 			return true
 		}
 	}

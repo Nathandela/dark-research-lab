@@ -53,6 +53,32 @@ func TestProcessReadTracker_SkillFileRead(t *testing.T) {
 	}
 }
 
+func TestProcessReadTracker_LegacyCompoundPath(t *testing.T) {
+	t.Parallel()
+	dir := t.TempDir()
+	writePhaseState(t, dir, PhaseState{
+		CookitActive: true,
+		EpicID:       "test",
+		CurrentPhase: "work",
+		PhaseIndex:   3,
+		SkillsRead:   []string{},
+		GatesPassed:  []string{},
+		StartedAt:    time.Now().Format(time.RFC3339),
+	})
+
+	ProcessReadTracker(dir, "Read", map[string]interface{}{
+		"file_path": filepath.Join(dir, ".claude/skills/compound/work/SKILL.md"),
+	})
+
+	state := GetPhaseState(dir)
+	if len(state.SkillsRead) != 1 {
+		t.Fatalf("expected 1 skill read, got %d", len(state.SkillsRead))
+	}
+	if state.SkillsRead[0] != ".claude/skills/drl/work/SKILL.md" {
+		t.Errorf("got %q, want canonical drl path", state.SkillsRead[0])
+	}
+}
+
 func TestProcessReadTracker_Deduplication(t *testing.T) {
 	t.Parallel()
 	dir := t.TempDir()
