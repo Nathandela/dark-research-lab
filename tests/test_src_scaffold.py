@@ -1,6 +1,5 @@
 """Tests for src/ Python analysis scaffolding (Epic 3)."""
 import importlib
-import sys
 from pathlib import Path
 
 import pytest
@@ -60,10 +59,6 @@ MODULES = [
 class TestPythonImports:
     @pytest.mark.parametrize("module", MODULES)
     def test_module_imports(self, module):
-        # Clear any cached imports to test fresh
-        for key in list(sys.modules.keys()):
-            if key.startswith("src"):
-                del sys.modules[key]
         mod = importlib.import_module(module)
         assert mod is not None
 
@@ -97,8 +92,5 @@ class TestStubModules:
 
     @pytest.mark.parametrize("module", MODULES)
     def test_module_has_docstring(self, module):
-        for key in list(sys.modules.keys()):
-            if key.startswith("src"):
-                del sys.modules[key]
         mod = importlib.import_module(module)
         assert mod.__doc__ is not None, f"{module} missing docstring"

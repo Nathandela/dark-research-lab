@@ -6,7 +6,6 @@ the analysis from scratch.
 """
 import json
 import platform
-import sys
 from pathlib import Path
 
 from src.config import DATA_DIR, PAPER_DIR, PROJECT_ROOT
@@ -38,11 +37,10 @@ def generate_manifest(output_dir: Path | None = None) -> dict:
         "python_version": platform.python_version(),
         "dependencies": "uv.lock",
         "data_files": data_files,
-        "run_command": "uv run python -m src.orchestrators.repro",
+        "run_command": "uv run python -m src.orchestrators.pipeline",
         "environment": {
             "os": platform.system(),
             "arch": platform.machine(),
-            "python": sys.executable,
         },
     }
 

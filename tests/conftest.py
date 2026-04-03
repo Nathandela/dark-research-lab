@@ -11,8 +11,9 @@ REPO_ROOT = Path(__file__).parent.parent
 def _src_on_path():
     """Ensure repo root is on sys.path for src imports."""
     root_str = str(REPO_ROOT)
-    if root_str not in sys.path:
+    added = root_str not in sys.path
+    if added:
         sys.path.insert(0, root_str)
     yield
-    if root_str in sys.path:
+    if added and root_str in sys.path:
         sys.path.remove(root_str)
