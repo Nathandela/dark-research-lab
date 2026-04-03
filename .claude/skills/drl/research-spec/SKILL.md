@@ -84,6 +84,25 @@ Use `AskUserQuestion` to confirm the research question and hypotheses with the r
 - `drl knowledge` for literature context
 - `drl learn` after corrections or discoveries
 
+## Failure and Recovery
+
+If the spec phase fails mid-execution:
+
+1. **Literature search fails** (no indexed papers, `drl knowledge` returns nothing):
+   - Verify `literature/pdfs/` has PDF files and run `drl index`
+   - If no papers available, ask the researcher to provide initial literature
+   - Do not proceed without at least one relevant source
+
+2. **Human gate times out** (no response to `AskUserQuestion`):
+   - Save the current draft spec to `docs/specs/` as a working draft
+   - Update beads with progress notes: `bd update <id> --notes="Spec draft saved, awaiting human approval"`
+   - The next cook-it invocation can resume from the draft
+
+3. **RQ cannot be refined** (too broad, no data available):
+   - Log the blocker as a beads note
+   - Recommend running `/drl:architect` for structured decomposition
+   - Do not force a spec when the RQ is not yet answerable
+
 ## Common Pitfalls
 
 - Defining hypotheses before understanding the literature landscape

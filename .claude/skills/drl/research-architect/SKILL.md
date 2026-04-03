@@ -71,7 +71,7 @@ After steps 1-2, evaluate whether the literature base is adequate:
 
 **Goal**: Break the research project into naturally-scoped epics.
 
-Spawn **6 parallel subagents** (via Agent tool):
+Spawn **6 parallel subagents** via the Agent tool. Each subagent is an inline role description passed as the Agent tool prompt -- these are NOT references to pre-defined agent files in `.claude/agents/drl/`. Write a focused prompt for each role describing the task and expected output:
 
 1. **Literature mapper**: Survey the indexed literature to identify:
    - Key prior studies and their methodological approaches

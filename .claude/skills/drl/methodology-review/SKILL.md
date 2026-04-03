@@ -121,6 +121,27 @@ Before proceeding to synthesis, verify ALL of:
 - Calibrate each reviewer with relevant past findings
 - `drl learn` after novel findings or corrections
 
+## Failure and Recovery
+
+If the review phase fails mid-execution:
+
+1. **A reviewer subagent fails** (crashes, returns no findings):
+   - Re-spawn the failed reviewer individually -- other reviewer results are preserved
+   - If the same reviewer fails twice, skip it and note the gap in beads
+
+2. **Critical finding cannot be resolved**:
+   - Log the finding to `docs/decisions/` with the attempted resolution
+   - Flag as a beads issue: `bd create --title="Unresolved: ..." --priority=1`
+   - Use `AskUserQuestion` to escalate to the researcher
+
+3. **Tests fail after fixes**:
+   - Revert the fix that broke tests and try a different approach
+   - Do not proceed to synthesis with failing tests
+
+4. **Partial review** (some reviewers complete, agent interrupted):
+   - Check which reviewers have reported findings
+   - Re-spawn only the missing reviewers -- do not re-run completed ones
+
 ## Common Pitfalls
 
 - Running reviewers sequentially instead of in parallel

@@ -117,6 +117,29 @@ Before closing the epic, verify ALL of:
 - `drl learn` for each lesson extracted
 - Update or deprecate stale ADRs in `docs/decisions/`
 
+## Failure and Recovery
+
+If the synthesis phase fails mid-execution:
+
+1. **LaTeX compilation fails**:
+   - Read the compile output for specific errors (missing packages, syntax, undefined refs)
+   - Fix one error at a time and re-compile -- LaTeX errors cascade
+   - Check that all `\input{sections/*.tex}` files exist
+
+2. **Undefined references** (`\ref` or `\cite` warnings):
+   - For `\cite`: verify the key exists in `paper/Ref.bib` and run BibTeX
+   - For `\ref`: verify the label exists in the referenced section file
+   - Re-compile after each fix
+
+3. **Decision log incomplete** (undocumented choices found):
+   - Create the missing ADRs before closing the epic
+   - Do not close the epic with undocumented methodological decisions
+
+4. **Cross-section incoherence** (narrative arc broken):
+   - Identify the specific sections that conflict
+   - Fix the downstream section to match the upstream one (not vice versa)
+   - Re-read end-to-end after fixes
+
 ## Common Pitfalls
 
 - Not reading the paper end-to-end (reviewing sections in isolation)

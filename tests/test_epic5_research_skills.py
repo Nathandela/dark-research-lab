@@ -266,3 +266,65 @@ class TestResearchPlanContent:
     def test_plan_references_traceability_mapping(self):
         body = _read_body(DRL_SKILLS_DIR / "research-plan" / "SKILL.md").lower()
         assert "hypothesis-analysis-output-section" in body or "traceability" in body
+
+
+class TestEpic5FailureRecoverySections:
+    """All 5 phase skills must include a Failure and Recovery section."""
+
+    def test_all_phase_skills_have_failure_recovery_section(self):
+        for phase_dir in RESEARCH_PHASES:
+            body = _read_body(DRL_SKILLS_DIR / phase_dir / "SKILL.md").lower()
+            assert "failure" in body and "recovery" in body, (
+                f"{phase_dir}/SKILL.md missing Failure and Recovery section"
+            )
+
+
+class TestEpic5SkillClarityFixes:
+    """Acceptance criteria from Epic 37i: skill instruction clarity."""
+
+    def test_research_architect_clarifies_subagents_are_agent_tool_prompts(self):
+        body = _read_body(DRL_SKILLS_DIR.parent.parent / "skills" / "drl" / "research-architect" / "SKILL.md")
+        # Must clarify that Phase 3 subagents are Agent tool prompts, not pre-defined files
+        assert "Agent tool" in body
+        assert "not pre-defined" in body.lower() or "inline" in body.lower() or "role description" in body.lower()
+
+    def test_cook_it_describes_decision_hook_correctly(self):
+        body = _read_body(DRL_SKILLS_DIR.parent.parent / "skills" / "drl" / "cook-it" / "SKILL.md")
+        # Must mention the decision-reminder.sh hook, not "orchestrator prompts"
+        assert "decision-reminder" in body.lower() or "hook" in body.lower()
+
+    def test_onboard_has_project_state_detection(self):
+        body = _read_body(DRL_SKILLS_DIR.parent.parent / "skills" / "drl" / "onboard" / "SKILL.md").lower()
+        # Must detect existing content in key directories
+        assert "literature/" in body or "literature/pdfs/" in body
+        assert "docs/decisions/" in body
+        assert "already" in body or "existing" in body or "skip" in body
+
+    def test_lit_review_has_iteration_cap(self):
+        body = _read_body(DRL_SKILLS_DIR.parent.parent / "skills" / "drl" / "lit-review" / "SKILL.md").lower()
+        # Must have an iteration cap (max 3 rounds)
+        assert "3 round" in body or "three round" in body or "max 3" in body or "iteration cap" in body
+
+    def test_all_skills_use_drl_not_ca(self):
+        """All skills must use drl search/learn/knowledge, not ca/npx ca."""
+        for skill_dir in (DRL_SKILLS_DIR).iterdir():
+            skill_file = skill_dir / "SKILL.md"
+            if not skill_file.is_file():
+                continue
+            content = skill_file.read_text()
+            assert "npx ca " not in content, f"{skill_dir.name}/SKILL.md uses 'npx ca' instead of 'drl'"
+            # Check for bare 'ca search', 'ca learn' but not 'drl search', etc.
+            import re
+            bad_ca = re.findall(r'(?<!\w)ca (search|learn|knowledge)\b', content)
+            assert not bad_ca, f"{skill_dir.name}/SKILL.md uses 'ca {bad_ca[0]}' instead of 'drl'"
+
+    def test_decision_has_duplicate_detection(self):
+        body = _read_body(DRL_SKILLS_DIR.parent.parent / "skills" / "drl" / "decision" / "SKILL.md").lower()
+        # Must check for similar slugs before creating new entry
+        assert "duplicate" in body or "similar slug" in body
+
+    def test_flavor_shows_actual_mv_commands(self):
+        body = _read_body(DRL_SKILLS_DIR.parent.parent / "skills" / "drl" / "flavor" / "SKILL.md")
+        # Must show actual mv command sequence
+        assert "mv " in body
+        assert ".tmp" in body

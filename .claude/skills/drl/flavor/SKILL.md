@@ -65,12 +65,21 @@ Read and edit the DRL skill files to incorporate field conventions.
 
 ### Atomic Write Protocol (H2 Mitigation)
 
-For each skill file edit:
-1. Read the current file content
-2. Write the modified content to a temporary file: `<target>.tmp`
-3. Rename the temp file to the target: `mv <target>.tmp <target>`
+For each skill file edit, use a write-then-rename sequence to prevent partial writes from corrupting skill files:
 
-This prevents partial writes from corrupting skill files.
+```bash
+# 1. Read the current file
+cat .claude/skills/drl/<skill>/SKILL.md
+
+# 2. Write modified content to a temporary file
+# (use Write tool or redirect to .tmp)
+# Result: .claude/skills/drl/<skill>/SKILL.md.tmp
+
+# 3. Atomically replace the original with the temp file
+mv .claude/skills/drl/<skill>/SKILL.md.tmp .claude/skills/drl/<skill>/SKILL.md
+```
+
+If step 3 fails, the original file is untouched. If step 2 fails, there is no corruption -- only a leftover `.tmp` file to clean up.
 
 ### What Gets Customized
 

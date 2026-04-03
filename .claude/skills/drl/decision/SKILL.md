@@ -89,6 +89,21 @@ Before creating a new ADR, search for related existing decisions:
 
 If a new decision changes a prior one, update the old ADR status to "superseded" and reference the new ADR.
 
+### Duplicate Detection
+
+Before creating a new ADR, check for entries with a similar slug to avoid duplicates:
+
+```bash
+# Check for similar slugs (replace <slug-words> with key terms from your new decision)
+ls docs/decisions/ | grep -i "<slug-words>"
+grep -rl "<key-term>" docs/decisions/
+```
+
+If a matching or very similar ADR already exists:
+- **Same decision**: Do not create a duplicate. Update the existing ADR if needed.
+- **Superseding decision**: Create the new ADR and mark the old one as superseded.
+- **Related but different**: Proceed with the new ADR and cross-reference the existing one.
+
 ## Workflow Integration
 
 Decision logging integrates with every research phase:
@@ -99,7 +114,7 @@ Decision logging integrates with every research phase:
 - **Review phase**: Log corrections prompted by reviewer findings
 - **Synthesis phase**: Log final presentation choices, contribution framing
 
-When running `/drl:cook-it`, the orchestrator prompts for decision logging at each phase transition.
+When running `/drl:cook-it`, the `decision-reminder.sh` hook fires automatically on phase transitions (via UserPromptSubmit) to remind the agent to log decisions. This is a shell hook, not an orchestrator prompt.
 
 ## Gate Criteria
 

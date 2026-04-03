@@ -107,6 +107,30 @@ Before proceeding to methodology-review, verify ALL of:
 - `drl learn` after corrections, unexpected results, or novel findings
 - Log progress notes to beads tasks
 
+## Failure and Recovery
+
+If the work phase fails mid-execution:
+
+1. **Analysis code fails** (runtime errors, data issues):
+   - Check data loading and cleaning steps first
+   - Verify variable operationalization matches the plan
+   - Log any data issues discovered to `docs/decisions/`
+   - Fix and re-run -- do not skip failed analyses
+
+2. **Tests fail** (`uv run python -m pytest` returns errors):
+   - Read the test output and fix the failing tests or the code they exercise
+   - Do not proceed to review with failing tests
+
+3. **Unexpected results** (sign flips, non-significance):
+   - Do NOT discard or hide unfavorable results
+   - Log the unexpected finding to `docs/decisions/`
+   - Flag for human review via `AskUserQuestion`
+   - Report all results in the paper, including unexpected ones
+
+4. **Partial completion** (some tasks done, agent interrupted):
+   - Check `bd list --status=in_progress` for unfinished tasks
+   - Resume from the last incomplete task -- completed work is preserved in `paper/outputs/`
+
 ## Common Pitfalls
 
 - Running analyses without verifying the research spec was approved

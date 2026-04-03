@@ -113,6 +113,8 @@ Between each phase:
 4. Search memory (`drl search`) for relevant context entering the next phase
 5. Log any phase-transition decisions to `docs/decisions/`
 
+**Decision logging hook**: The `decision-reminder.sh` hook fires automatically on UserPromptSubmit when a phase transition is detected. It reads `.claude/.ca-phase-state.json` to track the current phase and emits a reminder to log decisions to `docs/decisions/`. This is a shell hook, not an orchestrator prompt -- it runs automatically without agent action.
+
 ## Beads Integration
 
 - Track progress via `bd show <epic-id>` at each phase

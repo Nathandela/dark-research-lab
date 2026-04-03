@@ -9,7 +9,20 @@ description: Interactive onboarding wizard that guides new researchers through t
 
 Guide a new researcher through the Dark Research Lab (DRL) framework -- an autonomous research paper factory for social science. This wizard walks through the entire setup process, from understanding the framework to launching a first research project.
 
-## Step 1: Explain the DRL Framework
+## Step 1: Detect Existing Project State
+
+Before explaining the framework, check whether the project already has content:
+
+1. **Check literature**: `ls literature/pdfs/` -- if PDFs exist, note the count and skip the "start from scratch" guidance
+2. **Check decisions**: `ls docs/decisions/[0-9]*.md` -- if ADRs exist, the project has prior methodology decisions
+3. **Check paper sections**: `ls paper/sections/*.tex` -- if sections exist, prior analysis work was done
+
+Based on what already exists:
+- **Empty project**: Proceed with full onboarding (all steps below)
+- **Literature exists, no analysis**: Skip literature setup (Step 5), focus on architect phase
+- **Analysis in progress**: Summarize existing state and ask what needs to change or continue
+
+## Step 2: Explain the DRL Framework
 
 Introduce the researcher to the DRL research pipeline:
 
@@ -21,7 +34,7 @@ Introduce the researcher to the DRL research pipeline:
    - **Literature index**: Indexed papers in `literature/pdfs/` that inform the research
    - **LaTeX output**: Final paper compiled from `paper/main.tex` with tables and figures
 
-## Step 2: Ask About the Research Question
+## Step 3: Ask About the Research Question
 
 Use `AskUserQuestion` to understand the researcher's goals:
 
@@ -33,7 +46,7 @@ Use `AskUserQuestion` to understand the researcher's goals:
 
 Record the answers -- they feed into flavor configuration and the architect phase.
 
-## Step 3: Ask About Data
+## Step 4: Ask About Data
 
 Use `AskUserQuestion` to understand the data situation:
 
@@ -45,7 +58,7 @@ Use `AskUserQuestion` to understand the data situation:
 
 If no data exists yet, note this -- the architect phase will include a data collection epic.
 
-## Step 4: Suggest Flavor Configuration
+## Step 5: Suggest Flavor Configuration
 
 Explain that DRL skills can be customized for field-specific conventions:
 
@@ -54,7 +67,7 @@ Explain that DRL skills can be customized for field-specific conventions:
 3. If now, recommend running `/drl:flavor` with their field and target journal
 4. Common configurations: APA for psychology, Chicago for sociology, journal-specific for economics
 
-## Step 5: Guide Literature Setup
+## Step 6: Guide Literature Setup
 
 Explain how to populate the literature base:
 
@@ -64,7 +77,7 @@ Explain how to populate the literature base:
 4. **Minimum threshold**: Recommend at least 5-10 core papers before starting the architect phase
 5. **BibTeX**: Ensure `paper/Ref.bib` contains entries for all cited works
 
-## Step 6: Suggest Next Steps
+## Step 7: Suggest Next Steps
 
 Recommend the natural progression:
 
@@ -74,7 +87,7 @@ Recommend the natural progression:
 
 Explain the full pipeline: `/drl:architect` -> `/drl:cook-it` -> `/drl:compile`
 
-## Step 7: Explain Monitoring
+## Step 8: Explain Monitoring
 
 Show how to track progress throughout the research:
 

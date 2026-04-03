@@ -99,6 +99,24 @@ Use `AskUserQuestion` to confirm the methodology with the researcher before proc
 - `drl learn` after methodology choices are made
 - Log each methodological decision to `docs/decisions/` using the ADR template
 
+## Failure and Recovery
+
+If the plan phase fails mid-execution:
+
+1. **Methodology reviewer rejects the approach**:
+   - Log the rejection rationale to `docs/decisions/`
+   - Revise the methodology based on feedback
+   - Re-submit for review -- do not skip the gate
+
+2. **Variable operationalization blocked** (data source unavailable):
+   - Document the missing data as a beads note
+   - Propose alternative operationalizations with available data
+   - Log the pivot decision to `docs/decisions/`
+
+3. **Human gate times out**:
+   - Save the current plan to the epic description/notes
+   - Update beads: `bd update <id> --notes="Plan draft complete, awaiting approval"`
+
 ## Common Pitfalls
 
 - Defining variables without specifying the exact measurement
