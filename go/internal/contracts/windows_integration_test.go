@@ -26,7 +26,7 @@ func repoRoot(t *testing.T) string {
 	}
 	// go/internal/contracts -> go -> repo root
 	root := filepath.Join(wd, "..", "..", "..")
-	if _, err := os.Stat(filepath.Join(root, "package.json")); err != nil {
+	if _, err := os.Stat(filepath.Join(root, ".git")); err != nil {
 		t.Fatalf("cannot locate repo root from %s: %v", wd, err)
 	}
 	return root
