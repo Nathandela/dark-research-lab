@@ -2,7 +2,7 @@
 # decision-reminder.sh - Advisory reminder to log methodological decisions
 # Fires on UserPromptSubmit when cook-it is active
 #
-# .ca-phase-state.json format:
+# .drl-phase-state.json format:
 #   cookit_active  (bool)   - whether a cook-it session is running
 #   current_phase  (string) - active workflow phase (e.g. "spec-dev", "analysis")
 #   epic_id        (string) - bead ID of the parent epic
@@ -13,7 +13,7 @@
 #   and deleted when cook-it session ends (cookit_active becomes false).
 
 REPO_ROOT="${DRL_REPO_ROOT:-$(cd "$(dirname "$0")/../.." && pwd)}"
-PHASE_STATE="$REPO_ROOT/.claude/.ca-phase-state.json"
+PHASE_STATE="$REPO_ROOT/.claude/.drl-phase-state.json"
 LAST_PHASE_FILE="$REPO_ROOT/.claude/.drl-last-phase"
 
 # Exit silently if no phase state (not in cook-it)

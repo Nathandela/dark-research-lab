@@ -86,7 +86,7 @@ class TestDecisionReminderHook:
         with tempfile.TemporaryDirectory() as tmpdir:
             claude_dir = Path(tmpdir) / ".claude"
             claude_dir.mkdir()
-            phase_state = claude_dir / ".ca-phase-state.json"
+            phase_state = claude_dir / ".drl-phase-state.json"
             phase_state.write_text(json.dumps({
                 "cookit_active": True,
                 "current_phase": "work",
@@ -102,7 +102,7 @@ class TestDecisionReminderHook:
         with tempfile.TemporaryDirectory() as tmpdir:
             claude_dir = Path(tmpdir) / ".claude"
             claude_dir.mkdir()
-            phase_state = claude_dir / ".ca-phase-state.json"
+            phase_state = claude_dir / ".drl-phase-state.json"
             phase_state.write_text(json.dumps({
                 "cookit_active": False,
                 "current_phase": "work",
@@ -117,7 +117,7 @@ class TestDecisionReminderHook:
         with tempfile.TemporaryDirectory() as tmpdir:
             claude_dir = Path(tmpdir) / ".claude"
             claude_dir.mkdir()
-            phase_state = claude_dir / ".ca-phase-state.json"
+            phase_state = claude_dir / ".drl-phase-state.json"
             phase_state.write_text(json.dumps({
                 "cookit_active": True,
                 "current_phase": "work",
@@ -246,7 +246,7 @@ class TestCLAUDEmd:
 
 
 class TestDecisionReminderDocumentation:
-    """Epic-eng AC-2: decision-reminder.sh documents .ca-phase-state.json format."""
+    """Epic-eng AC-2: decision-reminder.sh documents .drl-phase-state.json format."""
 
     HOOK_SCRIPT = REPO_ROOT / "scripts" / "hooks" / "decision-reminder.sh"
 
@@ -255,7 +255,7 @@ class TestDecisionReminderDocumentation:
         content = self.HOOK_SCRIPT.read_text()
         for key in ["cookit_active", "current_phase", "epic_id"]:
             assert key in content, (
-                f"decision-reminder.sh must document .ca-phase-state.json key: {key}"
+                f"decision-reminder.sh must document .drl-phase-state.json key: {key}"
             )
 
     def test_documents_drl_last_phase_lifecycle(self):
@@ -432,16 +432,16 @@ class TestAGENTSmd:
 
 
 class TestCookItPhaseStateSchema:
-    """AC-1: cook-it/SKILL.md documents .ca-phase-state.json schema."""
+    """AC-1: cook-it/SKILL.md documents .drl-phase-state.json schema."""
 
     SKILL = REPO_ROOT / ".claude" / "skills" / "drl" / "cook-it" / "SKILL.md"
 
     def test_documents_all_schema_fields(self):
-        """Must document all three fields of .ca-phase-state.json."""
+        """Must document all three fields of .drl-phase-state.json."""
         content = self.SKILL.read_text()
         for field in ["cookit_active", "current_phase", "epic_id"]:
             assert field in content, (
-                f"cook-it/SKILL.md must document .ca-phase-state.json field: {field}"
+                f"cook-it/SKILL.md must document .drl-phase-state.json field: {field}"
             )
 
     def test_documents_field_types(self):
@@ -502,7 +502,7 @@ class TestDecisionReminderCleanup:
         with tempfile.TemporaryDirectory() as tmpdir:
             claude_dir = Path(tmpdir) / ".claude"
             claude_dir.mkdir()
-            phase_state = claude_dir / ".ca-phase-state.json"
+            phase_state = claude_dir / ".drl-phase-state.json"
             phase_state.write_text(json.dumps({
                 "cookit_active": False,
                 "current_phase": "work",
