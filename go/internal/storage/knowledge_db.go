@@ -192,6 +192,46 @@ func knowledgeNeedsRebuild(path string) bool {
 
 // --- CRUD operations ---
 
+// ReplaceChunksAtomic deletes old chunks for relPath, upserts new ones, and sets
+// the file hash — all within a single transaction.
+func (k *KnowledgeDB) ReplaceChunksAtomic(relPath string, chunks []KnowledgeChunk, hash string) error {
+	tx, err := k.db.Begin()
+	if err != nil {
+		return fmt.Errorf("begin: %w", err)
+	}
+	defer tx.Rollback()
+
+	// Delete old chunks
+	if _, err := tx.Exec("DELETE FROM chunks WHERE file_path = ?", relPath); err != nil {
+		return fmt.Errorf("delete old chunks: %w", err)
+	}
+
+	// Upsert new chunks
+	if len(chunks) > 0 {
+		stmt, err := tx.Prepare(`INSERT OR REPLACE INTO chunks
+			(id, file_path, start_line, end_line, content_hash, text, embedding, model, updated_at)
+			VALUES (?, ?, ?, ?, ?, ?, NULL, ?, ?)`)
+		if err != nil {
+			return fmt.Errorf("prepare upsert: %w", err)
+		}
+		defer stmt.Close()
+
+		for _, c := range chunks {
+			model := sql.NullString{String: c.Model, Valid: c.Model != ""}
+			if _, err := stmt.Exec(c.ID, c.FilePath, c.StartLine, c.EndLine, c.ContentHash, c.Text, model, c.UpdatedAt); err != nil {
+				return fmt.Errorf("exec upsert: %w", err)
+			}
+		}
+	}
+
+	// Set file hash
+	if _, err := tx.Exec("INSERT OR REPLACE INTO metadata (key, value) VALUES (?, ?)", fileHashKey(relPath), hash); err != nil {
+		return fmt.Errorf("set file hash: %w", err)
+	}
+
+	return tx.Commit()
+}
+
 // UpsertChunks inserts or replaces chunks in a single transaction.
 func (k *KnowledgeDB) UpsertChunks(chunks []KnowledgeChunk) error {
 	if len(chunks) == 0 {

@@ -2,6 +2,7 @@ package literature
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"time"
@@ -93,32 +94,23 @@ func IndexLiterature(repoRoot string, kdb *storage.KnowledgeDB, opts *IndexOptio
 	return result, nil
 }
 
-// replaceChunks atomically deletes old chunks and upserts new ones within a transaction.
+// replaceChunks atomically deletes old chunks and upserts new ones within a single transaction.
 func replaceChunks(kdb *storage.KnowledgeDB, relPath string, chunks []storage.KnowledgeChunk, hash string) error {
-	tx, err := kdb.DB().Begin()
-	if err != nil {
-		return fmt.Errorf("begin transaction: %w", err)
-	}
-	defer tx.Rollback()
+	return kdb.ReplaceChunksAtomic(relPath, chunks, hash)
+}
 
-	if err := kdb.DeleteChunksByFilePath([]string{relPath}); err != nil {
-		return fmt.Errorf("delete old chunks: %w", err)
+// pythonPath returns the venv python if available, otherwise falls back to python3.
+func pythonPath(repoRoot string) string {
+	venvPython := filepath.Join(repoRoot, ".venv", "bin", "python")
+	if _, err := os.Stat(venvPython); err == nil {
+		return venvPython
 	}
-	if len(chunks) > 0 {
-		if err := kdb.UpsertChunks(chunks); err != nil {
-			return fmt.Errorf("upsert chunks: %w", err)
-		}
-	}
-	if err := kdb.SetFileHash(relPath, hash); err != nil {
-		return fmt.Errorf("set file hash: %w", err)
-	}
-
-	return tx.Commit()
+	return "python3"
 }
 
 // extractPDF calls the Python extraction script and returns parsed results.
 func extractPDF(repoRoot, pdfPath string) (*ExtractedPDF, error) {
-	cmd := exec.Command("python3", "-m", "src.literature.extract", "--json", pdfPath)
+	cmd := exec.Command(pythonPath(repoRoot), "-m", "src.literature.extract", "--json", pdfPath)
 	cmd.Dir = repoRoot
 
 	output, err := cmd.Output()

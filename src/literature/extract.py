@@ -4,7 +4,6 @@ Uses PyMuPDF (fitz) for fast, accurate text extraction from academic papers.
 Can be called as a module: python -m src.literature.extract [--json] <pdf_path>
 """
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -78,19 +77,6 @@ def extract_metadata(pdf_path: Path | str) -> dict:
         "creation_date": (meta.get("creationDate") or "").strip(),
         "filename": pdf_path.name,
     }
-
-
-def make_slug(filename: str) -> str:
-    """Convert a filename to a URL-safe slug.
-
-    Strips the extension, lowercases, replaces non-alphanumeric with dashes,
-    and collapses consecutive dashes.
-    """
-    stem = Path(filename).stem
-    slug = stem.lower()
-    slug = re.sub(r"[^a-z0-9]+", "-", slug)
-    slug = slug.strip("-")
-    return slug
 
 
 def _cli_main() -> int:

@@ -59,7 +59,7 @@ class TestDrlIndex:
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
-            env={**os.environ, "DRL_REPO_ROOT": str(test_repo)},
+            env={**os.environ, "DRL_ROOT": str(test_repo)},
         )
         assert result.returncode == 0, f"stderr: {result.stderr}"
         assert "chunk(s) created" in result.stdout
@@ -72,7 +72,7 @@ class TestDrlIndex:
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
-            env={**os.environ, "DRL_REPO_ROOT": str(test_repo)},
+            env={**os.environ, "DRL_ROOT": str(test_repo)},
         )
         notes = list((test_repo / "literature" / "notes").glob("*.md"))
         assert len(notes) > 0, "Summary note not generated"
@@ -82,7 +82,7 @@ class TestDrlIndex:
     def test_index_idempotent(self, test_repo):
         """Re-running drl index without changes skips unchanged PDFs."""
         _skip_if_no_binary()
-        env = {**os.environ, "DRL_REPO_ROOT": str(test_repo)}
+        env = {**os.environ, "DRL_ROOT": str(test_repo)}
         # First run
         subprocess.run(
             [str(DRL_BINARY), "index", "--force"],
@@ -107,7 +107,7 @@ class TestDrlKnowledge:
     def test_knowledge_returns_results(self, test_repo):
         """drl knowledge returns relevant chunks for a known query."""
         _skip_if_no_binary()
-        env = {**os.environ, "DRL_REPO_ROOT": str(test_repo)}
+        env = {**os.environ, "DRL_ROOT": str(test_repo)}
         # Index first
         subprocess.run(
             [str(DRL_BINARY), "index", "--force"],
@@ -130,7 +130,7 @@ class TestDrlKnowledge:
     def test_knowledge_json_output(self, test_repo):
         """drl knowledge --json returns valid JSON with expected fields."""
         _skip_if_no_binary()
-        env = {**os.environ, "DRL_REPO_ROOT": str(test_repo)}
+        env = {**os.environ, "DRL_ROOT": str(test_repo)}
         # Index first
         subprocess.run(
             [str(DRL_BINARY), "index", "--force"],
@@ -166,7 +166,7 @@ class TestEmbedDaemonHealthCheck:
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
-            env={**os.environ, "DRL_REPO_ROOT": str(test_repo), "PATH": ""},
+            env={**os.environ, "DRL_ROOT": str(test_repo), "PATH": ""},
         )
         # Should either error or warn about daemon
         assert result.returncode != 0 or "not running" in result.stderr.lower() or "not available" in result.stderr.lower() or "daemon" in result.stderr.lower()

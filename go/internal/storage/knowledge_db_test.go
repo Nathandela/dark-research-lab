@@ -130,6 +130,41 @@ func TestDeleteChunksByFilePath(t *testing.T) {
 	}
 }
 
+func TestReplaceChunksAtomic(t *testing.T) {
+	db := openTestKnowledgeDB(t)
+	kdb := NewKnowledgeDB(db)
+
+	now := time.Now().UTC().Format(time.RFC3339)
+
+	// Seed with initial chunks
+	kdb.UpsertChunks([]KnowledgeChunk{
+		{ID: "old1", FilePath: "lit/paper.pdf", StartLine: 1, EndLine: 5, ContentHash: "h1", Text: "old text", UpdatedAt: now},
+		{ID: "old2", FilePath: "lit/paper.pdf", StartLine: 6, EndLine: 10, ContentHash: "h2", Text: "old text 2", UpdatedAt: now},
+		{ID: "other", FilePath: "lit/other.pdf", StartLine: 1, EndLine: 5, ContentHash: "h3", Text: "keep me", UpdatedAt: now},
+	})
+
+	// Replace chunks for paper.pdf
+	newChunks := []KnowledgeChunk{
+		{ID: "new1", FilePath: "lit/paper.pdf", StartLine: 1, EndLine: 10, ContentHash: "h4", Text: "new text", UpdatedAt: now},
+	}
+	if err := kdb.ReplaceChunksAtomic("lit/paper.pdf", newChunks, "newhash"); err != nil {
+		t.Fatalf("ReplaceChunksAtomic: %v", err)
+	}
+
+	// Old chunks for paper.pdf should be gone, new one present
+	if count := kdb.GetChunkCountByFilePath("lit/paper.pdf"); count != 1 {
+		t.Errorf("paper.pdf chunks = %d, want 1", count)
+	}
+	// Other file untouched
+	if count := kdb.GetChunkCountByFilePath("lit/other.pdf"); count != 1 {
+		t.Errorf("other.pdf chunks = %d, want 1", count)
+	}
+	// Hash should be set
+	if hash := kdb.GetFileHash("lit/paper.pdf"); hash != "newhash" {
+		t.Errorf("file hash = %q, want %q", hash, "newhash")
+	}
+}
+
 func TestGetIndexedFilePaths(t *testing.T) {
 	db := openTestKnowledgeDB(t)
 	kdb := NewKnowledgeDB(db)

@@ -146,23 +146,6 @@ class TestExtractMetadata:
         assert len(meta["title"]) > 0
 
 
-class TestMakeSlug:
-    def test_basic_slug(self):
-        from src.literature.extract import make_slug
-
-        assert make_slug("My Research Paper.pdf") == "my-research-paper"
-
-    def test_removes_special_chars(self):
-        from src.literature.extract import make_slug
-
-        assert make_slug("Paper (2024) - Final!.pdf") == "paper-2024-final"
-
-    def test_collapses_dashes(self):
-        from src.literature.extract import make_slug
-
-        assert make_slug("a---b___c.pdf") == "a-b-c"
-
-
 # ---------------------------------------------------------------------------
 # CLI extraction script tests
 # ---------------------------------------------------------------------------

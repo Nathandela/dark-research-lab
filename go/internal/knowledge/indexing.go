@@ -94,15 +94,7 @@ func indexSingleFile(repoRoot string, kdb *storage.KnowledgeDB, relPath string, 
 
 	kChunks := toKnowledgeChunks(relPath, string(content))
 
-	if err := kdb.DeleteChunksByFilePath([]string{relPath}); err != nil {
-		return false, -1
-	}
-	if len(kChunks) > 0 {
-		if err := kdb.UpsertChunks(kChunks); err != nil {
-			return false, -1
-		}
-	}
-	if err := kdb.SetFileHash(relPath, hash); err != nil {
+	if err := kdb.ReplaceChunksAtomic(relPath, kChunks, hash); err != nil {
 		return false, -1
 	}
 
