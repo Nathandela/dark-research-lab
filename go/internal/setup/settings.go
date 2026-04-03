@@ -1,0 +1,508 @@
+// Package setup provides Claude Code settings management and hook installation.
+package setup
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+
+	"github.com/nathandelacretaz/dark-research-lab/internal/util"
+)
+
+// HookMarkers are strings that identify dark-research-lab hooks in settings.json.
+var HookMarkers = []string{
+	"BIN prime",
+	"BIN load-session",
+	"drl load-session",
+	"dark-research-lab load-session",
+	"BIN hooks run user-prompt",
+	"BIN hooks run post-tool-failure",
+	"BIN hooks run post-tool-success",
+	"BIN hooks run phase-guard",
+	"BIN hooks run read-tracker",
+	"BIN hooks run stop-audit",
+	"BIN hooks run post-read",
+	"BIN hooks run phase-audit",
+	"BIN index-docs",
+	"hook-runner.js",
+}
+
+// HookTypes managed by dark-research-lab.
+var HookTypes = []string{
+	"SessionStart", "PreCompact", "UserPromptSubmit",
+	"PostToolUseFailure", "PostToolUse", "PreToolUse", "Stop",
+}
+
+type managedHookSpec struct {
+	hookType     string
+	matcher      string
+	markers      []string
+	buildCommand func(binaryPath string) string
+}
+
+var managedHookSpecs = []managedHookSpec{
+	{hookType: "SessionStart", matcher: "", markers: []string{"BIN prime"}, buildCommand: makePrimeCommand},
+	{hookType: "PreCompact", matcher: "", markers: []string{"BIN prime"}, buildCommand: makePrimeCommand},
+	{
+		hookType: "UserPromptSubmit",
+		matcher:  "",
+		markers:  []string{"BIN hooks run user-prompt", "hook-runner.js\" user-prompt"},
+		buildCommand: func(binaryPath string) string {
+			return makeHookCommand(binaryPath, "user-prompt")
+		},
+	},
+	{
+		hookType: "PostToolUseFailure",
+		matcher:  "Bash|Edit|Write",
+		markers:  []string{"BIN hooks run post-tool-failure", "hook-runner.js\" post-tool-failure"},
+		buildCommand: func(binaryPath string) string {
+			return makeHookCommand(binaryPath, "post-tool-failure")
+		},
+	},
+	{
+		hookType: "PostToolUse",
+		matcher:  "Bash|Edit|Write",
+		markers:  []string{"BIN hooks run post-tool-success", "hook-runner.js\" post-tool-success"},
+		buildCommand: func(binaryPath string) string {
+			return makeHookCommand(binaryPath, "post-tool-success")
+		},
+	},
+	{
+		hookType: "PostToolUse",
+		matcher:  "Read",
+		markers:  []string{"BIN hooks run post-read", "BIN hooks run read-tracker", "hook-runner.js\" post-read"},
+		buildCommand: func(binaryPath string) string {
+			return makeHookCommand(binaryPath, "post-read")
+		},
+	},
+	{
+		hookType: "PreToolUse",
+		matcher:  "Edit|Write",
+		markers:  []string{"BIN hooks run phase-guard", "hook-runner.js\" phase-guard"},
+		buildCommand: func(binaryPath string) string {
+			return makeHookCommand(binaryPath, "phase-guard")
+		},
+	},
+	{
+		hookType: "Stop",
+		matcher:  "",
+		markers:  []string{"BIN hooks run phase-audit", "BIN hooks run stop-audit", "hook-runner.js\" phase-audit"},
+		buildCommand: func(binaryPath string) string {
+			return makeHookCommand(binaryPath, "phase-audit")
+		},
+	},
+}
+
+// ReadClaudeSettings reads and parses a Claude Code settings.json file.
+// Returns empty map if file does not exist.
+func ReadClaudeSettings(path string) (map[string]any, error) {
+	data, err := os.ReadFile(path)
+	if os.IsNotExist(err) {
+		return map[string]any{}, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("read settings: %w", err)
+	}
+	var settings map[string]any
+	if err := json.Unmarshal(data, &settings); err != nil {
+		return nil, fmt.Errorf("parse settings: %w", err)
+	}
+	return settings, nil
+}
+
+// WriteClaudeSettings writes settings.json atomically (write to temp, then rename).
+func WriteClaudeSettings(path string, settings map[string]any) error {
+	dir := filepath.Dir(path)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return fmt.Errorf("create directory: %w", err)
+	}
+	data, err := json.MarshalIndent(settings, "", "  ")
+	if err != nil {
+		return fmt.Errorf("marshal settings: %w", err)
+	}
+	data = append(data, '\n')
+
+	tmpPath := path + ".tmp"
+	if err := os.WriteFile(tmpPath, data, 0644); err != nil {
+		return fmt.Errorf("write temp file: %w", err)
+	}
+	return os.Rename(tmpPath, path)
+}
+
+// makeHookCommand builds the shell command for a hook invocation.
+// binaryPath is shell-escaped to handle paths with spaces.
+func makeHookCommand(binaryPath, hookName string) string {
+	if binaryPath != "" {
+		return fmt.Sprintf("%s hooks run %s 2>/dev/null || true", util.ShellEscape(binaryPath), hookName)
+	}
+	return fmt.Sprintf("npx drl hooks run %s 2>/dev/null || true", hookName)
+}
+
+// makePrimeCommand builds the prime command.
+// binaryPath is shell-escaped to handle paths with spaces.
+func makePrimeCommand(binaryPath string) string {
+	if binaryPath != "" {
+		return fmt.Sprintf("%s prime 2>/dev/null || true", util.ShellEscape(binaryPath))
+	}
+	return "npx drl prime 2>/dev/null || true"
+}
+
+// hookEntry creates a single hook configuration entry.
+func hookEntry(matcher, command string) map[string]any {
+	return map[string]any{
+		"matcher": matcher,
+		"hooks": []any{
+			map[string]any{
+				"type":    "command",
+				"command": command,
+			},
+		},
+	}
+}
+
+// getHooksMap retrieves or creates the hooks map in settings.
+func getHooksMap(settings map[string]any) map[string]any {
+	if settings["hooks"] == nil {
+		settings["hooks"] = map[string]any{}
+	}
+	hooks, ok := settings["hooks"].(map[string]any)
+	if !ok {
+		hooks = map[string]any{}
+		settings["hooks"] = hooks
+	}
+	return hooks
+}
+
+// getHookArray retrieves or creates a hook type array.
+func getHookArray(hooks map[string]any, hookType string) []any {
+	if hooks[hookType] == nil {
+		hooks[hookType] = []any{}
+	}
+	arr, ok := hooks[hookType].([]any)
+	if !ok {
+		arr = []any{}
+		hooks[hookType] = arr
+	}
+	return arr
+}
+
+// hasHookMarker checks if any entry in the array contains any of the given markers.
+func hasHookMarker(arr []any, markers []string) bool {
+	for _, entry := range arr {
+		entryMap, ok := entry.(map[string]any)
+		if !ok {
+			continue
+		}
+		hooksList, ok := entryMap["hooks"].([]any)
+		if !ok {
+			continue
+		}
+		for _, h := range hooksList {
+			hMap, ok := h.(map[string]any)
+			if !ok {
+				continue
+			}
+			cmd, _ := hMap["command"].(string)
+			for _, marker := range markers {
+				if commandHasMarker(cmd, marker) {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+func normalizeManagedCommand(cmd string) string {
+	trimmed := strings.TrimSpace(cmd)
+	if strings.HasPrefix(trimmed, "npx drl ") {
+		return "BIN " + strings.TrimPrefix(trimmed, "npx drl ")
+	}
+	if strings.HasPrefix(trimmed, "'") {
+		if end := strings.Index(trimmed[1:], "'"); end >= 0 {
+			return "BIN" + trimmed[end+2:]
+		}
+	}
+	if idx := strings.Index(trimmed, " "); idx >= 0 {
+		first := trimmed[:idx]
+		if first == "drl" || strings.HasSuffix(first, "/drl") {
+			return "BIN" + trimmed[idx:]
+		}
+	}
+	return trimmed
+}
+
+func commandHasMarker(cmd, marker string) bool {
+	if strings.Contains(cmd, marker) {
+		return true
+	}
+	if strings.HasPrefix(marker, "BIN ") {
+		return strings.Contains(normalizeManagedCommand(cmd), marker)
+	}
+	return false
+}
+
+func hookHasMarker(hook any, markers []string) bool {
+	hMap, ok := hook.(map[string]any)
+	if !ok {
+		return false
+	}
+	cmd, _ := hMap["command"].(string)
+	for _, marker := range markers {
+		if commandHasMarker(cmd, marker) {
+			return true
+		}
+	}
+	return false
+}
+
+func filterHookEntries(arr []any, markers []string) ([]any, int, string) {
+	filtered := make([]any, 0, len(arr))
+	matchCount := 0
+	firstCommand := ""
+
+	for _, entry := range arr {
+		entryMap, ok := entry.(map[string]any)
+		if !ok {
+			filtered = append(filtered, entry)
+			continue
+		}
+		hooksList, ok := entryMap["hooks"].([]any)
+		if !ok {
+			filtered = append(filtered, entry)
+			continue
+		}
+
+		keptHooks := make([]any, 0, len(hooksList))
+		removedAny := false
+		for _, hook := range hooksList {
+			if hookHasMarker(hook, markers) {
+				if firstCommand == "" {
+					hMap, _ := hook.(map[string]any)
+					firstCommand, _ = hMap["command"].(string)
+				}
+				matchCount++
+				removedAny = true
+				continue
+			}
+			keptHooks = append(keptHooks, hook)
+		}
+
+		if !removedAny {
+			filtered = append(filtered, entry)
+			continue
+		}
+		if len(keptHooks) == 0 {
+			continue
+		}
+
+		cloned := make(map[string]any, len(entryMap))
+		for key, value := range entryMap {
+			cloned[key] = value
+		}
+		cloned["hooks"] = keptHooks
+		filtered = append(filtered, cloned)
+	}
+
+	return filtered, matchCount, firstCommand
+}
+
+// upgradeNpxHooks replaces "npx drl" commands with the direct binary path.
+// This is needed because npx resolution fails in Claude Code hook contexts
+// (different PATH/environment). Called when binaryPath is available.
+func upgradeNpxHooks(hooks map[string]any, binaryPath string) {
+	if binaryPath == "" {
+		return
+	}
+	escaped := util.ShellEscape(binaryPath)
+	for _, hookType := range HookTypes {
+		arr := getHookArray(hooks, hookType)
+		for _, entry := range arr {
+			entryMap, ok := entry.(map[string]any)
+			if !ok {
+				continue
+			}
+			hooksList, ok := entryMap["hooks"].([]any)
+			if !ok {
+				continue
+			}
+			for _, h := range hooksList {
+				hMap, ok := h.(map[string]any)
+				if !ok {
+					continue
+				}
+				cmd, _ := hMap["command"].(string)
+				if strings.Contains(cmd, "npx drl ") {
+					upgraded := strings.Replace(cmd, "npx drl ", escaped+" ", 1)
+					hMap["command"] = upgraded
+				}
+			}
+		}
+	}
+}
+
+// AddAllHooks adds all dark-research-lab hooks to settings.
+// binaryPath can be empty string for npx fallback, or path to Go binary.
+func AddAllHooks(settings map[string]any, binaryPath string) {
+	hooks := getHooksMap(settings)
+
+	// Upgrade existing npx-based hooks to use direct binary path
+	upgradeNpxHooks(hooks, binaryPath)
+
+	for _, spec := range managedHookSpecs {
+		arr := getHookArray(hooks, spec.hookType)
+		filtered, _, firstCommand := filterHookEntries(arr, spec.markers)
+		command := spec.buildCommand(binaryPath)
+		if binaryPath == "" && firstCommand != "" && !strings.Contains(firstCommand, "npx drl ") {
+			command = firstCommand
+		}
+		hooks[spec.hookType] = append(filtered, hookEntry(spec.matcher, command))
+	}
+}
+
+// HasAllHooks checks if all required dark-research-lab hooks are installed.
+func HasAllHooks(settings map[string]any) bool {
+	hooks, ok := settings["hooks"].(map[string]any)
+	if !ok {
+		return false
+	}
+
+	for _, spec := range managedHookSpecs {
+		arr, ok := hooks[spec.hookType].([]any)
+		if !ok {
+			return false
+		}
+		if !hasHookMarker(arr, spec.markers) {
+			return false
+		}
+	}
+	return true
+}
+
+// hookArrayHasNpx checks if any entry in a hook array contains npx commands.
+func hookArrayHasNpx(arr []any) bool {
+	for _, entry := range arr {
+		entryMap, ok := entry.(map[string]any)
+		if !ok {
+			continue
+		}
+		hooksList, ok := entryMap["hooks"].([]any)
+		if !ok {
+			continue
+		}
+		for _, h := range hooksList {
+			hMap, ok := h.(map[string]any)
+			if !ok {
+				continue
+			}
+			cmd, _ := hMap["command"].(string)
+			if strings.Contains(cmd, "npx drl ") {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// HooksNeedUpgrade returns true if hooks exist but use npx commands
+// and a binary path is available for upgrade.
+func HooksNeedUpgrade(settings map[string]any, binaryPath string) bool {
+	if binaryPath == "" {
+		return false
+	}
+	hooks, ok := settings["hooks"].(map[string]any)
+	if !ok {
+		return false
+	}
+	for _, hookType := range HookTypes {
+		arr, ok := hooks[hookType].([]any)
+		if !ok {
+			continue
+		}
+		if hookArrayHasNpx(arr) {
+			return true
+		}
+	}
+	return false
+}
+
+// HooksNeedDedupe returns true if dark-research-lab hooks are duplicated and should be reconciled.
+func HooksNeedDedupe(settings map[string]any) bool {
+	hooks, ok := settings["hooks"].(map[string]any)
+	if !ok {
+		return false
+	}
+	for _, spec := range managedHookSpecs {
+		arr, ok := hooks[spec.hookType].([]any)
+		if !ok {
+			continue
+		}
+		_, matchCount, _ := filterHookEntries(arr, spec.markers)
+		if matchCount > 1 {
+			return true
+		}
+	}
+	return false
+}
+
+// isCompoundHookEntry returns true if the hook entry contains any dark-research-lab marker.
+func isCompoundHookEntry(entry any) bool {
+	entryMap, ok := entry.(map[string]any)
+	if !ok {
+		return false
+	}
+	hooksList, ok := entryMap["hooks"].([]any)
+	if !ok {
+		return false
+	}
+	for _, h := range hooksList {
+		hMap, ok := h.(map[string]any)
+		if !ok {
+			continue
+		}
+		cmd, _ := hMap["command"].(string)
+		for _, marker := range HookMarkers {
+			if commandHasMarker(cmd, marker) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// removeHookEntries filters out dark-research-lab entries from a hook type array.
+// Returns the filtered array and whether any entries were removed.
+func removeHookEntries(arr []any) ([]any, bool) {
+	filtered := make([]any, 0, len(arr))
+	for _, entry := range arr {
+		if !isCompoundHookEntry(entry) {
+			filtered = append(filtered, entry)
+		}
+	}
+	return filtered, len(filtered) < len(arr)
+}
+
+// RemoveAllHooks removes all dark-research-lab hooks from settings.
+func RemoveAllHooks(settings map[string]any) bool {
+	hooks, ok := settings["hooks"].(map[string]any)
+	if !ok {
+		return false
+	}
+
+	anyRemoved := false
+	for _, hookType := range HookTypes {
+		arr, ok := hooks[hookType].([]any)
+		if !ok {
+			continue
+		}
+		filtered, removed := removeHookEntries(arr)
+		if removed {
+			anyRemoved = true
+		}
+		hooks[hookType] = filtered
+	}
+
+	return anyRemoved
+}

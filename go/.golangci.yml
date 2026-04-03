@@ -1,0 +1,81 @@
+version: "2"
+run: {}
+linters:
+  enable:
+    - cyclop
+    - funlen
+    - gosec
+    - revive
+  settings:
+    cyclop:
+      max-complexity: 10
+    funlen:
+      lines: 50
+      statements: 40
+    gosec:
+      includes:
+        - G201
+        - G202
+    revive:
+      rules:
+        - name: blank-imports
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: dot-imports
+        - name: error-return
+        - name: error-strings
+        - name: error-naming
+        - name: exported
+        - name: if-return
+        - name: increment-decrement
+        - name: var-naming
+        - name: package-comments
+          disabled: true
+        - name: range
+        - name: receiver-naming
+        - name: time-naming
+        - name: unexported-return
+        - name: indent-error-flow
+        - name: errorf
+        - name: empty-block
+        - name: superfluous-else
+        - name: unreachable-code
+        - name: redefines-builtin-id
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - funlen
+        path: _test\.go
+      - linters:
+          - cyclop
+        path: _test\.go
+      - linters:
+          - errcheck
+        path: _test\.go
+      - linters:
+          - revive
+        path: _test\.go
+        text: dot-imports
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
