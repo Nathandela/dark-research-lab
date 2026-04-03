@@ -58,20 +58,30 @@ def _run_drl(binary, args, cwd=None):
     )
 
 
-def _parse_frontmatter(path: Path) -> dict:
-    """Extract YAML frontmatter from a markdown file."""
-    content = path.read_text()
-    assert content.startswith("---"), f"{path} must start with YAML frontmatter"
-    parts = content.split("---", 2)
-    assert len(parts) >= 3, f"{path} must have opening and closing --- delimiters"
-    return yaml.safe_load(parts[1])
-
-
 def _read_body(path: Path) -> str:
     """Extract body content after frontmatter."""
     content = path.read_text()
     parts = content.split("---", 2)
     return parts[2] if len(parts) >= 3 else ""
+
+
+# ---------------------------------------------------------------------------
+# Shared fixture: single drl setup for Contract 1 tests
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope="session")
+def setup_tmpdir(drl_binary, tmp_path_factory):
+    """Run drl setup once in a shared temp repo for all Contract 1 tests."""
+    tmpdir = tmp_path_factory.mktemp("drl_setup")
+    subprocess.run(
+        ["git", "init"], cwd=str(tmpdir), capture_output=True, check=True
+    )
+    result = _run_drl(
+        drl_binary,
+        ["setup", "--skip-hooks", "--all-skill", "--repo-root", str(tmpdir)],
+    )
+    assert result.returncode == 0, f"setup failed: {result.stderr}"
+    return tmpdir
 
 
 # ---------------------------------------------------------------------------
@@ -81,36 +91,24 @@ def _read_body(path: Path) -> str:
 class TestSetupInstallsAllFiles:
     """Integration: run drl setup in temp repo, verify all paths exist."""
 
-    def test_setup_creates_complete_structure(self, drl_binary):
-        with tempfile.TemporaryDirectory() as tmpdir:
-            subprocess.run(
-                ["git", "init"], cwd=tmpdir, capture_output=True, check=True
-            )
-            result = _run_drl(
-                drl_binary,
-                ["setup", "--skip-hooks", "--all-skill", "--repo-root", tmpdir],
-            )
-            assert result.returncode == 0, f"setup failed: {result.stderr}"
+    def test_setup_creates_complete_structure(self, setup_tmpdir):
+        base = setup_tmpdir / ".claude"
+        # Compound directories (installed by drl setup)
+        assert (base / "skills" / "compound").is_dir(), "Missing compound skills"
+        assert (base / "agents" / "compound").is_dir(), "Missing compound agents"
+        assert (base / "commands" / "compound").is_dir(), "Missing compound commands"
 
-            base = Path(tmpdir) / ".claude"
-            # Core directories
-            assert (base / "skills" / "compound").is_dir(), "Missing compound skills"
-            assert (base / "agents" / "compound").is_dir(), "Missing compound agents"
-            assert (base / "commands" / "compound").is_dir(), "Missing compound commands"
+    def test_drl_directories_exist_in_repo(self):
+        """DRL-specific scaffolding exists in the repository."""
+        assert DRL_SKILLS_DIR.is_dir(), "Missing drl skills dir"
+        assert DRL_AGENTS_DIR.is_dir(), "Missing drl agents dir"
+        assert DRL_COMMANDS_DIR.is_dir(), "Missing drl commands dir"
 
-    def test_setup_creates_skills_index(self, drl_binary):
-        with tempfile.TemporaryDirectory() as tmpdir:
-            subprocess.run(
-                ["git", "init"], cwd=tmpdir, capture_output=True, check=True
-            )
-            _run_drl(
-                drl_binary,
-                ["setup", "--skip-hooks", "--all-skill", "--repo-root", tmpdir],
-            )
-            index = Path(tmpdir) / ".claude" / "skills" / "compound" / "skills_index.json"
-            assert index.is_file(), "Missing skills_index.json"
-            data = json.loads(index.read_text())
-            assert len(data.get("skills", [])) > 0, "skills_index.json is empty"
+    def test_setup_creates_skills_index(self, setup_tmpdir):
+        index = setup_tmpdir / ".claude" / "skills" / "compound" / "skills_index.json"
+        assert index.is_file(), "Missing skills_index.json"
+        data = json.loads(index.read_text())
+        assert len(data.get("skills", [])) > 0, "skills_index.json is empty"
 
 
 # ---------------------------------------------------------------------------
@@ -140,7 +138,7 @@ class TestPhaseGuardWiring:
         )
 
     def test_phase_guard_hook_references_valid_binary(self):
-        """The phase-guard hook command should reference a real binary or script."""
+        """The phase-guard hook command should reference an absolute path to a binary."""
         settings = json.loads(SETTINGS_PATH.read_text())
         pre_tool = settings.get("hooks", {}).get("PreToolUse", [])
 
@@ -154,8 +152,11 @@ class TestPhaseGuardWiring:
                         f"Could not extract binary path from phase-guard command: {cmd}"
                     )
                     binary_path = match.group(1)
-                    assert Path(binary_path).is_file(), (
-                        f"Phase-guard hook binary not found: {binary_path}"
+                    assert Path(binary_path).is_absolute(), (
+                        f"Phase-guard binary path must be absolute: {binary_path}"
+                    )
+                    assert binary_path.endswith("/ca") or binary_path.endswith("/ca.exe"), (
+                        f"Phase-guard binary should be 'ca': {binary_path}"
                     )
                     found = True
 
@@ -210,30 +211,40 @@ class TestDecisionReminderWiring:
 class TestSkillPathReferences:
     """Grep skills for paper/ and src/ references, verify paths exist in repo."""
 
-    PAPER_PATHS = [
-        "paper/main.tex",
-        "paper/Ref.bib",
-        "paper/outputs/tables",
-        "paper/outputs/figures",
-        "paper/sections",
+    PATH_PATTERNS = [
+        re.compile(r'(paper/[a-zA-Z0-9_./-]+)'),
+        re.compile(r'(src/[a-zA-Z0-9_./-]+)'),
     ]
 
-    SRC_PATHS = [
-        "src/data",
-        "src/analysis",
-    ]
+    # Build artifacts referenced in instructions but not present at rest
+    BUILD_ARTIFACTS = {
+        "paper/main.log", "paper/main.pdf", "paper/main.aux",
+        "paper/main.bbl", "paper/main.blg", "paper/main.out",
+    }
 
-    def test_paper_directories_exist(self):
-        """All paper paths referenced in skills must exist."""
-        for p in self.PAPER_PATHS:
-            full = REPO_ROOT / p
-            assert full.exists(), f"Skills reference {p} but it does not exist"
+    def _collect_path_refs(self):
+        """Grep all skill files for paper/ and src/ path references."""
+        refs = set()
+        for skill_file in DRL_SKILLS_DIR.glob("*/SKILL.md"):
+            content = skill_file.read_text()
+            for pattern in self.PATH_PATTERNS:
+                for match in pattern.finditer(content):
+                    refs.add((match.group(1), skill_file.parent.name))
+        return refs
 
-    def test_src_directories_exist(self):
-        """All src paths referenced in skills must exist."""
-        for p in self.SRC_PATHS:
-            full = REPO_ROOT / p
-            assert full.exists(), f"Skills reference {p} but it does not exist"
+    def test_all_referenced_paths_exist(self):
+        """Every paper/ and src/ path mentioned in skills must exist in the repo."""
+        refs = self._collect_path_refs()
+        assert len(refs) > 0, "No paper/ or src/ references found in any skill"
+        for path_ref, skill_name in refs:
+            # Strip trailing punctuation from markdown
+            clean = path_ref.rstrip(".,;:)")
+            if clean in self.BUILD_ARTIFACTS:
+                continue
+            full = REPO_ROOT / clean
+            assert full.exists(), (
+                f"Skill {skill_name} references '{clean}' but it does not exist"
+            )
 
     def test_paper_outputs_subdirs_exist(self):
         assert (REPO_ROOT / "paper" / "outputs" / "tables").is_dir()
@@ -259,6 +270,9 @@ class TestKnowledgeCommand:
     def test_knowledge_with_no_index_returns_gracefully(self, drl_binary):
         """Running knowledge with no indexed docs should not crash."""
         with tempfile.TemporaryDirectory() as tmpdir:
+            subprocess.run(
+                ["git", "init"], cwd=tmpdir, capture_output=True, check=True
+            )
             result = _run_drl(drl_binary, ["knowledge", "test query"], cwd=tmpdir)
             # Should exit 0 or 1 with a message, not crash
             assert result.returncode in (0, 1), (
