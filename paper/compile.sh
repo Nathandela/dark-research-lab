@@ -8,7 +8,16 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
 pdflatex --no-shell-escape -interaction=nonstopmode main.tex
-bibtex main || true
+
+# Run bibtex with explicit error reporting instead of silently swallowing failures.
+# Bibtex exit codes: 0=success, 1=warnings, 2=errors.
+# Non-zero is reported but non-fatal since PDFs still generate without bib.
+bibtex_rc=0
+bibtex main || bibtex_rc=$?
+if [ "$bibtex_rc" -ne 0 ]; then
+    echo "Error: bibtex exited with code $bibtex_rc -- check main.blg for details" >&2
+fi
+
 pdflatex --no-shell-escape -interaction=nonstopmode main.tex
 pdflatex --no-shell-escape -interaction=nonstopmode main.tex
 
