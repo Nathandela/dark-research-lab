@@ -1,0 +1,10 @@
+# drl managed
+.cache/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.drl-phase-state.json
+.drl-failure-state.json
+.drl-read-state.json
+.drl-hints-shown
+skills/compound/skills_index.json
