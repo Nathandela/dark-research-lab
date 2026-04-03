@@ -131,25 +131,35 @@ func resolveRoot(repoRoot string) string {
 // printInitResultJSON prints the InitResult as JSON (shared by init and setup).
 func printInitResultJSON(cmd *cobra.Command, result *setup.InitResult) error {
 	return writeJSON(cmd, map[string]any{
-		"success":             result.Success,
-		"hooksInstalled":      result.HooksInstalled,
-		"hooksUpgraded":       result.HooksUpgraded,
-		"pluginUpdated":       result.PluginUpdated,
-		"dirsCreated":         len(result.DirsCreated),
-		"filesCreated":        len(result.FilesCreated),
-		"agentsInstalled":     result.AgentsInstalled,
-		"agentsUpdated":       result.AgentsUpdated,
-		"commandsInstalled":   result.CommandsInstalled,
-		"commandsUpdated":     result.CommandsUpdated,
-		"skillsInstalled":     result.SkillsInstalled,
-		"skillsUpdated":       result.SkillsUpdated,
-		"roleSkillsInstalled": result.RoleSkillsInstalled,
-		"roleSkillsUpdated":   result.RoleSkillsUpdated,
-		"docsInstalled":       result.DocsInstalled,
-		"docsUpdated":         result.DocsUpdated,
-		"researchInstalled":   result.ResearchInstalled,
-		"researchUpdated":     result.ResearchUpdated,
-		"templatesPruned":     result.TemplatesPruned,
+		"success":              result.Success,
+		"hooksInstalled":       result.HooksInstalled,
+		"hooksUpgraded":        result.HooksUpgraded,
+		"pluginUpdated":        result.PluginUpdated,
+		"dirsCreated":          len(result.DirsCreated),
+		"filesCreated":         len(result.FilesCreated),
+		"agentsInstalled":      result.AgentsInstalled,
+		"agentsUpdated":        result.AgentsUpdated,
+		"commandsInstalled":    result.CommandsInstalled,
+		"commandsUpdated":      result.CommandsUpdated,
+		"skillsInstalled":      result.SkillsInstalled,
+		"skillsUpdated":        result.SkillsUpdated,
+		"roleSkillsInstalled":  result.RoleSkillsInstalled,
+		"roleSkillsUpdated":    result.RoleSkillsUpdated,
+		"docsInstalled":        result.DocsInstalled,
+		"docsUpdated":          result.DocsUpdated,
+		"researchInstalled":    result.ResearchInstalled,
+		"researchUpdated":      result.ResearchUpdated,
+		"paperInstalled":       result.PaperInstalled,
+		"paperUpdated":         result.PaperUpdated,
+		"srcInstalled":         result.SrcInstalled,
+		"srcUpdated":           result.SrcUpdated,
+		"literatureInstalled":  result.LiteratureInstalled,
+		"literatureUpdated":    result.LiteratureUpdated,
+		"docsScaffInstalled":   result.DocsScaffInstalled,
+		"docsScaffUpdated":     result.DocsScaffUpdated,
+		"testsInstalled":       result.TestsInstalled,
+		"testsUpdated":         result.TestsUpdated,
+		"templatesPruned":      result.TemplatesPruned,
 	})
 }
 
@@ -427,24 +437,29 @@ func statusLabel(installed bool, stale bool, duplicated bool) string {
 
 // printTemplatesSummary prints installed/updated template counts.
 func printTemplatesSummary(cmd *cobra.Command, result *setup.InitResult) {
+	scaffoldingInstalled := result.PaperInstalled + result.SrcInstalled +
+		result.LiteratureInstalled + result.DocsScaffInstalled + result.TestsInstalled
+	scaffoldingUpdated := result.PaperUpdated + result.SrcUpdated +
+		result.LiteratureUpdated + result.DocsScaffUpdated + result.TestsUpdated
+
 	totalInstalled := result.AgentsInstalled + result.CommandsInstalled +
 		result.SkillsInstalled + result.RoleSkillsInstalled + result.DocsInstalled +
-		result.ResearchInstalled
+		result.ResearchInstalled + scaffoldingInstalled
 	totalUpdated := result.AgentsUpdated + result.CommandsUpdated +
 		result.SkillsUpdated + result.RoleSkillsUpdated + result.DocsUpdated +
-		result.ResearchUpdated
+		result.ResearchUpdated + scaffoldingUpdated
 
 	if totalInstalled > 0 {
-		cmd.Printf("  Templates: %d installed (agents:%d commands:%d skills:%d roles:%d docs:%d research:%d)\n",
+		cmd.Printf("  Templates: %d installed (agents:%d commands:%d skills:%d roles:%d docs:%d research:%d scaffolding:%d)\n",
 			totalInstalled, result.AgentsInstalled, result.CommandsInstalled,
 			result.SkillsInstalled, result.RoleSkillsInstalled, result.DocsInstalled,
-			result.ResearchInstalled)
+			result.ResearchInstalled, scaffoldingInstalled)
 	}
 	if totalUpdated > 0 {
-		cmd.Printf("  Templates: %d updated (agents:%d commands:%d skills:%d roles:%d docs:%d research:%d)\n",
+		cmd.Printf("  Templates: %d updated (agents:%d commands:%d skills:%d roles:%d docs:%d research:%d scaffolding:%d)\n",
 			totalUpdated, result.AgentsUpdated, result.CommandsUpdated,
 			result.SkillsUpdated, result.RoleSkillsUpdated, result.DocsUpdated,
-			result.ResearchUpdated)
+			result.ResearchUpdated, scaffoldingUpdated)
 	}
 	if result.TemplatesPruned > 0 {
 		cmd.Printf("  Templates: %d retired files removed\n", result.TemplatesPruned)

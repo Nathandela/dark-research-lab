@@ -682,23 +682,42 @@ func pruneStaleSubdirs(dir string, expected map[string]string, skip []string) (i
 
 // installScaffoldingTree writes a scaffolding file tree into targetDir.
 // Files are keyed by relative path (slash-separated). Intermediate directories
-// are created as needed. Returns (created, updated, error).
+// are created as needed. Only creates missing files — existing files are never
+// overwritten, so user modifications are preserved across re-runs.
+// Shell scripts (.sh) are created with executable permission (0755).
+// Returns (created, 0, error).
 func installScaffoldingTree(targetDir string, files map[string]string) (int, int, error) {
-	created, updated := 0, 0
-	for relPath, content := range files {
-		filePath := filepath.Join(targetDir, filepath.FromSlash(relPath))
-		c, u, err := writeSkillFile(filePath, content)
-		if err != nil {
-			return created, updated, err
-		}
-		if c {
-			created++
-		}
-		if u {
-			updated++
-		}
+	created := 0
+
+	keys := make([]string, 0, len(files))
+	for k := range files {
+		keys = append(keys, k)
 	}
-	return created, updated, nil
+	sort.Strings(keys)
+
+	for _, relPath := range keys {
+		content := files[relPath]
+		filePath := filepath.Join(targetDir, filepath.FromSlash(relPath))
+
+		// Create-only: skip files that already exist to preserve user edits.
+		if _, err := os.Stat(filePath); err == nil {
+			continue
+		}
+
+		if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
+			return created, 0, fmt.Errorf("mkdir %s: %w", filepath.Dir(filePath), err)
+		}
+
+		mode := os.FileMode(0644)
+		if strings.HasSuffix(relPath, ".sh") {
+			mode = 0755
+		}
+		if err := os.WriteFile(filePath, []byte(content), mode); err != nil {
+			return created, 0, fmt.Errorf("write %s: %w", filePath, err)
+		}
+		created++
+	}
+	return created, 0, nil
 }
 
 // InstallPaperScaffolding writes paper/ templates (main.tex, sections/, outputs/, etc.)

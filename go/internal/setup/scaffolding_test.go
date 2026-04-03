@@ -280,7 +280,7 @@ func TestInstallTestsScaffolding_Idempotent(t *testing.T) {
 	}
 }
 
-func TestScaffolding_UpdateDetection(t *testing.T) {
+func TestScaffolding_PreservesUserEdits(t *testing.T) {
 	t.Parallel()
 	dir := t.TempDir()
 
@@ -289,18 +289,50 @@ func TestScaffolding_UpdateDetection(t *testing.T) {
 		t.Fatalf("first install: %v", err)
 	}
 
-	// Modify a file to trigger update detection
+	// Modify a file (simulates user editing the scaffolded file)
 	mainTex := filepath.Join(dir, "paper", "main.tex")
-	if err := os.WriteFile(mainTex, []byte("modified content"), 0644); err != nil {
+	userContent := "user modified content"
+	if err := os.WriteFile(mainTex, []byte(userContent), 0644); err != nil {
 		t.Fatalf("modify file: %v", err)
 	}
 
-	_, updated, err := InstallPaperScaffolding(dir)
+	created, updated, err := InstallPaperScaffolding(dir)
 	if err != nil {
 		t.Fatalf("second install: %v", err)
 	}
-	if updated != 1 {
-		t.Errorf("expected 1 updated file, got %d", updated)
+	if created != 0 {
+		t.Errorf("expected 0 created on re-run, got %d", created)
+	}
+	if updated != 0 {
+		t.Errorf("expected 0 updated (user edits preserved), got %d", updated)
+	}
+
+	// Verify the user's content was not overwritten
+	got, err := os.ReadFile(mainTex)
+	if err != nil {
+		t.Fatalf("read modified file: %v", err)
+	}
+	if string(got) != userContent {
+		t.Errorf("user edit was overwritten: got %q, want %q", string(got), userContent)
+	}
+}
+
+func TestScaffolding_CompileShExecutable(t *testing.T) {
+	t.Parallel()
+	dir := t.TempDir()
+
+	if _, _, err := InstallPaperScaffolding(dir); err != nil {
+		t.Fatalf("InstallPaperScaffolding: %v", err)
+	}
+
+	info, err := os.Stat(filepath.Join(dir, "paper", "compile.sh"))
+	if err != nil {
+		t.Fatalf("stat compile.sh: %v", err)
+	}
+
+	perm := info.Mode().Perm()
+	if perm&0111 == 0 {
+		t.Errorf("compile.sh should be executable, got %v", perm)
 	}
 }
 

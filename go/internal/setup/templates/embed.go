@@ -4,6 +4,7 @@ package templates
 
 import (
 	"embed"
+	"fmt"
 	"io/fs"
 	"path"
 	"strings"
@@ -224,37 +225,47 @@ func TestsScaffolding() map[string]string {
 
 // readEmbedTree walks an embedded FS directory tree and returns a map
 // of relative-path -> content. Relative paths use slash separators.
+// Panics on errors since embedded FS failures indicate a broken binary.
 func readEmbedTree(fsys embed.FS, root string) map[string]string {
 	result := make(map[string]string)
-	_ = fs.WalkDir(fsys, root, func(p string, d fs.DirEntry, err error) error {
-		if err != nil || d.IsDir() {
-			return err
+	err := fs.WalkDir(fsys, root, func(p string, d fs.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
+		if d.IsDir() {
+			return nil
 		}
 		rel := strings.TrimPrefix(p, root+"/")
 		data, readErr := fs.ReadFile(fsys, p)
-		if readErr == nil {
-			result[rel] = string(data)
+		if readErr != nil {
+			return fmt.Errorf("read embedded %s: %w", p, readErr)
 		}
+		result[rel] = string(data)
 		return nil
 	})
+	if err != nil {
+		panic(fmt.Sprintf("walk embedded FS %q: %v", root, err))
+	}
 	return result
 }
 
 // readEmbedDir reads all files from an embedded FS directory into a map.
+// Panics on errors since embedded FS failures indicate a broken binary.
 func readEmbedDir(fsys embed.FS, dir string) map[string]string {
 	result := make(map[string]string)
 	entries, err := fs.ReadDir(fsys, dir)
 	if err != nil {
-		return result
+		panic(fmt.Sprintf("read embedded dir %q: %v", dir, err))
 	}
 	for _, entry := range entries {
 		if entry.IsDir() {
 			continue
 		}
 		data, readErr := fs.ReadFile(fsys, path.Join(dir, entry.Name()))
-		if readErr == nil {
-			result[entry.Name()] = string(data)
+		if readErr != nil {
+			panic(fmt.Sprintf("read embedded %s/%s: %v", dir, entry.Name(), readErr))
 		}
+		result[entry.Name()] = string(data)
 	}
 	return result
 }
