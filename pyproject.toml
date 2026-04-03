@@ -24,6 +24,9 @@ classifiers = [
 [project.scripts]
 drl = "drl:main"
 
+[dependency-groups]
+test = ["pytest", "pyyaml"]
+
 [tool.hatch.build.targets.wheel]
 packages = ["python/drl"]
 

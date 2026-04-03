@@ -4,10 +4,11 @@ Tests the ADR template, hooks configuration, CLAUDE.md instructions,
 and AGENTS.md agent roles against acceptance criteria AC-1 through AC-7.
 """
 import json
+import os
 import subprocess
+import tempfile
 from pathlib import Path
 
-import pytest
 import yaml
 
 REPO_ROOT = Path(__file__).parent.parent
@@ -55,12 +56,10 @@ class TestDecisionReminderHook:
         assert self.HOOK_SCRIPT.is_file()
 
     def test_hook_script_is_executable(self):
-        import os
         assert os.access(self.HOOK_SCRIPT, os.X_OK)
 
     def _run_hook(self, cwd, env_override=None):
         """Run the hook script with DRL_REPO_ROOT pointing to cwd."""
-        import os
         env = os.environ.copy()
         env["DRL_REPO_ROOT"] = str(cwd)
         if env_override:
@@ -76,7 +75,6 @@ class TestDecisionReminderHook:
 
     def test_hook_exits_zero_without_phase_state(self):
         """Hook should exit silently when no cook-it session is active."""
-        import tempfile
         with tempfile.TemporaryDirectory() as tmpdir:
             Path(tmpdir, ".claude").mkdir()
             result = self._run_hook(tmpdir)
@@ -85,7 +83,6 @@ class TestDecisionReminderHook:
 
     def test_hook_emits_reminder_on_phase_change(self):
         """Hook should output reminder when phase transitions."""
-        import tempfile
         with tempfile.TemporaryDirectory() as tmpdir:
             claude_dir = Path(tmpdir) / ".claude"
             claude_dir.mkdir()
@@ -97,12 +94,26 @@ class TestDecisionReminderHook:
             }))
             result = self._run_hook(tmpdir)
             assert result.returncode == 0
-            assert "Phase transition detected" in result.stdout
+            assert "Phase detected" in result.stdout
             assert "docs/decisions/" in result.stdout
+
+    def test_hook_silent_when_cookit_inactive(self):
+        """Hook should exit silently when cookit_active is false."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            claude_dir = Path(tmpdir) / ".claude"
+            claude_dir.mkdir()
+            phase_state = claude_dir / ".ca-phase-state.json"
+            phase_state.write_text(json.dumps({
+                "cookit_active": False,
+                "current_phase": "work",
+                "phase_index": 3,
+            }))
+            result = self._run_hook(tmpdir)
+            assert result.returncode == 0
+            assert result.stdout.strip() == ""
 
     def test_hook_silent_on_same_phase(self):
         """Hook should not repeat reminder for same phase."""
-        import tempfile
         with tempfile.TemporaryDirectory() as tmpdir:
             claude_dir = Path(tmpdir) / ".claude"
             claude_dir.mkdir()

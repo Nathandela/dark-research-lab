@@ -31,5 +31,9 @@ LAST_PHASE=""
 # If phase changed, emit reminder
 if [ "$CURRENT_PHASE" != "$LAST_PHASE" ]; then
     echo "$CURRENT_PHASE" > "$LAST_PHASE_FILE"
-    echo "Phase transition detected ($LAST_PHASE -> $CURRENT_PHASE). Remember to log any methodological decisions to docs/decisions/ using the ADR template (0000-template.md)."
+    if [ -z "$LAST_PHASE" ]; then
+        echo "Phase detected: $CURRENT_PHASE. Remember to log any methodological decisions to docs/decisions/ using the ADR template (0000-template.md)."
+    else
+        echo "Phase transition detected ($LAST_PHASE -> $CURRENT_PHASE). Remember to log any methodological decisions to docs/decisions/ using the ADR template (0000-template.md)."
+    fi
 fi
