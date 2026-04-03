@@ -16,6 +16,8 @@ func initCmd() *cobra.Command {
 		skipHooks  bool
 		skipAgents bool
 		skipClaude bool
+		coreSkill  bool
+		allSkill   bool
 		jsonOut    bool
 		repoRoot   string
 	)
@@ -24,24 +26,28 @@ func initCmd() *cobra.Command {
 		Use:   "init",
 		Short: "Initialize dark-research-lab in this repository",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return runInit(cmd, resolveRoot(repoRoot), skipHooks || skipClaude, skipAgents, jsonOut)
+			return runInit(cmd, resolveRoot(repoRoot), skipHooks || skipClaude, skipAgents, coreSkill, allSkill, jsonOut)
 		},
 	}
 
 	cmd.Flags().BoolVar(&skipHooks, "skip-hooks", false, "Skip installing Claude Code hooks")
 	cmd.Flags().BoolVar(&skipAgents, "skip-agents", false, "Skip template installation (AGENTS.md, skills, commands, docs)")
 	cmd.Flags().BoolVar(&skipClaude, "skip-claude", false, "Skip Claude Code hooks installation")
+	cmd.Flags().BoolVar(&coreSkill, "core-skill", false, "Install infrastructure + core skills/agents")
+	cmd.Flags().BoolVar(&allSkill, "all-skill", false, "Install all tiers including style")
 	cmd.Flags().BoolVar(&jsonOut, "json", false, "output as JSON")
 	cmd.Flags().StringVar(&repoRoot, "repo-root", "", "Repository root (defaults to git root)")
 	return cmd
 }
 
 // runInit performs the init command logic.
-func runInit(cmd *cobra.Command, repoRoot string, skipHooks, skipAgents, jsonOut bool) error {
+func runInit(cmd *cobra.Command, repoRoot string, skipHooks, skipAgents, coreSkill, allSkill, jsonOut bool) error {
 	result, err := setup.InitRepo(repoRoot, setup.InitOptions{
 		SkipHooks:     skipHooks,
 		SkipTemplates: skipAgents,
 		BinaryPath:    resolveBinaryPath(),
+		CoreSkill:     coreSkill,
+		AllSkill:      allSkill,
 	})
 	if err != nil {
 		return fmt.Errorf("init: %w", err)
@@ -69,25 +75,31 @@ func setupCmd() *cobra.Command {
 
 	var (
 		skipHooks bool
+		coreSkill bool
+		allSkill  bool
 		jsonOut   bool
 		repoRoot  string
 	)
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		return runSetup(cmd, resolveRoot(repoRoot), skipHooks, jsonOut)
+		return runSetup(cmd, resolveRoot(repoRoot), skipHooks, coreSkill, allSkill, jsonOut)
 	}
 
 	cmd.Flags().BoolVar(&skipHooks, "skip-hooks", false, "Skip installing hooks")
+	cmd.Flags().BoolVar(&coreSkill, "core-skill", false, "Install infrastructure + core skills/agents")
+	cmd.Flags().BoolVar(&allSkill, "all-skill", false, "Install all tiers including style")
 	cmd.Flags().BoolVar(&jsonOut, "json", false, "output as JSON")
 	cmd.Flags().StringVar(&repoRoot, "repo-root", "", "Repository root")
 	return cmd
 }
 
 // runSetup performs the setup command logic.
-func runSetup(cmd *cobra.Command, repoRoot string, skipHooks, jsonOut bool) error {
+func runSetup(cmd *cobra.Command, repoRoot string, skipHooks, coreSkill, allSkill, jsonOut bool) error {
 	result, err := setup.InitRepo(repoRoot, setup.InitOptions{
 		SkipHooks:  skipHooks,
 		BinaryPath: resolveBinaryPath(),
+		CoreSkill:  coreSkill,
+		AllSkill:   allSkill,
 	})
 	if err != nil {
 		return fmt.Errorf("setup: %w", err)

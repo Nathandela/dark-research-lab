@@ -420,8 +420,9 @@ func TestInitRepo_UpdatesStaleTemplates(t *testing.T) {
 		t.Fatalf("write stale: %v", err)
 	}
 
-	// Re-init should detect and update stale templates
-	result2, err := InitRepo(dir, InitOptions{SkipHooks: true})
+	// Re-init should detect and update stale templates.
+	// AllSkill required because .claude/ now exists (tier system skips agents otherwise).
+	result2, err := InitRepo(dir, InitOptions{SkipHooks: true, AllSkill: true})
 	if err != nil {
 		t.Fatalf("second InitRepo: %v", err)
 	}

@@ -14,6 +14,8 @@ type InitOptions struct {
 	SkipHooks     bool
 	SkipTemplates bool   // Skip installing agent/command/skill/doc templates.
 	BinaryPath    string // Path to the Go binary for hook commands. Empty = npx fallback.
+	CoreSkill     bool   // --core-skill: install infrastructure + core skills/agents
+	AllSkill      bool   // --all-skill: install all tiers including style
 }
 
 // InitResult reports what init did.
@@ -97,9 +99,31 @@ func initHooks(repoRoot string, binaryPath string, result *InitResult) error {
 	return nil
 }
 
+// tierConfig controls which template groups are installed.
+type tierConfig struct {
+	installCore  bool // skills + agents
+	installStyle bool // agent role skills
+}
+
+// resolveTier determines which tiers to install based on existing repo state and flags.
+func resolveTier(existingRepo bool, opts InitOptions) tierConfig {
+	if opts.AllSkill {
+		return tierConfig{installCore: true, installStyle: true}
+	}
+	if opts.CoreSkill {
+		return tierConfig{installCore: true, installStyle: false}
+	}
+	if !existingRepo {
+		// Fresh repo: install everything
+		return tierConfig{installCore: true, installStyle: true}
+	}
+	// Existing repo with no flags: infrastructure only
+	return tierConfig{installCore: false, installStyle: false}
+}
+
 // installTemplates installs all template assets (agents, commands, skills, docs).
 // Detects the project stack to substitute quality gate placeholders.
-func installTemplates(repoRoot string, result *InitResult) error {
+func installTemplates(repoRoot string, tier tierConfig, result *InitResult) error {
 	version := build.Version
 
 	updated, err := UpdateAgentsMd(repoRoot)
@@ -122,31 +146,46 @@ func installTemplates(repoRoot string, result *InitResult) error {
 	result.PluginUpdated = pluginUpdated
 
 	stack := DetectStack(repoRoot)
-	return installTemplateGroups(repoRoot, version, stack, result)
+	return installTemplateGroups(repoRoot, version, stack, tier, result)
 }
 
 // installTemplateGroups installs agent, command, skill, role skill, and doc templates.
 // Stack info is used to substitute quality gate placeholders in skills and docs.
-func installTemplateGroups(repoRoot string, version string, stack StackInfo, result *InitResult) error {
+// The tier config controls which groups are installed.
+func installTemplateGroups(repoRoot string, version string, stack StackInfo, tier tierConfig, result *InitResult) error {
 	type installFunc struct {
 		fn   func() (int, int, error)
 		setN func(int)
 		setU func(int)
 		name string
 	}
+
+	// Infrastructure tier: always installed
 	groups := []installFunc{
-		{func() (int, int, error) { return InstallAgentTemplates(repoRoot) },
-			func(n int) { result.AgentsInstalled = n }, func(u int) { result.AgentsUpdated = u }, "agent templates"},
 		{func() (int, int, error) { return InstallWorkflowCommands(repoRoot) },
 			func(n int) { result.CommandsInstalled = n }, func(u int) { result.CommandsUpdated = u }, "workflow commands"},
-		{func() (int, int, error) { return InstallPhaseSkills(repoRoot, stack) },
-			func(n int) { result.SkillsInstalled = n }, func(u int) { result.SkillsUpdated = u }, "phase skills"},
-		{func() (int, int, error) { return InstallAgentRoleSkills(repoRoot) },
-			func(n int) { result.RoleSkillsInstalled = n }, func(u int) { result.RoleSkillsUpdated = u }, "agent role skills"},
 		{func() (int, int, error) { return InstallDocTemplates(repoRoot, version, stack) },
 			func(n int) { result.DocsInstalled = n }, func(u int) { result.DocsUpdated = u }, "doc templates"},
 		{func() (int, int, error) { return InstallResearchDocs(repoRoot) },
 			func(n int) { result.ResearchInstalled = n }, func(u int) { result.ResearchUpdated = u }, "research docs"},
+	}
+
+	// Core tier: skills + agents
+	if tier.installCore {
+		groups = append(groups,
+			installFunc{func() (int, int, error) { return InstallAgentTemplates(repoRoot) },
+				func(n int) { result.AgentsInstalled = n }, func(u int) { result.AgentsUpdated = u }, "agent templates"},
+			installFunc{func() (int, int, error) { return InstallPhaseSkills(repoRoot, stack) },
+				func(n int) { result.SkillsInstalled = n }, func(u int) { result.SkillsUpdated = u }, "phase skills"},
+		)
+	}
+
+	// Style tier: agent role skills
+	if tier.installStyle {
+		groups = append(groups,
+			installFunc{func() (int, int, error) { return InstallAgentRoleSkills(repoRoot) },
+				func(n int) { result.RoleSkillsInstalled = n }, func(u int) { result.RoleSkillsUpdated = u }, "agent role skills"},
+		)
 	}
 
 	for _, g := range groups {
@@ -172,8 +211,19 @@ func installTemplateGroups(repoRoot string, version string, stack StackInfo, res
 
 // InitRepo initializes dark-research-lab in a repository.
 // Creates .claude/ structure, lessons index, and optionally installs hooks.
+// Tier behavior:
+//   - No .claude/ + no flags: install all tiers
+//   - Has .claude/ + no flags: infrastructure only (skip skills, agents, role skills)
+//   - --core-skill: infrastructure + core skills/agents
+//   - --all-skill: everything including style
 func InitRepo(repoRoot string, opts InitOptions) (*InitResult, error) {
 	result := &InitResult{Success: true}
+
+	// Detect existing repo BEFORE creating directories
+	_, statErr := os.Stat(filepath.Join(repoRoot, ".claude"))
+	existingRepo := statErr == nil
+
+	tier := resolveTier(existingRepo, opts)
 
 	if err := initDirectories(repoRoot, result); err != nil {
 		return nil, err
@@ -186,7 +236,7 @@ func InitRepo(repoRoot string, opts InitOptions) (*InitResult, error) {
 	}
 
 	if !opts.SkipTemplates {
-		if err := installTemplates(repoRoot, result); err != nil {
+		if err := installTemplates(repoRoot, tier, result); err != nil {
 			return nil, err
 		}
 	}
