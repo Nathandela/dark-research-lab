@@ -56,7 +56,7 @@ The final phase of the DRL research pipeline. Verify the paper tells a coherent 
    - Every methodological choice in the paper has a corresponding ADR
    - ADR statuses are current (proposed/accepted/deprecated)
    - Alternatives considered are documented
-3. Flag any undocumented decisions and create ADRs for them
+3. Flag any undocumented decisions and create ADRs for them using the ADR template (`docs/decisions/0000-template.md`). Use `/drl:decision` for guided logging
 
 ### Step 4: Final LaTeX Compilation
 

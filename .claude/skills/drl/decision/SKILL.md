@@ -125,6 +125,15 @@ For each decision entry, verify:
 - [ ] Alternatives are genuine options, not strawmen
 - [ ] File is saved to `docs/decisions/NNNN-slug.md`
 
+## Quality Criteria
+
+- [ ] Sequential number is correct with no gaps
+- [ ] All five required sections present (context, decision, rationale, alternatives, consequences)
+- [ ] Rationale cites evidence or literature
+- [ ] Alternatives are genuine, not strawmen
+- [ ] Duplicate check performed before creating
+- [ ] Superseded decisions updated if applicable
+
 ## Common Pitfalls
 
 - Logging decisions after the fact without the original reasoning context

@@ -124,7 +124,7 @@ Between each phase:
 2. Use `AskUserQuestion` to get human approval before proceeding
 3. Update the beads epic status
 4. Search memory (`drl search`) for relevant context entering the next phase
-5. Log any phase-transition decisions to `docs/decisions/`
+5. Log any phase-transition decisions to `docs/decisions/` using the ADR template (`docs/decisions/0000-template.md`). Use `/drl:decision` for guided logging
 
 **Decision logging hook**: The `decision-reminder.sh` hook fires automatically on UserPromptSubmit when a phase transition is detected. It reads `.claude/.ca-phase-state.json` to track the current phase and emits a reminder to log decisions to `docs/decisions/`. This is a shell hook, not an orchestrator prompt -- it runs automatically without agent action.
 
@@ -133,7 +133,7 @@ Between each phase:
 When a phase fails mid-execution:
 
 1. **Save state**: Write current progress to `.ca-phase-state.json` and update the beads task notes with what completed
-2. **Log partial decisions**: Any methodological decisions made before the failure must still be logged to `docs/decisions/`
+2. **Log partial decisions**: Any methodological decisions made before the failure must still be logged to `docs/decisions/` using the ADR template (`docs/decisions/0000-template.md`). Use `/drl:decision` for guided logging
 3. **Create a recovery bead task**: `bd create --title="Recovery: <phase> phase interrupted" --description="<what was completed, what remains>" --type=task --priority=1`
 4. **Resume guidance**: On next `cook-it` invocation:
    - Read `.ca-phase-state.json` to determine the interrupted phase

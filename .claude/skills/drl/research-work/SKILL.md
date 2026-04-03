@@ -71,7 +71,7 @@ Paper section files:
 
 Every methodological choice made during execution MUST be logged:
 
-1. Create an ADR in `docs/decisions/` using the template (`docs/decisions/0000-template.md`)
+1. Create an ADR in `docs/decisions/` using the template (`docs/decisions/0000-template.md`). Use `/drl:decision` for guided logging
 2. Log decisions including:
    - Variable transformations applied
    - Outlier handling choices

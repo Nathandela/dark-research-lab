@@ -10,6 +10,8 @@ phase: review
 
 Conduct a comprehensive review of the completed research work. Six specialized reviewers check different dimensions of quality: statistical methodology, robustness assessment, logical coherence, citation integrity, reproducibility, and writing standards. All checks must pass before the paper proceeds to synthesis.
 
+**Note**: The literature-analyst agent is NOT spawned during this phase. Literature analysis occurs during the spec phase (research-spec) and the standalone lit-review skill. This phase focuses on auditing the completed work using the six dedicated reviewer agents listed below.
+
 ## Input
 
 - Completed analysis outputs from the work phase
@@ -143,7 +145,7 @@ If the review phase fails mid-execution:
    - If the same reviewer fails twice, skip it and note the gap in beads
 
 2. **Critical finding cannot be resolved**:
-   - Log the finding to `docs/decisions/` with the attempted resolution
+   - Log the finding to `docs/decisions/` using the ADR template (`docs/decisions/0000-template.md`) with the attempted resolution. Use `/drl:decision` for guided logging
    - Flag as a beads issue: `bd create --title="Unresolved: ..." --priority=1`
    - Use `AskUserQuestion` to escalate to the researcher
 

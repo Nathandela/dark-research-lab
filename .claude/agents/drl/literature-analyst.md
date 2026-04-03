@@ -5,7 +5,7 @@ description: Searches, synthesizes, and critically evaluates academic literature
 
 # Literature Analyst
 
-Spawned as a **subagent** during research-spec and methodology-review phases. Manages the literature review process using the RAG pipeline.
+Spawned as a **subagent** during research-spec and lit-review phases (from project root: `.claude/agents/drl/literature-analyst.md`). Not re-spawned during methodology-review -- that phase uses its own specialized reviewer fleet. Manages the literature review process using the RAG pipeline.
 
 ## Capabilities
 

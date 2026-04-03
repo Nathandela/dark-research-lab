@@ -126,6 +126,15 @@ Before concluding, verify:
 - [ ] Changes committed with descriptive message
 - [ ] No skill file corrupted (YAML frontmatter intact)
 
+## Quality Criteria
+
+- [ ] Safety checkpoint committed before edits
+- [ ] All four interview dimensions gathered (field, methodology, journal, citation)
+- [ ] Web search performed for field conventions
+- [ ] Atomic write protocol followed for each edit
+- [ ] YAML frontmatter intact in all edited files
+- [ ] Changes committed with descriptive message
+
 ## Common Pitfalls
 
 - Editing skill files without creating a safety checkpoint first

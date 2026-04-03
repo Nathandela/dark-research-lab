@@ -105,6 +105,16 @@ Before concluding onboarding, verify:
 - [ ] Literature directory `literature/pdfs/` location is known
 - [ ] Next step is identified (flavor, lit-review, or architect)
 
+## Quality Criteria
+
+- [ ] Existing project state detected and adapted to
+- [ ] Framework explanation covers all five phases
+- [ ] Research question captured (even if preliminary)
+- [ ] Data situation assessed
+- [ ] Flavor configuration discussed
+- [ ] Literature setup guidance provided
+- [ ] Clear next step identified and communicated
+
 ## Common Pitfalls
 
 - Skipping the literature setup and jumping straight to analysis

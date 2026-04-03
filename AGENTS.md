@@ -8,9 +8,16 @@ This project is an autonomous research paper factory. Agents operate within a st
 
 ### Research Agent Roles
 
-| Role | Agent File | Responsibility |
-|------|-----------|---------------|
+#### Skills (orchestration roles -- not agent files)
+
+| Role | Skill File (from project root) | Responsibility |
+|------|-------------------------------|---------------|
 | Research Architect | `.claude/skills/drl/research-architect/SKILL.md` | Decomposes research questions into epics with methodology specs |
+
+#### Agents (spawnable subagent definitions)
+
+| Role | Agent File (from project root) | Responsibility |
+|------|-------------------------------|---------------|
 | Research Analyst | `.claude/agents/drl/analyst.md` | Executes statistical analysis with Polars, produces tables/figures |
 | Literature Analyst | `.claude/agents/drl/literature-analyst.md` | Surveys existing research via PDF + RAG pipeline |
 | Methodology Reviewer | `.claude/agents/drl/methodology-reviewer.md` | Audits statistical methods and causal inference validity |
@@ -23,13 +30,13 @@ This project is an autonomous research paper factory. Agents operate within a st
 
 ### Decision Logging
 
-All agents MUST log methodological decisions to `docs/decisions/` using the ADR template. Before making a choice between statistical methods, data sources, or analytical approaches, create an ADR with alternatives considered and rationale.
+All agents MUST log methodological decisions to `docs/decisions/` (from project root) using the ADR template (`docs/decisions/0000-template.md`). Use `/drl:decision` for guided logging. Before making a choice between statistical methods, data sources, or analytical approaches, create an ADR with alternatives considered and rationale.
 
 ### Research Phases
 
 Research follows the compound-agent cook-it workflow adapted for academic work:
 
-| Phase | Skill File | Gate |
+| Phase | Skill File (from project root) | Gate |
 |-------|-----------|------|
 | Spec | `.claude/skills/drl/research-spec/SKILL.md` | RQ + hypotheses approved |
 | Plan | `.claude/skills/drl/research-plan/SKILL.md` | Methodology approved |

@@ -122,6 +122,16 @@ The compilation gate passes when ALL of the following hold:
 - [ ] No orphan outputs (unreferenced tables or figures)
 - [ ] No missing outputs (referenced but non-existent files)
 
+## Quality Criteria
+
+- [ ] Pre-compilation checks passed (all inputs exist)
+- [ ] Full triple-pass compilation executed
+- [ ] Zero undefined reference warnings
+- [ ] Zero citation undefined warnings
+- [ ] All tables and figures render correctly
+- [ ] No orphan or missing outputs
+- [ ] Bibliography compiles without errors
+
 ## Common Pitfalls
 
 - Running pdflatex only once (references and citations need multiple passes)

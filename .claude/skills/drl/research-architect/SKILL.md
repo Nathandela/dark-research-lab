@@ -71,7 +71,9 @@ After steps 1-2, evaluate whether the literature base is adequate:
 
 **Goal**: Break the research project into naturally-scoped epics.
 
-Spawn **6 parallel subagents** via the Agent tool. Each subagent is an inline role description passed as the Agent tool prompt -- these are NOT references to pre-defined agent files in `.claude/agents/drl/`. Write a focused prompt for each role describing the task and expected output:
+Spawn **6 parallel subagents** via the Agent tool. Each subagent is an inline role description passed as the Agent tool prompt -- these are NOT references to pre-defined agent files in `.claude/agents/drl/`. Write a focused prompt for each role describing the task and expected output.
+
+**Why inline prompts here?** These are temporary decomposition roles used only during architecture. Unlike the methodology-review phase -- which spawns persistent, reusable agents defined in `.claude/agents/drl/` (e.g., `methodology-reviewer.md`, `robustness-checker.md`) -- these roles are single-use analytical lenses that do not need persistent definitions. If a decomposition role proves repeatedly useful, promote it to a dedicated agent file.
 
 1. **Literature mapper**: Survey the indexed literature to identify:
    - Key prior studies and their methodological approaches
@@ -197,7 +199,7 @@ If no advisor CLIs are available, skip. The advisory fleet is non-blocking.
 - Not checking the indexed literature for contradictory findings
 - Missing the hypothesis -> analysis -> output -> section traceability chain
 - Creating epics that are too fine-grained (a single regression is not an epic)
-- Not logging methodological decisions to `docs/decisions/`
+- Not logging methodological decisions to `docs/decisions/` (use ADR template at `docs/decisions/0000-template.md` or `/drl:decision`)
 - Ignoring data quality and availability risks
 - Treating the research design as fixed before the literature review
 - Not wiring epic dependencies (analysis before data pipeline)

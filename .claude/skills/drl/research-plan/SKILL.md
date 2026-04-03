@@ -111,7 +111,7 @@ Use `AskUserQuestion` to confirm the methodology with the researcher before proc
 - `drl search` for past methodology decisions in this domain
 - `drl knowledge` for statistical methodology references
 - `drl learn` after methodology choices are made
-- Log each methodological decision to `docs/decisions/` using the ADR template
+- Log each methodological decision to `docs/decisions/` using the ADR template (`docs/decisions/0000-template.md`). Use `/drl:decision` for guided logging
 
 ## Failure and Recovery
 

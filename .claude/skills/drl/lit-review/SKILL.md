@@ -99,6 +99,16 @@ Before concluding the literature review, verify:
 - `drl knowledge` for indexed paper search
 - `drl learn` after identifying key findings or gaps
 
+## Quality Criteria
+
+- [ ] Multiple diverse search queries used (not just one)
+- [ ] Literature sufficiency threshold assessed
+- [ ] Citation network mapped with thematic streams
+- [ ] Literature-analyst subagent consulted for synthesis
+- [ ] Review organized by theme, not paper-by-paper
+- [ ] Gap statement evidenced, not asserted
+- [ ] All BibTeX entries complete and consistent
+
 ## Common Pitfalls
 
 - Organizing the review paper-by-paper instead of by theme
