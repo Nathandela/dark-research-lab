@@ -31,11 +31,12 @@ func findRepoRoot(t *testing.T) string {
 }
 
 // TestTemplateDrift_ReviewFleetAgentsExist verifies that the DRL review
-// skill references reviewer agent files that follow the expected naming
-// pattern. DRL review uses .claude/agents/drl/ agent files (not agent-role-skills)
-// for the 6-reviewer fleet.
+// skill references reviewer agent files that actually exist in the embedded
+// agent templates. This catches drift where the review skill names agents
+// that were renamed or removed from the embedded FS.
 func TestTemplateDrift_ReviewFleetAgentsExist(t *testing.T) {
 	review := requireSkill(t, PhaseSkills(), "review")
+	agents := AgentTemplates()
 
 	// DRL methodology review references 6 agent paths
 	expectedAgents := []string{
@@ -51,9 +52,14 @@ func TestTemplateDrift_ReviewFleetAgentsExist(t *testing.T) {
 		if !strings.Contains(review, name) {
 			t.Errorf("review SKILL.md missing reference to %s agent", name)
 		}
+		// Verify the referenced agent actually exists in the embedded templates
+		agentFile := name + ".md"
+		if _, ok := agents[agentFile]; !ok {
+			t.Errorf("review references agent %s but %s is missing from embedded agent templates", name, agentFile)
+		}
 	}
 
-	t.Logf("verified %d reviewer agent references in review template", len(expectedAgents))
+	t.Logf("verified %d reviewer agent references exist in embedded templates", len(expectedAgents))
 }
 
 // TestTemplateDrift_ResearchSourceMatchesEmbed verifies that the source
@@ -154,12 +160,11 @@ func TestTemplateDrift_ResearchReferencesResolve(t *testing.T) {
 		}
 	}
 
-	// DRL skills reference .claude/agents/drl/ paths, not docs/drl/research/
-	// so zero matches is acceptable
 	if matchCount > 0 {
 		t.Logf("validated %d research path references", matchCount)
 	} else {
-		t.Log("no docs/drl/research/ references found in templates (DRL uses .claude/agents/drl/ paths)")
+		// DRL skills reference .claude/agents/drl/ paths, not docs/drl/research/
+		t.Skip("no docs/drl/research/ references in templates (DRL uses .claude/agents/drl/ paths)")
 	}
 }
 

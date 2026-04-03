@@ -139,10 +139,10 @@ func TestInitRepo_InstallsTemplates(t *testing.T) {
 		t.Error("expected CLAUDE.md to be updated")
 	}
 
-	// Verify a sample file exists
-	repoAnalyst := filepath.Join(dir, ".claude", "agents", "drl", "repo-analyst.md")
-	if _, err := os.Stat(repoAnalyst); os.IsNotExist(err) {
-		t.Error("missing repo-analyst.md agent template")
+	// Verify a sample DRL agent file exists
+	methodologyReviewer := filepath.Join(dir, ".claude", "agents", "drl", "methodology-reviewer.md")
+	if _, err := os.Stat(methodologyReviewer); os.IsNotExist(err) {
+		t.Error("missing methodology-reviewer.md agent template")
 	}
 
 	// Verify idempotency on second run

@@ -544,6 +544,26 @@ func TestInstallPhaseSkills_SubstitutesQualityGates(t *testing.T) {
 	if !strings.Contains(string(content), "pytest") {
 		t.Error("work/SKILL.md missing pytest reference")
 	}
+
+	// Verify NO installed DRL skill has leftover quality gate placeholders
+	skillsDir := filepath.Join(dir, ".claude", "skills", "drl")
+	err = filepath.Walk(skillsDir, func(p string, info os.FileInfo, walkErr error) error {
+		if walkErr != nil || info.IsDir() {
+			return walkErr
+		}
+		data, readErr := os.ReadFile(p)
+		if readErr != nil {
+			return readErr
+		}
+		if strings.Contains(string(data), "{{QUALITY_GATE_") {
+			rel, _ := filepath.Rel(skillsDir, p)
+			t.Errorf("%s still has {{QUALITY_GATE_ placeholder after install", rel)
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("walk skills dir: %v", err)
+	}
 }
 
 func TestInstallDocTemplates_SubstitutesQualityGates(t *testing.T) {

@@ -11,12 +11,12 @@ func TestAgentTemplates(t *testing.T) {
 		t.Fatal("expected agent templates, got none")
 	}
 
-	// Verify expected agents exist
+	// Verify expected DRL research agents exist
 	expected := []string{
-		"repo-analyst.md", "memory-analyst.md", "audit.md",
-		"doc-gardener.md", "cct-subagent.md", "drift-detector.md",
-		"external-reviewer-gemini.md", "external-reviewer-codex.md",
-		"lessons-reviewer.md", "lint-classifier.md",
+		"analyst.md", "citation-checker.md", "coherence-reviewer.md",
+		"literature-analyst.md", "methodology-reviewer.md",
+		"reproducibility-verifier.md", "robustness-checker.md",
+		"writing-quality-reviewer.md",
 	}
 	for _, name := range expected {
 		content, ok := agents[name]
@@ -37,11 +37,10 @@ func TestCommandTemplates(t *testing.T) {
 		t.Fatal("expected command templates, got none")
 	}
 
-	// Verify expected commands exist
+	// Verify expected DRL commands exist
 	expected := []string{
-		"spec-dev.md", "plan.md", "work.md", "review.md",
-		"compound.md", "cook-it.md", "research.md", "test-clean.md",
-		"learn-that.md", "check-that.md", "prime.md",
+		"architect.md", "compile.md", "cook-it.md", "decision.md",
+		"flavor.md", "lit-review.md", "onboard.md", "status.md",
 	}
 	for _, name := range expected {
 		content, ok := commands[name]
@@ -49,7 +48,7 @@ func TestCommandTemplates(t *testing.T) {
 			t.Errorf("missing command template: %s", name)
 			continue
 		}
-		if !strings.Contains(content, "name: compound:") && !strings.Contains(content, "# ") {
+		if !strings.Contains(content, "name: drl:") && !strings.Contains(content, "# ") {
 			t.Errorf("command %s missing expected content", name)
 		}
 	}

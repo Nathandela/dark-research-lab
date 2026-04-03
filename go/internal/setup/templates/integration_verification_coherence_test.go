@@ -52,11 +52,21 @@ func TestIntegrationVerification_IVCreationContract(t *testing.T) {
 func TestIntegrationVerification_ReviewCoherence(t *testing.T) {
 	review := requireSkill(t, PhaseSkills(), "review")
 
-	t.Run("methodology_steps_present", func(t *testing.T) {
-		assertContains(t, review, "### Step 1", "missing Step 1")
-		assertContains(t, review, "### Step 2", "missing Step 2")
-		assertContains(t, review, "### Step 3", "missing Step 3")
-		assertContains(t, review, "### Step 4", "missing Step 4")
+	t.Run("methodology_steps_sequential", func(t *testing.T) {
+		// Verify all 4 steps exist AND are in sequential order
+		steps := []string{"### Step 1", "### Step 2", "### Step 3", "### Step 4"}
+		prevIdx := -1
+		for i, step := range steps {
+			idx := strings.Index(review, step)
+			if idx < 0 {
+				t.Fatalf("missing %s", step)
+			}
+			if idx <= prevIdx {
+				t.Errorf("Step %d (pos %d) is not after Step %d (pos %d)", i+1, idx, i, prevIdx)
+			}
+			prevIdx = idx
+		}
+		t.Logf("verified %d methodology steps in sequential order", len(steps))
 	})
 	t.Run("six_reviewers_present", func(t *testing.T) {
 		assertContains(t, review, "methodology-reviewer", "missing methodology-reviewer")
