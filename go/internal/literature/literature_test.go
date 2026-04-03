@@ -127,3 +127,25 @@ func TestWriteSummaryNote(t *testing.T) {
 		t.Error("missing source filename in summary")
 	}
 }
+
+func TestWriteSummaryNote_Truncation(t *testing.T) {
+	dir := t.TempDir()
+	meta := PDFMetadata{Title: "Long Paper", Filename: "long.pdf", PageCount: 1}
+
+	// Create text longer than MaxExcerptChars (500)
+	longText := strings.Repeat("Economics research. ", 50) // 1000 chars
+	path, err := WriteSummaryNote(dir, meta, longText)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	content, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	s := string(content)
+	if !strings.Contains(s, "...") {
+		t.Error("expected truncation marker '...' for long text")
+	}
+}

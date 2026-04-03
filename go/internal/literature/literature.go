@@ -86,8 +86,9 @@ func WriteSummaryNote(notesDir string, meta PDFMetadata, text string) (string, e
 	outPath := filepath.Join(notesDir, slug+".md")
 
 	excerpt := strings.TrimSpace(text)
-	if len(excerpt) > MaxExcerptChars {
-		excerpt = excerpt[:MaxExcerptChars] + "..."
+	runes := []rune(excerpt)
+	if len(runes) > MaxExcerptChars {
+		excerpt = string(runes[:MaxExcerptChars]) + "..."
 	}
 
 	var b strings.Builder
