@@ -24,7 +24,7 @@ Execute the approved research plan. Run the statistical analysis pipeline, produ
 1. Run `bd ready` to find available analysis tasks
 2. Claim tasks: `bd update <id> --claim`
 3. Read the parent epic (`bd show <epic>`) for EARS requirements and the research plan
-4. Verify the research spec was approved (check spec phase completion)
+4. **Verify spec approval** (hard check): Run `bd show <epic>` and confirm the spec phase status is complete. Look for spec-phase closure or notes confirming approval. If the spec phase is not complete, do NOT proceed -- flag the blocker via `AskUserQuestion`
 
 ### Step 2: Execute Analysis Pipeline
 
@@ -93,13 +93,17 @@ Throughout execution, maintain progress visibility:
 **Gate: All Analyses Complete**
 
 Before proceeding to methodology-review, verify ALL of:
-- [ ] All analysis tasks from the plan are executed
-- [ ] Tables generated to `paper/outputs/tables/`
-- [ ] Figures generated to `paper/outputs/figures/`
-- [ ] Paper sections written with results interpretation
-- [ ] All methodological decisions logged as ADRs in `docs/decisions/`
-- [ ] No analysis tasks remain in-progress: `bd list --status=in_progress` is empty
-- [ ] Tests pass: `uv run python -m pytest`
+
+| Criterion | Verification |
+|-----------|-------------|
+| All analysis tasks executed | `bd list --status=open` shows no analysis tasks |
+| Tables generated | `ls paper/outputs/tables/` |
+| Figures generated | `ls paper/outputs/figures/` |
+| Paper sections written | `ls paper/sections/*.tex` |
+| All decisions logged as ADRs | `ls docs/decisions/` (one per decision) |
+| No tasks in-progress | `bd list --status=in_progress` is empty |
+| Tests pass | `uv run python -m pytest` |
+| Spec was approved | `bd show <epic>` confirms spec phase complete |
 
 ## Memory Integration
 

@@ -84,11 +84,14 @@ This mapping ensures every hypothesis has a clear path through the analysis pipe
 **Gate: Methodology Approved**
 
 Before proceeding to research-work, verify ALL of:
-- [ ] Variable operationalization table is complete
-- [ ] Model equations are formally specified with identifying assumptions
-- [ ] Robustness plan covers at least two alternatives per main specification
-- [ ] Hypothesis-analysis-output-section mapping is complete
-- [ ] Analysis tasks are created as beads with dependencies wired
+
+| Criterion | Verification |
+|-----------|-------------|
+| Variable operationalization table is complete | Review table in plan document |
+| Model equations formally specified | Check equations have DV, IV, functional form |
+| Robustness plan covers 2+ alternatives per spec | Count alternative specifications in plan |
+| Hypothesis-analysis-output-section mapping complete | Verify every H has a table/figure and section |
+| Analysis tasks created as beads with deps | `bd list --status=open` and `bd show <task>` |
 
 Use `AskUserQuestion` to confirm the methodology with the researcher before proceeding.
 

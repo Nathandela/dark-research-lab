@@ -115,6 +115,19 @@ Between each phase:
 
 **Decision logging hook**: The `decision-reminder.sh` hook fires automatically on UserPromptSubmit when a phase transition is detected. It reads `.claude/.ca-phase-state.json` to track the current phase and emits a reminder to log decisions to `docs/decisions/`. This is a shell hook, not an orchestrator prompt -- it runs automatically without agent action.
 
+## Phase Failure Recovery
+
+When a phase fails mid-execution:
+
+1. **Save state**: Write current progress to `.ca-phase-state.json` and update the beads task notes with what completed
+2. **Log partial decisions**: Any methodological decisions made before the failure must still be logged to `docs/decisions/`
+3. **Create a recovery bead task**: `bd create --title="Recovery: <phase> phase interrupted" --description="<what was completed, what remains>" --type=task --priority=1`
+4. **Resume guidance**: On next `cook-it` invocation:
+   - Read `.ca-phase-state.json` to determine the interrupted phase
+   - Check `bd list --status=in_progress` for the recovery task
+   - Resume from the last incomplete step (completed work is preserved)
+   - Do not re-run steps that completed successfully
+
 ## Beads Integration
 
 - Track progress via `bd show <epic-id>` at each phase

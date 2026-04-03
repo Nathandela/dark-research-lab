@@ -105,15 +105,18 @@ Spawn `.claude/agents/drl/writing-quality-reviewer.md`:
 **Gate: All Checks Pass**
 
 Before proceeding to synthesis, verify ALL of:
-- [ ] No critical findings remain unresolved
-- [ ] No major findings remain unresolved
-- [ ] Statistical methodology is sound (methodology-reviewer approved)
-- [ ] Robustness checks are complete and reported (robustness-checker approved)
-- [ ] Paper is logically consistent (coherence-reviewer approved)
-- [ ] All citations resolve correctly (citation-checker approved)
-- [ ] Analysis is reproducible (reproducibility-verifier approved)
-- [ ] Writing meets academic standards (writing-quality-reviewer approved)
-- [ ] Tests pass: `uv run python -m pytest`
+
+| Criterion | Verification |
+|-----------|-------------|
+| No critical findings unresolved | `bd list --status=open` shows no P0/P1 review issues |
+| No major findings unresolved | `bd list --status=open` shows no P1 review issues |
+| Statistical methodology sound | Methodology-reviewer subagent approved |
+| Robustness checks complete | Robustness-checker subagent approved |
+| Paper logically consistent | Coherence-reviewer subagent approved |
+| All citations resolve | `grep -ci "undefined" paper/main.log` returns 0 |
+| Analysis reproducible | Reproducibility-verifier subagent approved |
+| Writing meets standards | Writing-quality-reviewer subagent approved |
+| Tests pass | `uv run python -m pytest` |
 
 ## Memory Integration
 

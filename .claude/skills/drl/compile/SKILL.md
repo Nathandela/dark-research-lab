@@ -13,11 +13,20 @@ Compile the research paper from `paper/main.tex`, verify all references resolve 
 
 Before compiling, verify the inputs are in order:
 
-1. **Main file exists**: Check that `paper/main.tex` exists and has content
-2. **Section files**: Verify all `\input{}` or `\include{}` referenced files exist in `paper/sections/`
-3. **Bibliography**: Confirm `paper/Ref.bib` exists and is non-empty
-4. **Output files**: Check that referenced tables exist in `paper/outputs/tables/` and figures exist in `paper/outputs/figures/`
-5. **Packages**: Scan `\usepackage{}` declarations for any non-standard packages that may need installation
+1. **Tool availability**: Verify that `pdflatex` and `bibtex` are installed:
+   ```bash
+   which pdflatex && which bibtex
+   ```
+   If either is missing, report an actionable error:
+   - **macOS**: `brew install --cask mactex` or install BasicTeX
+   - **Linux**: `apt install texlive-full` or `dnf install texlive-scheme-full`
+   - **Existing TeX**: `tlmgr install <missing-package>`
+   Do not attempt compilation without these tools.
+2. **Main file exists**: Check that `paper/main.tex` exists and has content
+3. **Section files**: Verify all `\input{}` or `\include{}` referenced files exist in `paper/sections/`
+4. **Bibliography**: Confirm `paper/Ref.bib` exists and is non-empty
+5. **Output files**: Check that referenced tables exist in `paper/outputs/tables/` and figures exist in `paper/outputs/figures/`
+6. **Packages**: Scan `\usepackage{}` declarations for any non-standard packages that may need installation
 
 List any missing files before attempting compilation.
 

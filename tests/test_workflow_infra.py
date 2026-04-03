@@ -245,6 +245,145 @@ class TestCLAUDEmd:
         assert "compound-agent:claude-ref:end" in content
 
 
+class TestDecisionReminderDocumentation:
+    """Epic-eng AC-2: decision-reminder.sh documents .ca-phase-state.json format."""
+
+    HOOK_SCRIPT = REPO_ROOT / "scripts" / "hooks" / "decision-reminder.sh"
+
+    def test_documents_phase_state_json_keys(self):
+        """Header comment documents the three required keys."""
+        content = self.HOOK_SCRIPT.read_text()
+        for key in ["cookit_active", "current_phase", "epic_id"]:
+            assert key in content, (
+                f"decision-reminder.sh must document .ca-phase-state.json key: {key}"
+            )
+
+    def test_documents_drl_last_phase_lifecycle(self):
+        """Header comment documents the .drl-last-phase file lifecycle."""
+        content = self.HOOK_SCRIPT.read_text()
+        assert ".drl-last-phase" in content
+        # Must explain what the file does (tracks last seen phase to detect transitions)
+        assert "transition" in content.lower() or "track" in content.lower()
+
+
+class TestCookItFailureRecovery:
+    """Epic-eng AC-3: cook-it SKILL.md has Phase Failure Recovery section."""
+
+    SKILL = REPO_ROOT / ".claude" / "skills" / "drl" / "cook-it" / "SKILL.md"
+
+    def test_has_failure_recovery_section(self):
+        content = self.SKILL.read_text()
+        assert "## Phase Failure Recovery" in content
+
+    def test_failure_recovery_covers_save_state(self):
+        content = self.SKILL.read_text()
+        # Must mention saving state on failure
+        assert "save" in content.lower() and "state" in content.lower()
+
+    def test_failure_recovery_covers_recovery_bead(self):
+        content = self.SKILL.read_text()
+        assert "recovery" in content.lower()
+        assert "bd create" in content or "bead" in content.lower()
+
+    def test_failure_recovery_covers_resume_guidance(self):
+        content = self.SKILL.read_text()
+        assert "resume" in content.lower()
+
+
+class TestResearchWorkSpecApproval:
+    """Epic-eng AC-4: research-work SKILL.md uses bd show for spec approval."""
+
+    SKILL = REPO_ROOT / ".claude" / "skills" / "drl" / "research-work" / "SKILL.md"
+
+    def test_spec_approval_uses_bd_show(self):
+        """Spec approval check must use bd show, not just advisory text."""
+        content = self.SKILL.read_text()
+        # Must contain a bd show command in the spec approval context
+        assert "bd show" in content
+        # Must reference checking the spec phase status
+        assert "spec" in content.lower() and ("status" in content.lower() or "phase" in content.lower())
+
+    def test_spec_approval_is_verifiable(self):
+        """Spec approval must include a concrete verification command."""
+        content = self.SKILL.read_text()
+        # The gate checklist should include a verification command for spec approval
+        assert "bd show" in content
+
+
+class TestLitReviewIterationCap:
+    """Epic-eng AC-5: lit-review has max_iterations=3 guard with proceed-with-warning."""
+
+    SKILL = REPO_ROOT / ".claude" / "skills" / "drl" / "lit-review" / "SKILL.md"
+
+    def test_has_explicit_max_iterations(self):
+        content = self.SKILL.read_text()
+        assert "max_iterations" in content.lower() or "max iterations" in content.lower() or "MAX_ITERATIONS" in content
+
+    def test_has_proceed_with_warning(self):
+        """After exhaustion, must proceed with warning, not hard-fail."""
+        content = self.SKILL.read_text()
+        lower = content.lower()
+        assert "proceed" in lower and "warning" in lower
+
+    def test_iteration_cap_is_three(self):
+        content = self.SKILL.read_text()
+        # Must mention 3 as the cap
+        assert "3" in content
+
+
+class TestCompileToolAvailability:
+    """Epic-eng AC-6: compile SKILL.md checks for pdflatex/bibtex availability."""
+
+    SKILL = REPO_ROOT / ".claude" / "skills" / "drl" / "compile" / "SKILL.md"
+
+    def test_checks_pdflatex_availability(self):
+        content = self.SKILL.read_text()
+        assert "pdflatex" in content.lower()
+        # Must include a check command like `which pdflatex` or `command -v pdflatex`
+        assert "which pdflatex" in content or "command -v pdflatex" in content
+
+    def test_checks_bibtex_availability(self):
+        content = self.SKILL.read_text()
+        assert "bibtex" in content.lower()
+        assert "which bibtex" in content or "command -v bibtex" in content
+
+    def test_has_actionable_error_messages(self):
+        """Must include actionable install guidance if tools are missing."""
+        content = self.SKILL.read_text()
+        lower = content.lower()
+        assert "install" in lower or "brew" in lower or "tlmgr" in lower or "apt" in lower
+
+
+class TestGateVerificationCommands:
+    """Epic-eng AC-7: All phase gate checklists include a verification command column."""
+
+    SKILL_PATHS = [
+        REPO_ROOT / ".claude" / "skills" / "drl" / "research-spec" / "SKILL.md",
+        REPO_ROOT / ".claude" / "skills" / "drl" / "research-plan" / "SKILL.md",
+        REPO_ROOT / ".claude" / "skills" / "drl" / "research-work" / "SKILL.md",
+        REPO_ROOT / ".claude" / "skills" / "drl" / "methodology-review" / "SKILL.md",
+        REPO_ROOT / ".claude" / "skills" / "drl" / "synthesis" / "SKILL.md",
+    ]
+
+    def test_each_skill_has_verification_table(self):
+        """Gate checklists must include a Verification column with exact commands."""
+        for path in self.SKILL_PATHS:
+            content = path.read_text()
+            assert "| Criterion" in content or "| Check" in content or "Verification" in content, (
+                f"{path.name} gate checklist missing verification command column"
+            )
+
+    def test_verification_commands_are_executable(self):
+        """Verification commands should be actual shell commands, not prose."""
+        for path in self.SKILL_PATHS:
+            content = path.read_text()
+            # At least one backtick-enclosed command in the gate section
+            gate_section = content.split("## Gate")[1] if "## Gate" in content else content
+            assert "`" in gate_section, (
+                f"{path.name} gate section must contain backtick-enclosed verification commands"
+            )
+
+
 class TestAGENTSmd:
     """AC-7: AGENTS.md contains DRL agent roles."""
 

@@ -70,11 +70,14 @@ Refine a research question into a precise specification with testable hypotheses
 **Gate: RQ + Hypotheses Approved**
 
 Before proceeding to research-plan, verify ALL of:
-- [ ] Research question is specific and answerable
-- [ ] At least one testable hypothesis is articulated
-- [ ] Literature gap is documented with evidence from indexed papers
-- [ ] Methodology outline identifies key variables and likely methods
-- [ ] Domain glossary defines core constructs
+
+| Criterion | Verification |
+|-----------|-------------|
+| Research question is specific and answerable | Review the RQ statement for specificity |
+| At least one testable hypothesis is articulated | `grep -c "^H[0-9]" docs/specs/*.md` |
+| Literature gap documented with evidence | Check `paper/sections/literature.tex` or spec notes |
+| Methodology outline identifies key variables and likely methods | Review methodology outline section |
+| Domain glossary defines core constructs | Check glossary section exists in spec |
 
 Use `AskUserQuestion` to confirm the research question and hypotheses with the researcher before proceeding.
 

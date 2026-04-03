@@ -36,7 +36,7 @@ If the indexed literature is insufficient (fewer than 5 highly relevant sources)
 4. Re-run the search queries from Step 1
 5. Repeat until the literature base is adequate
 
-**Iteration cap**: Max 3 rounds of asking for more papers, re-indexing, and re-searching. After 3 rounds, proceed with the available literature and note the gap in the review. Do not loop indefinitely.
+**Iteration cap** (MAX_ITERATIONS = 3): Max 3 rounds of asking for more papers, re-indexing, and re-searching. After 3 rounds, proceed with warning: log the insufficiency to beads notes, note the literature gap explicitly in the review, and continue with available sources. Do not loop indefinitely.
 
 ### Literature Sufficiency Criteria
 

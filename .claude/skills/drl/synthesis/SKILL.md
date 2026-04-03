@@ -101,15 +101,18 @@ The final phase of the DRL research pipeline. Verify the paper tells a coherent 
 **Gate: Paper Compiles + All Refs Resolve**
 
 Before closing the epic, verify ALL of:
-- [ ] Paper compiles via `paper/compile.sh` without errors
-- [ ] No undefined ref or cite references
-- [ ] Bibliography resolves all citations
-- [ ] Cross-section coherence verified (narrative arc holds)
-- [ ] Contribution is clearly stated and proportionate
-- [ ] Decision log is complete (all choices have ADRs)
-- [ ] Lessons extracted via `drl learn`
-- [ ] Tests pass: `uv run python -m pytest`
-- [ ] All sub-tasks closed in beads
+
+| Criterion | Verification |
+|-----------|-------------|
+| Paper compiles without errors | `bash paper/compile.sh` exits 0 |
+| No undefined ref/cite references | `grep -ci "undefined" paper/main.log` returns 0 |
+| Bibliography resolves all citations | `grep -ci "warning" paper/main.blg` returns 0 |
+| Cross-section coherence verified | Read all sections end-to-end |
+| Contribution clearly stated | Review intro and conclusion sections |
+| Decision log complete | `ls docs/decisions/` matches decisions in paper |
+| Lessons extracted | `drl learn` called for each insight |
+| Tests pass | `uv run python -m pytest` |
+| All sub-tasks closed | `bd list --status=open` shows only the epic |
 
 ## Memory Integration
 
