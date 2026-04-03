@@ -26,5 +26,5 @@ func IsValidSkillPhase(phase string) bool {
 // ResolveSkillPath returns the canonical skill file path for a given phase.
 // This replaces the hardcoded fmt.Sprintf pattern in phase_guard.go.
 func ResolveSkillPath(phase string) string {
-	return fmt.Sprintf(".claude/skills/compound/%s/SKILL.md", phase)
+	return fmt.Sprintf(".claude/skills/drl/%s/SKILL.md", phase)
 }

@@ -12,7 +12,7 @@ import (
 func TestCompileSkillsIndex(t *testing.T) {
 	t.Parallel()
 	dir := t.TempDir()
-	skillsDir := filepath.Join(dir, ".claude", "skills", "compound")
+	skillsDir := filepath.Join(dir, ".claude", "skills", "drl")
 	os.MkdirAll(skillsDir, 0o755)
 
 	err := CompileSkillsIndex(dir)
@@ -20,7 +20,7 @@ func TestCompileSkillsIndex(t *testing.T) {
 		t.Fatalf("CompileSkillsIndex: %v", err)
 	}
 
-	indexPath := filepath.Join(dir, ".claude", "skills", "compound", "skills_index.json")
+	indexPath := filepath.Join(dir, ".claude", "skills", "drl", "skills_index.json")
 	data, err := os.ReadFile(indexPath)
 	if err != nil {
 		t.Fatalf("read index: %v", err)
@@ -58,7 +58,7 @@ func TestCompileSkillsIndex(t *testing.T) {
 func TestCompileSkillsIndex_PhaseFieldsCorrect(t *testing.T) {
 	t.Parallel()
 	dir := t.TempDir()
-	skillsDir := filepath.Join(dir, ".claude", "skills", "compound")
+	skillsDir := filepath.Join(dir, ".claude", "skills", "drl")
 	os.MkdirAll(skillsDir, 0o755)
 
 	err := CompileSkillsIndex(dir)
@@ -66,7 +66,7 @@ func TestCompileSkillsIndex_PhaseFieldsCorrect(t *testing.T) {
 		t.Fatalf("CompileSkillsIndex: %v", err)
 	}
 
-	indexPath := filepath.Join(dir, ".claude", "skills", "compound", "skills_index.json")
+	indexPath := filepath.Join(dir, ".claude", "skills", "drl", "skills_index.json")
 	data, err := os.ReadFile(indexPath)
 	if err != nil {
 		t.Fatalf("read index: %v", err)
@@ -120,7 +120,7 @@ func TestCompileSkillsIndex_PhaseFieldsCorrect(t *testing.T) {
 func TestCompileSkillsIndex_HasNameAndDescription(t *testing.T) {
 	t.Parallel()
 	dir := t.TempDir()
-	skillsDir := filepath.Join(dir, ".claude", "skills", "compound")
+	skillsDir := filepath.Join(dir, ".claude", "skills", "drl")
 	os.MkdirAll(skillsDir, 0o755)
 
 	err := CompileSkillsIndex(dir)
@@ -128,7 +128,7 @@ func TestCompileSkillsIndex_HasNameAndDescription(t *testing.T) {
 		t.Fatalf("CompileSkillsIndex: %v", err)
 	}
 
-	indexPath := filepath.Join(dir, ".claude", "skills", "compound", "skills_index.json")
+	indexPath := filepath.Join(dir, ".claude", "skills", "drl", "skills_index.json")
 	data, err := os.ReadFile(indexPath)
 	if err != nil {
 		t.Fatalf("read index: %v", err)

@@ -785,7 +785,7 @@ func loopScriptPromptBuilder(bt string) string { //nolint:funlen // bash templat
 	fmt.Fprintf(&b, "## Step 2: Execute the workflow\n")
 	fmt.Fprintf(&b, "Run the full compound workflow for this epic, starting from the plan phase\n")
 	fmt.Fprintf(&b, "(spec-dev is already done -- the epic exists):\n\n")
-	fmt.Fprintf(&b, "/compound:cook-it from plan -- Epic: $epic_id\n\n")
+	fmt.Fprintf(&b, "/drl:cook-it from plan -- Epic: $epic_id\n\n")
 	fmt.Fprintf(&b, "Work through all phases: plan, work, review, compound.\n\n")
 	fmt.Fprintf(&b, "## Step 3: On completion\n")
 	fmt.Fprintf(&b, "When all work is done and tests pass:\n")

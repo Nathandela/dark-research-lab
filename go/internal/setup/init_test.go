@@ -140,7 +140,7 @@ func TestInitRepo_InstallsTemplates(t *testing.T) {
 	}
 
 	// Verify a sample file exists
-	repoAnalyst := filepath.Join(dir, ".claude", "agents", "compound", "repo-analyst.md")
+	repoAnalyst := filepath.Join(dir, ".claude", "agents", "drl", "repo-analyst.md")
 	if _, err := os.Stat(repoAnalyst); os.IsNotExist(err) {
 		t.Error("missing repo-analyst.md agent template")
 	}
@@ -410,7 +410,7 @@ func TestInitRepo_UpdatesStaleTemplates(t *testing.T) {
 	}
 
 	// Modify an agent template to simulate staleness
-	agentsDir := filepath.Join(dir, ".claude", "agents", "compound")
+	agentsDir := filepath.Join(dir, ".claude", "agents", "drl")
 	entries, err := os.ReadDir(agentsDir)
 	if err != nil {
 		t.Fatalf("ReadDir: %v", err)
@@ -454,11 +454,11 @@ func TestInitRepo_PrunesStaleTemplates(t *testing.T) {
 	}
 
 	// Add retired files to managed directories
-	agentsDir := filepath.Join(dir, ".claude", "agents", "compound")
+	agentsDir := filepath.Join(dir, ".claude", "agents", "drl")
 	if err := os.WriteFile(filepath.Join(agentsDir, "retired-agent.md"), []byte("# old\n"), 0644); err != nil {
 		t.Fatalf("write retired: %v", err)
 	}
-	staleRole := filepath.Join(dir, ".claude", "skills", "compound", "agents", "retired-role")
+	staleRole := filepath.Join(dir, ".claude", "skills", "drl", "agents", "retired-role")
 	if err := os.MkdirAll(staleRole, 0755); err != nil {
 		t.Fatalf("mkdir retired-role: %v", err)
 	}

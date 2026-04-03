@@ -50,9 +50,9 @@ func initDirectories(repoRoot string, result *InitResult) error {
 		filepath.Join(repoRoot, ".claude"),
 		filepath.Join(repoRoot, ".claude", "lessons"),
 		filepath.Join(repoRoot, ".claude", ".cache"),
-		filepath.Join(repoRoot, ".claude", "agents", "compound"),
-		filepath.Join(repoRoot, ".claude", "commands", "compound"),
-		filepath.Join(repoRoot, ".claude", "skills", "compound"),
+		filepath.Join(repoRoot, ".claude", "agents", "drl"),
+		filepath.Join(repoRoot, ".claude", "commands", "drl"),
+		filepath.Join(repoRoot, ".claude", "skills", "drl"),
 	}
 
 	for _, dir := range dirs {
@@ -263,7 +263,7 @@ func EnsureGitignore(repoRoot string) error {
 .drl-failure-state.json
 .drl-read-state.json
 .drl-hints-shown
-skills/compound/skills_index.json
+skills/drl/skills_index.json
 `
 
 	// If gitignore exists, check for our marker

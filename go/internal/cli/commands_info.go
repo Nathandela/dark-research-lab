@@ -147,7 +147,7 @@ func buildInfoHooksJSON(repoRoot string) map[string]any {
 }
 
 func buildInfoSkillsJSON(repoRoot string) map[string]any {
-	indexPath := filepath.Join(repoRoot, ".claude", "skills", "compound", "skills_index.json")
+	indexPath := filepath.Join(repoRoot, ".claude", "skills", "drl", "skills_index.json")
 	data, err := os.ReadFile(indexPath)
 	if err != nil {
 		return map[string]any{"count": 0, "skills": []any{}}
@@ -258,7 +258,7 @@ func formatInfoHooks(repoRoot string) string {
 
 // formatInfoSkills returns the skills section content.
 func formatInfoSkills(repoRoot string) string {
-	indexPath := filepath.Join(repoRoot, ".claude", "skills", "compound", "skills_index.json")
+	indexPath := filepath.Join(repoRoot, ".claude", "skills", "drl", "skills_index.json")
 	data, err := os.ReadFile(indexPath)
 	if err != nil {
 		return "Skills index not found. Run `drl setup` to generate.\n"

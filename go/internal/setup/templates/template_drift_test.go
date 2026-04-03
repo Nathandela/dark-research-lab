@@ -127,14 +127,14 @@ func TestTemplateDrift_ReviewerNamesMatchAgentRoleSkills(t *testing.T) {
 }
 
 // TestTemplateDrift_ResearchSourceMatchesEmbed verifies that the source
-// research tree (docs/compound/research/) and the embedded copy
+// research tree (docs/drl/research/) and the embedded copy
 // (go/internal/setup/templates/docs/research/) contain exactly the same
 // set of files. Catches drift when a file is added to the source but not
 // copied into the embedded templates (or vice versa).
 func TestTemplateDrift_ResearchSourceMatchesEmbed(t *testing.T) {
 	repoRoot := findRepoRoot(t)
 
-	sourceDir := filepath.Join(repoRoot, "docs", "compound", "research")
+	sourceDir := filepath.Join(repoRoot, "docs", "drl", "research")
 	if _, err := os.Stat(sourceDir); os.IsNotExist(err) {
 		t.Skip("source research dir not found (running outside repo)")
 		return
@@ -160,14 +160,14 @@ func TestTemplateDrift_ResearchSourceMatchesEmbed(t *testing.T) {
 	// Check source -> embedded
 	for f := range sourceFiles {
 		if _, ok := embeddedFiles[f]; !ok {
-			t.Errorf("source file %q exists in docs/compound/research/ but not in embedded templates", f)
+			t.Errorf("source file %q exists in docs/drl/research/ but not in embedded templates", f)
 		}
 	}
 
 	// Check embedded -> source
 	for f := range embeddedFiles {
 		if !sourceFiles[f] {
-			t.Errorf("embedded file %q exists in templates but not in docs/compound/research/", f)
+			t.Errorf("embedded file %q exists in templates but not in docs/drl/research/", f)
 		}
 	}
 
@@ -175,7 +175,7 @@ func TestTemplateDrift_ResearchSourceMatchesEmbed(t *testing.T) {
 }
 
 // TestTemplateDrift_ResearchReferencesResolve verifies that all
-// docs/compound/research/ path references in skill and agent-role-skill
+// docs/drl/research/ path references in skill and agent-role-skill
 // templates point to files that exist in the embedded research tree.
 func TestTemplateDrift_ResearchReferencesResolve(t *testing.T) {
 	researchDocs := ResearchDocs()
@@ -188,8 +188,8 @@ func TestTemplateDrift_ResearchReferencesResolve(t *testing.T) {
 		}
 	}
 
-	// Pattern: docs/compound/research/some/path
-	refRe := regexp.MustCompile("`docs/compound/research/([^`]+)`")
+	// Pattern: docs/drl/research/some/path
+	refRe := regexp.MustCompile("`docs/drl/research/([^`]+)`")
 
 	// Check all phase skills
 	for phase, content := range PhaseSkills() {
@@ -227,5 +227,5 @@ func checkResearchRef(t *testing.T, source, ref string, docs map[string]string, 
 	if dirs[ref] {
 		return // directory reference
 	}
-	t.Errorf("%s references docs/compound/research/%s which does not exist in embedded research tree", source, ref)
+	t.Errorf("%s references docs/drl/research/%s which does not exist in embedded research tree", source, ref)
 }
