@@ -4,13 +4,14 @@
 *.db
 
 # Python bytecode
-__pycache__/
+**/__pycache__/
 *.pyc
 
 # Build artifacts
 go/dist/
 go/drl
 dist/
+*.egg-info/
 
 # Bundled Go binary (copied by hatch build hook)
 python/drl/drl
@@ -27,6 +28,7 @@ agent_logs/
 
 # Ephemeral hook state
 .claude/.drl-last-phase
+.drl-phase-state.json
 
 # Stale worktree debris
 drltmp/

@@ -12,13 +12,19 @@ requires-python = ">=3.10"
 authors = [
     { name = "Nathan Delacretaz" },
 ]
+keywords = ["research", "social-science", "latex", "reproducibility", "ai"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering",
+    "Topic :: Text Processing :: Markup :: LaTeX",
 ]
 
 dependencies = [
@@ -30,8 +36,25 @@ dependencies = [
 [project.scripts]
 drl = "drl:main"
 
+[project.urls]
+Homepage = "https://github.com/Nathandela/dark-research-lab"
+Repository = "https://github.com/Nathandela/dark-research-lab"
+Issues = "https://github.com/Nathandela/dark-research-lab/issues"
+
 [dependency-groups]
 test = ["pytest", "pyyaml", "pymupdf>=1.24.0", "matplotlib>=3.8.0"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "tests/",
+    "docs/",
+    "paper/",
+    "literature/",
+    "agent_logs/",
+    ".beads/",
+    ".claude/",
+    "drltmp/",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["python/drl"]
