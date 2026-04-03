@@ -16,7 +16,7 @@ This skill organizes work around research domain boundaries: literature review, 
 
 - Beads epic ID: read epic description as input
 - Research question: provided directly or via `AskUserQuestion`
-- Literature context: search indexed papers via `drl knowledge`
+- Literature context: search indexed papers via `ca knowledge`
 
 ## Phase 1: Socratic (Research Question Refinement)
 
@@ -45,7 +45,7 @@ After steps 1-2, evaluate whether the literature base is adequate:
 3. **Apply threshold**: If fewer than 3 relevant sources cover the research question's domain:
    - **Insufficient**: Recommend adding more literature to `literature/pdfs/` and re-indexing with `drl index`. Use `AskUserQuestion` to confirm.
    - **Sufficient**: Note the evidence and proceed.
-4. **Time budget**: Literature review is capped at 15 minutes or 3 search rounds.
+4. **Time budget**: Literature review is capped at 3 search rounds.
 
 **Gate 1**: Use `AskUserQuestion` to confirm the research question, hypotheses, and scope.
 
@@ -71,7 +71,7 @@ After steps 1-2, evaluate whether the literature base is adequate:
 
 **Goal**: Break the research project into naturally-scoped epics.
 
-Spawn **6 parallel subagents** (via Task tool):
+Spawn **6 parallel subagents** (via Agent tool):
 
 1. **Literature mapper**: Survey the indexed literature to identify:
    - Key prior studies and their methodological approaches

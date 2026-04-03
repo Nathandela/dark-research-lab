@@ -109,6 +109,9 @@ class TestAgentResearchSpecificity:
         "sprint",
         "user story",
         "microservice",
+        "repository",
+        "refactor",
+        "version control",
     ]
 
     RESEARCH_TERMS = [
@@ -154,6 +157,9 @@ class TestArchitectSkillResearchSpecificity:
         "user story",
         "microservice",
         "bounded context",
+        "repository",
+        "refactor",
+        "version control",
     ]
 
     def test_skill_avoids_software_dev_vocabulary(self):
