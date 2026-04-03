@@ -7,9 +7,17 @@
 __pycache__/
 *.pyc
 
+# Build artifacts
+go/dist/
+go/drl
+dist/
+
 # Bundled Go binary (copied by hatch build hook)
 python/drl/drl
 python/drl/drl.exe
+
+# Agent cache files
+**/.claude/.cache/
 
 # Agent runtime logs
 agent_logs/

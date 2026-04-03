@@ -5,6 +5,8 @@
 package literature
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -31,11 +33,16 @@ type ExtractedPDF struct {
 var slugRe = regexp.MustCompile(`[^a-z0-9]+`)
 
 // MakeSlug converts a filename to a URL-safe slug.
+// Falls back to a short hash if the filename has no Latin alphanumeric characters.
 func MakeSlug(filename string) string {
 	stem := strings.TrimSuffix(filename, filepath.Ext(filename))
 	slug := strings.ToLower(stem)
 	slug = slugRe.ReplaceAllString(slug, "-")
 	slug = strings.Trim(slug, "-")
+	if slug == "" {
+		h := sha256.Sum256([]byte(filename))
+		slug = "doc-" + hex.EncodeToString(h[:4])
+	}
 	return slug
 }
 

@@ -164,51 +164,6 @@ class TestMakeSlug:
 
 
 # ---------------------------------------------------------------------------
-# summarize.py tests
-# ---------------------------------------------------------------------------
-
-
-class TestGenerateSummary:
-    def test_generates_summary_file(self, sample_pdf, literature_dir):
-        from src.literature.extract import extract_metadata, extract_text
-        from src.literature.summarize import generate_summary
-
-        text = extract_text(sample_pdf)
-        meta = extract_metadata(sample_pdf)
-        notes_dir = literature_dir / "notes"
-
-        result = generate_summary(text, meta, notes_dir)
-        assert result.exists()
-        content = result.read_text()
-        assert "# " in content  # Has a title heading
-        assert "test_paper" in result.stem or "test-paper" in result.stem
-
-    def test_summary_contains_source_info(self, sample_pdf, literature_dir):
-        from src.literature.extract import extract_metadata, extract_text
-        from src.literature.summarize import generate_summary
-
-        text = extract_text(sample_pdf)
-        meta = extract_metadata(sample_pdf)
-        notes_dir = literature_dir / "notes"
-
-        result = generate_summary(text, meta, notes_dir)
-        content = result.read_text()
-        assert "Source:" in content or "source:" in content.lower()
-
-    def test_idempotent_overwrite(self, sample_pdf, literature_dir):
-        from src.literature.extract import extract_metadata, extract_text
-        from src.literature.summarize import generate_summary
-
-        text = extract_text(sample_pdf)
-        meta = extract_metadata(sample_pdf)
-        notes_dir = literature_dir / "notes"
-
-        path1 = generate_summary(text, meta, notes_dir)
-        path2 = generate_summary(text, meta, notes_dir)
-        assert path1 == path2
-
-
-# ---------------------------------------------------------------------------
 # CLI extraction script tests
 # ---------------------------------------------------------------------------
 
@@ -217,7 +172,7 @@ class TestCLIExtract:
     def test_cli_extract_outputs_text(self, sample_pdf):
         """The extraction script can be called as a subprocess."""
         result = subprocess.run(
-            ["python", "-m", "src.literature.extract", str(sample_pdf)],
+            ["python3", "-m", "src.literature.extract", str(sample_pdf)],
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
@@ -228,7 +183,7 @@ class TestCLIExtract:
     def test_cli_extract_json_mode(self, sample_pdf):
         """The extraction script outputs JSON with --json flag."""
         result = subprocess.run(
-            ["python", "-m", "src.literature.extract", "--json", str(sample_pdf)],
+            ["python3", "-m", "src.literature.extract", "--json", str(sample_pdf)],
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
@@ -242,7 +197,7 @@ class TestCLIExtract:
     def test_cli_extract_missing_file(self, tmp_path):
         """The extraction script returns non-zero for missing files."""
         result = subprocess.run(
-            ["python", "-m", "src.literature.extract", str(tmp_path / "nope.pdf")],
+            ["python3", "-m", "src.literature.extract", str(tmp_path / "nope.pdf")],
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),

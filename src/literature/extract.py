@@ -33,11 +33,13 @@ def extract_text(pdf_path: Path | str) -> str:
     except Exception as exc:
         raise ValueError(f"{pdf_path.name} is not a valid PDF: {exc}") from exc
 
-    pages = []
-    for page in doc:
-        pages.append(page.get_text())
-    doc.close()
-    return "\n".join(pages)
+    try:
+        pages = []
+        for page in doc:
+            pages.append(page.get_text())
+        return "\n".join(pages)
+    finally:
+        doc.close()
 
 
 def extract_metadata(pdf_path: Path | str) -> dict:
@@ -58,9 +60,12 @@ def extract_metadata(pdf_path: Path | str) -> dict:
         doc = fitz.open(str(pdf_path))
     except Exception as exc:
         raise ValueError(f"{pdf_path.name} is not a valid PDF: {exc}") from exc
-    meta = doc.metadata or {}
-    page_count = len(doc)
-    doc.close()
+
+    try:
+        meta = doc.metadata or {}
+        page_count = len(doc)
+    finally:
+        doc.close()
 
     title = (meta.get("title") or "").strip()
     if not title:
@@ -99,15 +104,22 @@ def _cli_main() -> int:
         print("Usage: python -m src.literature.extract [--json] <pdf_path>", file=sys.stderr)
         return 1
 
+    # Redirect PyMuPDF C-library warnings away from stdout to prevent JSON corruption
+    _real_stdout = sys.stdout
+    sys.stdout = sys.stderr
+
     pdf_path = Path(args[0])
     try:
         text = extract_text(pdf_path)
         if json_mode:
             meta = extract_metadata(pdf_path)
+            sys.stdout = _real_stdout
             print(json.dumps({"text": text, "metadata": meta}))
         else:
+            sys.stdout = _real_stdout
             print(text)
     except (FileNotFoundError, ValueError) as exc:
+        sys.stdout = _real_stdout
         print(f"Error: {exc}", file=sys.stderr)
         return 1
     return 0

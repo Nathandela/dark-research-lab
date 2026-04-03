@@ -142,8 +142,9 @@ func formatKnowledgeResults(results []knowledge.ScoredChunkResult) string {
 
 	for _, r := range results {
 		text := r.Chunk.Text
-		if len(text) > MaxDisplayText {
-			text = text[:MaxDisplayText] + "..."
+		runes := []rune(text)
+		if len(runes) > MaxDisplayText {
+			text = string(runes[:MaxDisplayText]) + "..."
 		}
 		// Replace newlines with spaces for compact display
 		text = strings.ReplaceAll(text, "\n", " ")

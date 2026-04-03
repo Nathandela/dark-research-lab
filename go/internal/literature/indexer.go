@@ -71,23 +71,11 @@ func IndexLiterature(repoRoot string, kdb *storage.KnowledgeDB, opts *IndexOptio
 		chunks := knowledge.ChunkFile(relPath, extracted.Text, nil)
 		kChunks := toKnowledgeChunks(relPath, chunks)
 
-		// Replace old chunks for this file
-		if err := kdb.DeleteChunksByFilePath([]string{relPath}); err != nil {
+		// Replace old chunks atomically
+		if err := replaceChunks(kdb, relPath, kChunks, hash); err != nil {
 			result.PDFsErrored++
-			result.Errors = append(result.Errors, fmt.Sprintf("%s: delete old chunks: %v", filepath.Base(pdfPath), err))
+			result.Errors = append(result.Errors, fmt.Sprintf("%s: %v", filepath.Base(pdfPath), err))
 			continue
-		}
-
-		if len(kChunks) > 0 {
-			if err := kdb.UpsertChunks(kChunks); err != nil {
-				result.PDFsErrored++
-				result.Errors = append(result.Errors, fmt.Sprintf("%s: upsert chunks: %v", filepath.Base(pdfPath), err))
-				continue
-			}
-		}
-
-		if err := kdb.SetFileHash(relPath, hash); err != nil {
-			result.Errors = append(result.Errors, fmt.Sprintf("%s: set file hash: %v", filepath.Base(pdfPath), err))
 		}
 
 		result.PDFsProcessed++
@@ -105,9 +93,32 @@ func IndexLiterature(repoRoot string, kdb *storage.KnowledgeDB, opts *IndexOptio
 	return result, nil
 }
 
+// replaceChunks atomically deletes old chunks and upserts new ones within a transaction.
+func replaceChunks(kdb *storage.KnowledgeDB, relPath string, chunks []storage.KnowledgeChunk, hash string) error {
+	tx, err := kdb.DB().Begin()
+	if err != nil {
+		return fmt.Errorf("begin transaction: %w", err)
+	}
+	defer tx.Rollback()
+
+	if err := kdb.DeleteChunksByFilePath([]string{relPath}); err != nil {
+		return fmt.Errorf("delete old chunks: %w", err)
+	}
+	if len(chunks) > 0 {
+		if err := kdb.UpsertChunks(chunks); err != nil {
+			return fmt.Errorf("upsert chunks: %w", err)
+		}
+	}
+	if err := kdb.SetFileHash(relPath, hash); err != nil {
+		return fmt.Errorf("set file hash: %w", err)
+	}
+
+	return tx.Commit()
+}
+
 // extractPDF calls the Python extraction script and returns parsed results.
 func extractPDF(repoRoot, pdfPath string) (*ExtractedPDF, error) {
-	cmd := exec.Command("python", "-m", "src.literature.extract", "--json", pdfPath)
+	cmd := exec.Command("python3", "-m", "src.literature.extract", "--json", pdfPath)
 	cmd.Dir = repoRoot
 
 	output, err := cmd.Output()

@@ -21,12 +21,14 @@ def _skip_if_no_binary():
 
 
 @pytest.fixture
-def test_pdf(tmp_path):
-    """Create a test PDF in a temporary literature/pdfs/ structure."""
+def test_repo(tmp_path):
+    """Create an isolated repo structure with a test PDF."""
     import fitz
 
-    pdfs_dir = REPO_ROOT / "literature" / "pdfs"
-    pdfs_dir.mkdir(parents=True, exist_ok=True)
+    pdfs_dir = tmp_path / "literature" / "pdfs"
+    pdfs_dir.mkdir(parents=True)
+    notes_dir = tmp_path / "literature" / "notes"
+    notes_dir.mkdir(parents=True)
 
     pdf_path = pdfs_dir / "_test_integration.pdf"
     doc = fitz.open()
@@ -45,16 +47,11 @@ def test_pdf(tmp_path):
     doc.save(str(pdf_path))
     doc.close()
 
-    yield pdf_path
-
-    # Cleanup
-    pdf_path.unlink(missing_ok=True)
-    note_path = REPO_ROOT / "literature" / "notes" / "test-integration.md"
-    note_path.unlink(missing_ok=True)
+    yield tmp_path
 
 
 class TestDrlIndex:
-    def test_index_processes_pdf(self, test_pdf):
+    def test_index_processes_pdf(self, test_repo):
         """drl index processes a test PDF and creates searchable entries."""
         _skip_if_no_binary()
         result = subprocess.run(
@@ -62,11 +59,12 @@ class TestDrlIndex:
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
+            env={**os.environ, "DRL_REPO_ROOT": str(test_repo)},
         )
         assert result.returncode == 0, f"stderr: {result.stderr}"
         assert "chunk(s) created" in result.stdout
 
-    def test_index_generates_summary_note(self, test_pdf):
+    def test_index_generates_summary_note(self, test_repo):
         """drl index generates a summary note in literature/notes/."""
         _skip_if_no_binary()
         subprocess.run(
@@ -74,21 +72,24 @@ class TestDrlIndex:
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
+            env={**os.environ, "DRL_REPO_ROOT": str(test_repo)},
         )
-        note_path = REPO_ROOT / "literature" / "notes" / "test-integration.md"
-        assert note_path.exists(), "Summary note not generated"
-        content = note_path.read_text()
+        notes = list((test_repo / "literature" / "notes").glob("*.md"))
+        assert len(notes) > 0, "Summary note not generated"
+        content = notes[0].read_text()
         assert "# " in content
 
-    def test_index_idempotent(self, test_pdf):
+    def test_index_idempotent(self, test_repo):
         """Re-running drl index without changes skips unchanged PDFs."""
         _skip_if_no_binary()
+        env = {**os.environ, "DRL_REPO_ROOT": str(test_repo)}
         # First run
         subprocess.run(
             [str(DRL_BINARY), "index", "--force"],
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
+            env=env,
         )
         # Second run without --force
         result = subprocess.run(
@@ -96,21 +97,24 @@ class TestDrlIndex:
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
+            env=env,
         )
         assert result.returncode == 0
         assert "unchanged" in result.stdout
 
 
 class TestDrlKnowledge:
-    def test_knowledge_returns_results(self, test_pdf):
+    def test_knowledge_returns_results(self, test_repo):
         """drl knowledge returns relevant chunks for a known query."""
         _skip_if_no_binary()
+        env = {**os.environ, "DRL_REPO_ROOT": str(test_repo)}
         # Index first
         subprocess.run(
             [str(DRL_BINARY), "index", "--force"],
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
+            env=env,
         )
         # Search
         result = subprocess.run(
@@ -118,19 +122,22 @@ class TestDrlKnowledge:
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
+            env=env,
         )
         assert result.returncode == 0
         assert "gradient boosting" in result.stdout or "machine learning" in result.stdout.lower()
 
-    def test_knowledge_json_output(self, test_pdf):
+    def test_knowledge_json_output(self, test_repo):
         """drl knowledge --json returns valid JSON with expected fields."""
         _skip_if_no_binary()
+        env = {**os.environ, "DRL_REPO_ROOT": str(test_repo)}
         # Index first
         subprocess.run(
             [str(DRL_BINARY), "index", "--force"],
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
+            env=env,
         )
         # Search with JSON output
         result = subprocess.run(
@@ -138,6 +145,7 @@ class TestDrlKnowledge:
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
+            env=env,
         )
         assert result.returncode == 0
         data = json.loads(result.stdout)
@@ -150,7 +158,7 @@ class TestDrlKnowledge:
 
 
 class TestEmbedDaemonHealthCheck:
-    def test_embed_flag_without_daemon(self, test_pdf):
+    def test_embed_flag_without_daemon(self, test_repo):
         """drl index --embed fails gracefully when daemon is not running."""
         _skip_if_no_binary()
         result = subprocess.run(
@@ -158,7 +166,7 @@ class TestEmbedDaemonHealthCheck:
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
-            env={**os.environ, "PATH": ""},  # Ensure daemon not found
+            env={**os.environ, "DRL_REPO_ROOT": str(test_repo), "PATH": ""},
         )
         # Should either error or warn about daemon
         assert result.returncode != 0 or "not running" in result.stderr.lower() or "not available" in result.stderr.lower() or "daemon" in result.stderr.lower()
