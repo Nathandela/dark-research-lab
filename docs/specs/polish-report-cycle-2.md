@@ -1,19 +1,18 @@
 # Polish Report -- Cycle 2
 
-Generated: 2026-04-02T18:30:03Z
+Generated: 2026-04-03T13:36:27Z
 
 ## claude-sonnet
 
-(dry run -- no actual review)
+What can I help you with?
 
 ## claude-opus
 
-(dry run -- no actual review)
+What can I help you with?
 
 ## gemini
 
-(dry run -- no actual review)
-
+MCP issues detected. Run /mcp list for status.
 ## codex
 
 (dry run -- no actual review)
