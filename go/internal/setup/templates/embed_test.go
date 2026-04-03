@@ -11,12 +11,17 @@ func TestAgentTemplates(t *testing.T) {
 		t.Fatal("expected agent templates, got none")
 	}
 
-	// Verify expected DRL research agents exist
+	// Verify expected DRL research agents and infra agents exist
 	expected := []string{
-		"analyst.md", "citation-checker.md", "coherence-reviewer.md",
-		"literature-analyst.md", "methodology-reviewer.md",
-		"reproducibility-verifier.md", "robustness-checker.md",
-		"writing-quality-reviewer.md",
+		"analyst.md", "audit.md", "cct-subagent.md",
+		"citation-checker.md", "coherence-reviewer.md",
+		"doc-gardener.md", "drift-detector.md",
+		"external-reviewer-codex.md", "external-reviewer-gemini.md",
+		"lessons-reviewer.md", "lint-classifier.md",
+		"literature-analyst.md", "memory-analyst.md",
+		"methodology-reviewer.md", "repo-analyst.md",
+		"reproducibility-verifier.md", "research-specialist.md",
+		"robustness-checker.md", "writing-quality-reviewer.md",
 	}
 	for _, name := range expected {
 		content, ok := agents[name]
@@ -37,10 +42,15 @@ func TestCommandTemplates(t *testing.T) {
 		t.Fatal("expected command templates, got none")
 	}
 
-	// Verify expected DRL commands exist
+	// Verify expected DRL commands exist (8 research + 5 phase + 10 infra = 23)
 	expected := []string{
-		"architect.md", "compile.md", "cook-it.md", "decision.md",
-		"flavor.md", "lit-review.md", "onboard.md", "status.md",
+		"agentic-audit.md", "agentic-setup.md", "architect.md",
+		"build-great-things.md", "check-that.md", "compile.md",
+		"compound.md", "cook-it.md", "decision.md", "flavor.md",
+		"get-a-phd.md", "launch-loop.md", "learn-that.md",
+		"lit-review.md", "onboard.md", "plan.md", "prime.md",
+		"research.md", "review.md", "spec-dev.md", "status.md",
+		"test-clean.md", "work.md",
 	}
 	for _, name := range expected {
 		content, ok := commands[name]
@@ -48,8 +58,8 @@ func TestCommandTemplates(t *testing.T) {
 			t.Errorf("missing command template: %s", name)
 			continue
 		}
-		if !strings.Contains(content, "name: drl:") && !strings.Contains(content, "# ") {
-			t.Errorf("command %s missing expected content", name)
+		if !strings.Contains(content, "name: drl:") {
+			t.Errorf("command %s missing drl: namespace prefix in frontmatter", name)
 		}
 	}
 	t.Logf("command templates: %d", len(commands))
