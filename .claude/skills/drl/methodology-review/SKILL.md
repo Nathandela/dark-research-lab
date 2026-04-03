@@ -8,7 +8,7 @@ phase: review
 
 ## Overview
 
-Conduct a comprehensive review of the completed research work. Five specialized reviewers check different dimensions of quality: statistical methodology, logical coherence, citation integrity, reproducibility, and writing standards. All checks must pass before the paper proceeds to synthesis.
+Conduct a comprehensive review of the completed research work. Six specialized reviewers check different dimensions of quality: statistical methodology, robustness assessment, logical coherence, citation integrity, reproducibility, and writing standards. All checks must pass before the paper proceeds to synthesis.
 
 ## Input
 
@@ -28,7 +28,7 @@ Conduct a comprehensive review of the completed research work. Five specialized 
 
 ### Step 2: Spawn Review Fleet
 
-Spawn **5 specialized reviewer subagents** in parallel:
+Spawn **6 specialized reviewer subagents** in parallel:
 
 #### 2a. Statistical Validity -- methodology-reviewer
 
@@ -74,7 +74,7 @@ Spawn `.claude/agents/drl/reproducibility-verifier.md`:
 - Validate dependency pinning (uv.lock)
 - Test that `paper/compile.sh` produces a valid PDF
 
-### Step 3: Writing Quality Check
+#### 2f. Writing Quality -- writing-quality-reviewer
 
 Spawn `.claude/agents/drl/writing-quality-reviewer.md`:
 - Assess clarity and precision of academic prose
@@ -83,7 +83,7 @@ Spawn `.claude/agents/drl/writing-quality-reviewer.md`:
 - Evaluate hedging language for statistical claims
 - Check abstract structure (background, gap, method, findings, contribution)
 
-### Step 4: Consolidate Findings
+### Step 3: Consolidate Findings
 
 1. Collect all reviewer findings
 2. Classify by severity:
@@ -93,7 +93,7 @@ Spawn `.claude/agents/drl/writing-quality-reviewer.md`:
 3. Deduplicate overlapping findings across reviewers
 4. Create beads issues for critical/major findings: `bd create --title="Review: ..." --priority=1`
 
-### Step 5: Fix Critical and Major Findings
+### Step 4: Fix Critical and Major Findings
 
 1. Address all critical findings before proceeding
 2. Address all major findings before proceeding
@@ -132,7 +132,7 @@ Before proceeding to synthesis, verify ALL of:
 
 ## Quality Criteria
 
-- [ ] All 5 reviewer dimensions covered in parallel
+- [ ] All 6 reviewer dimensions covered in parallel
 - [ ] Robustness-checker verified the robustness battery
 - [ ] Findings classified by severity (critical/major/minor)
 - [ ] All critical and major findings resolved

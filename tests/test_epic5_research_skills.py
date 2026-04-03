@@ -265,4 +265,4 @@ class TestResearchPlanContent:
 
     def test_plan_references_traceability_mapping(self):
         body = _read_body(DRL_SKILLS_DIR / "research-plan" / "SKILL.md").lower()
-        assert "hypothesis" in body and ("section" in body or "mapping" in body)
+        assert "hypothesis-analysis-output-section" in body or "traceability" in body
