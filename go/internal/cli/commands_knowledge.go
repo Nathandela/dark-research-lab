@@ -13,10 +13,13 @@ import (
 const MaxDisplayText = 200
 
 func knowledgeCmd() *cobra.Command {
-	var limit int
+	var (
+		limit   int
+		jsonOut bool
+	)
 	cmd := &cobra.Command{
 		Use:   "knowledge <query>",
-		Short: "Search indexed documentation",
+		Short: "Search indexed documentation and literature",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if limit < 1 {
@@ -50,11 +53,20 @@ func knowledgeCmd() *cobra.Command {
 				return fmt.Errorf("search: %w", err)
 			}
 
-			cmd.Print(formatKnowledgeResults(results))
+			if jsonOut {
+				out, err := formatKnowledgeResultsJSON(results)
+				if err != nil {
+					return err
+				}
+				cmd.Println(out)
+			} else {
+				cmd.Print(formatKnowledgeResults(results))
+			}
 			return nil
 		},
 	}
 	cmd.Flags().IntVarP(&limit, "limit", "n", knowledge.DefaultKnowledgeLimit, "maximum results to return")
+	cmd.Flags().BoolVar(&jsonOut, "json", false, "output results as JSON [{file, chunk_text, similarity}]")
 	return cmd
 }
 
