@@ -613,7 +613,7 @@ class TestZeroCompoundInDRLTemplates:
                         hits.append((md_file.relative_to(REPO_ROOT), i, line.strip()))
         return hits
 
-    def test_no_compound_namespace_in_drl_skills(self):
+    def test_no_compound_namespace_in_drl_templates(self):
         hits = self._scan_for_compound_refs()
         assert len(hits) == 0, (
             "Found /compound: references in DRL templates:\n"

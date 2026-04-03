@@ -354,8 +354,12 @@ func TestNoCompoundNamespaceInDRLTemplates(t *testing.T) {
 	// The phase name "compound" is legitimate; only "/compound:" slash-command
 	// references are prohibited.
 	sources := map[string]map[string]string{
-		"commands": CommandTemplates(),
-		"agents":   AgentTemplates(),
+		"commands":              CommandTemplates(),
+		"agents":                AgentTemplates(),
+		"phase-skills":          PhaseSkills(),
+		"phase-skill-refs":      PhaseSkillReferences(),
+		"agent-role-skills":     AgentRoleSkills(),
+		"agent-role-skill-refs": AgentRoleSkillReferences(),
 	}
 	for category, templates := range sources {
 		for name, content := range templates {
