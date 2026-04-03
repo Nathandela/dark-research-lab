@@ -13,7 +13,6 @@ import (
 // IndexOptions controls literature indexing behavior.
 type IndexOptions struct {
 	Force bool // Re-index even if hash unchanged
-	Embed bool // Embed chunks after indexing
 }
 
 // IndexResult holds statistics about a literature indexing operation.
@@ -87,7 +86,9 @@ func IndexLiterature(repoRoot string, kdb *storage.KnowledgeDB, opts *IndexOptio
 			}
 		}
 
-		_ = kdb.SetFileHash(relPath, hash)
+		if err := kdb.SetFileHash(relPath, hash); err != nil {
+			result.Errors = append(result.Errors, fmt.Sprintf("%s: set file hash: %v", filepath.Base(pdfPath), err))
+		}
 
 		result.PDFsProcessed++
 		result.ChunksCreated += len(kChunks)

@@ -7,6 +7,7 @@ import (
 
 	"github.com/nathandelacretaz/dark-research-lab/internal/knowledge"
 	"github.com/nathandelacretaz/dark-research-lab/internal/literature"
+	"github.com/nathandelacretaz/dark-research-lab/internal/search"
 	"github.com/nathandelacretaz/dark-research-lab/internal/storage"
 	"github.com/nathandelacretaz/dark-research-lab/internal/util"
 	"github.com/spf13/cobra"
@@ -32,21 +33,21 @@ func indexCmd() *cobra.Command {
 
 			kdb := storage.NewKnowledgeDB(db)
 
-			// Check embed daemon health if embedding requested
+			// Acquire embedder once if embedding requested
+			var embedder search.Embedder
 			if embed {
-				embedder, closeEmbedder := getOrStartEmbedder(repoRoot)
-				if embedder == nil {
+				e, closeEmbedder := getOrStartEmbedder(repoRoot)
+				defer closeEmbedder()
+				if e == nil {
 					cmd.PrintErrln("[error] Embedding daemon is not running. Start it with 'drl setup' or run without --embed.")
 					cmd.PrintErrln("[hint] The ca-embed daemon must be running for vector search. Keyword search (FTS5) works without it.")
-					closeEmbedder()
 					return fmt.Errorf("embed daemon not available")
 				}
-				closeEmbedder()
+				embedder = e
 			}
 
 			opts := &literature.IndexOptions{
 				Force: force,
-				Embed: embed,
 			}
 
 			result, err := literature.IndexLiterature(repoRoot, kdb, opts)
@@ -56,17 +57,13 @@ func indexCmd() *cobra.Command {
 
 			cmd.Print(formatLiteratureIndexResult(result))
 
-			// Embed if requested
-			if embed && result.ChunksCreated > 0 {
-				embedder, closeEmbedder := getOrStartEmbedder(repoRoot)
-				defer closeEmbedder()
-				if embedder != nil {
-					embedResult, embedErr := knowledge.EmbedChunks(kdb, embedder, nil)
-					if embedErr != nil {
-						cmd.PrintErrln("[warn] embedding failed:", embedErr)
-					} else {
-						cmd.Printf("Embedded %d chunk(s).\n", embedResult.ChunksEmbedded)
-					}
+			// Embed if requested and there are new chunks
+			if embedder != nil && result.ChunksCreated > 0 {
+				embedResult, embedErr := knowledge.EmbedChunks(kdb, embedder, nil)
+				if embedErr != nil {
+					cmd.PrintErrln("[warn] embedding failed:", embedErr)
+				} else {
+					cmd.Printf("Embedded %d chunk(s).\n", embedResult.ChunksEmbedded)
 				}
 			}
 

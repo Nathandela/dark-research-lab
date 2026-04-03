@@ -45,9 +45,19 @@ def extract_metadata(pdf_path: Path | str) -> dict:
 
     Returns:
         Dict with keys: title, author, page_count, creation_date, filename.
+
+    Raises:
+        FileNotFoundError: If the file does not exist.
+        ValueError: If the file is not a valid PDF.
     """
     pdf_path = Path(pdf_path)
-    doc = fitz.open(str(pdf_path))
+    if not pdf_path.exists():
+        raise FileNotFoundError(f"PDF not found: {pdf_path}")
+
+    try:
+        doc = fitz.open(str(pdf_path))
+    except Exception as exc:
+        raise ValueError(f"{pdf_path.name} is not a valid PDF: {exc}") from exc
     meta = doc.metadata or {}
     page_count = len(doc)
     doc.close()
