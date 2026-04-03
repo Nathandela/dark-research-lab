@@ -1,10 +1,7 @@
 """Tests for the DRL Python wrapper."""
 import os
-import subprocess
 import sys
 from pathlib import Path
-
-import pytest
 
 # Path to the Python wrapper module
 WRAPPER_DIR = Path(__file__).parent.parent / "python" / "drl"
