@@ -58,17 +58,28 @@ class TestDecisionReminderHook:
         import os
         assert os.access(self.HOOK_SCRIPT, os.X_OK)
 
+    def _run_hook(self, cwd, env_override=None):
+        """Run the hook script with DRL_REPO_ROOT pointing to cwd."""
+        import os
+        env = os.environ.copy()
+        env["DRL_REPO_ROOT"] = str(cwd)
+        if env_override:
+            env.update(env_override)
+        return subprocess.run(
+            ["bash", str(self.HOOK_SCRIPT)],
+            cwd=str(cwd),
+            capture_output=True,
+            text=True,
+            timeout=10,
+            env=env,
+        )
+
     def test_hook_exits_zero_without_phase_state(self):
         """Hook should exit silently when no cook-it session is active."""
         import tempfile
         with tempfile.TemporaryDirectory() as tmpdir:
-            result = subprocess.run(
-                ["bash", str(self.HOOK_SCRIPT)],
-                cwd=tmpdir,
-                capture_output=True,
-                text=True,
-                timeout=10,
-            )
+            Path(tmpdir, ".claude").mkdir()
+            result = self._run_hook(tmpdir)
             assert result.returncode == 0
             assert result.stdout.strip() == ""
 
@@ -84,13 +95,7 @@ class TestDecisionReminderHook:
                 "current_phase": "work",
                 "phase_index": 3,
             }))
-            result = subprocess.run(
-                ["bash", str(self.HOOK_SCRIPT)],
-                cwd=tmpdir,
-                capture_output=True,
-                text=True,
-                timeout=10,
-            )
+            result = self._run_hook(tmpdir)
             assert result.returncode == 0
             assert "Phase transition detected" in result.stdout
             assert "docs/decisions/" in result.stdout
@@ -108,15 +113,9 @@ class TestDecisionReminderHook:
                 "phase_index": 3,
             }))
             # First run: triggers reminder
-            subprocess.run(
-                ["bash", str(self.HOOK_SCRIPT)],
-                cwd=tmpdir, capture_output=True, text=True, timeout=10,
-            )
+            self._run_hook(tmpdir)
             # Second run: same phase, should be silent
-            result = subprocess.run(
-                ["bash", str(self.HOOK_SCRIPT)],
-                cwd=tmpdir, capture_output=True, text=True, timeout=10,
-            )
+            result = self._run_hook(tmpdir)
             assert result.returncode == 0
             assert result.stdout.strip() == ""
 

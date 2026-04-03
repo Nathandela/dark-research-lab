@@ -2,8 +2,9 @@
 # decision-reminder.sh - Advisory reminder to log methodological decisions
 # Fires on UserPromptSubmit when cook-it is active
 
-PHASE_STATE=".claude/.ca-phase-state.json"
-LAST_PHASE_FILE=".claude/.drl-last-phase"
+REPO_ROOT="${DRL_REPO_ROOT:-$(cd "$(dirname "$0")/../.." && pwd)}"
+PHASE_STATE="$REPO_ROOT/.claude/.ca-phase-state.json"
+LAST_PHASE_FILE="$REPO_ROOT/.claude/.drl-last-phase"
 
 # Exit silently if no phase state (not in cook-it)
 [ -f "$PHASE_STATE" ] || exit 0
@@ -12,13 +13,13 @@ LAST_PHASE_FILE=".claude/.drl-last-phase"
 CURRENT_PHASE=$(python3 -c "
 import json, sys
 try:
-    with open('$PHASE_STATE') as f:
+    with open(sys.argv[1]) as f:
         state = json.load(f)
     if state.get('cookit_active'):
         print(state.get('current_phase', ''))
 except Exception:
     pass
-" 2>/dev/null)
+" "$PHASE_STATE" 2>/dev/null)
 
 # Exit if not in active cook-it
 [ -z "$CURRENT_PHASE" ] && exit 0
