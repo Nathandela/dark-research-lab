@@ -61,7 +61,7 @@ func IsDaemonRunning(pidPath string) bool {
 	return processAlive(proc)
 }
 
-// findDaemonBinary looks for the ca-embed binary near the Go binary or in PATH.
+// findDaemonBinary looks for the drl-embed binary near the Go binary or in PATH.
 // On Windows, appends .exe to the binary name.
 func findDaemonBinary() (string, error) {
 	name := daemonBinary

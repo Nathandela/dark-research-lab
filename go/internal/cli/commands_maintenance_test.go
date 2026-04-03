@@ -93,7 +93,7 @@ func TestCompactCmd_DryRun(t *testing.T) {
 	writeTombstone(t, dir, "L0001")
 	writeTombstone(t, dir, "L0002")
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 	root := buildMaintenanceRoot()
 	stdout, _, err := runCmd(root, []string{"compact", "--dry-run"})
 	if err != nil {
@@ -113,7 +113,7 @@ func TestCompactCmd_NotNeeded(t *testing.T) {
 	// Add 1 tombstone (below threshold)
 	writeTombstone(t, dir, "L0001")
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 	root := buildMaintenanceRoot()
 	stdout, _, err := runCmd(root, []string{"compact"})
 	if err != nil {
@@ -129,7 +129,7 @@ func TestCompactCmd_Force(t *testing.T) {
 	dir := setupTestRepo(t, items)
 	writeTombstone(t, dir, "L0001")
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 	root := buildMaintenanceRoot()
 	stdout, _, err := runCmd(root, []string{"compact", "--force"})
 	if err != nil {
@@ -160,7 +160,7 @@ func TestRebuildCmd_Force(t *testing.T) {
 	items := maintenanceSeedItems()
 	dir := setupTestRepo(t, items)
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 	root := buildMaintenanceRoot()
 	stdout, _, err := runCmd(root, []string{"rebuild", "--force"})
 	if err != nil {
@@ -181,7 +181,7 @@ func TestRebuildCmd_NoForce(t *testing.T) {
 	items := maintenanceSeedItems()
 	dir := setupTestRepo(t, items)
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 	root := buildMaintenanceRoot()
 	stdout, _, err := runCmd(root, []string{"rebuild"})
 	if err != nil {
@@ -200,7 +200,7 @@ func TestStatsCmd_Output(t *testing.T) {
 	dir := setupTestRepo(t, items)
 	writeTombstone(t, dir, "L0001")
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 	root := buildMaintenanceRoot()
 	stdout, _, err := runCmd(root, []string{"stats"})
 	if err != nil {
@@ -227,7 +227,7 @@ func TestStatsCmd_Output(t *testing.T) {
 
 func TestStatsCmd_EmptyRepo(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildMaintenanceRoot()
 	stdout, _, err := runCmd(root, []string{"stats"})
@@ -243,7 +243,7 @@ func TestStatsCmd_RetrievalCount(t *testing.T) {
 	items := maintenanceSeedItems()
 	dir := setupTestRepo(t, items)
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 	root := buildMaintenanceRoot()
 	stdout, _, err := runCmd(root, []string{"stats"})
 	if err != nil {
@@ -261,7 +261,7 @@ func TestExportCmd_AllItems(t *testing.T) {
 	items := maintenanceSeedItems()
 	dir := setupTestRepo(t, items)
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 	root := buildMaintenanceRoot()
 	stdout, _, err := runCmd(root, []string{"export"})
 	if err != nil {
@@ -286,7 +286,7 @@ func TestExportCmd_FilterSince(t *testing.T) {
 	items := maintenanceSeedItems()
 	dir := setupTestRepo(t, items)
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 	root := buildMaintenanceRoot()
 	// Only items created after 2026-02-15
 	stdout, _, err := runCmd(root, []string{"export", "--since", "2026-02-15"})
@@ -315,7 +315,7 @@ func TestExportCmd_FilterTags(t *testing.T) {
 	items := maintenanceSeedItems()
 	dir := setupTestRepo(t, items)
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 	root := buildMaintenanceRoot()
 	stdout, _, err := runCmd(root, []string{"export", "--tags", "concurrency"})
 	if err != nil {
@@ -335,7 +335,7 @@ func TestExportCmd_FilterTagsOR(t *testing.T) {
 	items := maintenanceSeedItems()
 	dir := setupTestRepo(t, items)
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 	root := buildMaintenanceRoot()
 	// "old" tag matches L0003, "concurrency" matches L0002
 	stdout, _, err := runCmd(root, []string{"export", "--tags", "old,concurrency"})
@@ -351,7 +351,7 @@ func TestExportCmd_FilterTagsOR(t *testing.T) {
 
 func TestExportCmd_Empty(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildMaintenanceRoot()
 	stdout, _, err := runCmd(root, []string{"export"})
@@ -367,7 +367,7 @@ func TestExportCmd_Empty(t *testing.T) {
 
 func TestImportCmd_BasicImport(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	// Write an import file
 	importItems := []memory.Item{
@@ -417,7 +417,7 @@ func TestImportCmd_BasicImport(t *testing.T) {
 func TestImportCmd_SkipsDuplicates(t *testing.T) {
 	items := maintenanceSeedItems()
 	dir := setupTestRepo(t, items)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	// Import file contains L0001 (already exists) + a new item
 	importItems := []memory.Item{
@@ -460,7 +460,7 @@ func TestImportCmd_SkipsDuplicates(t *testing.T) {
 
 func TestImportCmd_InvalidItems(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	// Write a file with one valid and one invalid item
 	importFile := filepath.Join(dir, "import.jsonl")
@@ -495,7 +495,7 @@ func TestImportCmd_InvalidItems(t *testing.T) {
 
 func TestImportCmd_MissingFile(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildMaintenanceRoot()
 	_, _, err := runCmd(root, []string{"import", "/nonexistent/file.jsonl"})
@@ -506,7 +506,7 @@ func TestImportCmd_MissingFile(t *testing.T) {
 
 func TestImportCmd_NoArgs(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildMaintenanceRoot()
 	_, _, err := runCmd(root, []string{"import"})
@@ -520,7 +520,7 @@ func TestImportCmd_NoArgs(t *testing.T) {
 func TestPrimeCmd_Output(t *testing.T) {
 	items := maintenanceSeedItems()
 	dir := setupTestRepo(t, items)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildMaintenanceRoot()
 	stdout, _, err := runCmd(root, []string{"prime"})
@@ -552,7 +552,7 @@ func TestPrimeCmd_WithHighSeverityLessons(t *testing.T) {
 		},
 	}
 	dir := setupTestRepo(t, items)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildMaintenanceRoot()
 	stdout, _, err := runCmd(root, []string{"prime"})
@@ -585,7 +585,7 @@ func TestPrimeCmd_NoHighSeverity(t *testing.T) {
 		},
 	}
 	dir := setupTestRepo(t, items)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildMaintenanceRoot()
 	stdout, _, err := runCmd(root, []string{"prime"})
@@ -620,7 +620,7 @@ func TestCleanLessonsCmd_NotRegistered(t *testing.T) {
 func TestExportCmd_SinceAndTags(t *testing.T) {
 	items := maintenanceSeedItems()
 	dir := setupTestRepo(t, items)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildMaintenanceRoot()
 	// Since 2026-02-15 AND tags=errors -> only L0001
@@ -654,7 +654,7 @@ func TestStatsCmd_TypeBreakdown(t *testing.T) {
 		},
 	}
 	dir := setupTestRepo(t, items)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildMaintenanceRoot()
 	stdout, _, err := runCmd(root, []string{"stats"})
@@ -673,7 +673,7 @@ func TestStatsCmd_TypeBreakdown(t *testing.T) {
 func TestExportImportRoundTrip(t *testing.T) {
 	items := maintenanceSeedItems()[:2] // Just L0001 and L0002
 	dir := setupTestRepo(t, items)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	// Export
 	root := buildMaintenanceRoot()
@@ -684,7 +684,7 @@ func TestExportImportRoundTrip(t *testing.T) {
 
 	// Create a new empty repo
 	dir2 := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir2)
+	t.Setenv("DRL_ROOT", dir2)
 
 	// Write export to file
 	importFile := filepath.Join(dir2, "exported.jsonl")

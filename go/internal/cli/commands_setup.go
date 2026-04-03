@@ -58,7 +58,7 @@ func runInit(cmd *cobra.Command, repoRoot string, skipHooks, skipAgents, coreSki
 	}
 
 	if !isQuiet(cmd) {
-		cmd.Printf("[ok] Compound agent initialized in %s\n", repoRoot)
+		cmd.Printf("[ok] drl initialized in %s\n", repoRoot)
 		printInitResultText(cmd, result)
 		printBeadsStatus(cmd, repoRoot)
 	}
@@ -110,7 +110,7 @@ func runSetup(cmd *cobra.Command, repoRoot string, skipHooks, coreSkill, allSkil
 	}
 
 	if !isQuiet(cmd) {
-		cmd.Println("[ok] Compound agent setup complete")
+		cmd.Println("[ok] drl setup complete")
 		printSetupResultText(cmd, result)
 		printBeadsStatus(cmd, repoRoot)
 	}
@@ -365,7 +365,7 @@ func printClaudeResult(cmd *cobra.Command, displayPath string, action string, js
 	}
 
 	messages := map[string]string{
-		"unchanged":  fmt.Sprintf("[info] Compound agent hooks already installed at %s", displayPath),
+		"unchanged":  fmt.Sprintf("[info] drl hooks already installed at %s", displayPath),
 		"installed":  fmt.Sprintf("[ok] Claude Code hooks installed to %s", displayPath),
 		"upgraded":   fmt.Sprintf("[ok] Claude Code hooks upgraded in %s (npx → binary)", displayPath),
 		"reconciled": fmt.Sprintf("[ok] Claude Code hooks reconciled in %s (upgraded + deduplicated)", displayPath),
@@ -402,9 +402,9 @@ func handleClaudeUninstall(cmd *cobra.Command, settings map[string]any, settings
 	}
 
 	if removed {
-		cmd.Printf("[ok] Compound agent hooks removed from %s\n", displayPath)
+		cmd.Printf("[ok] drl hooks removed from %s\n", displayPath)
 	} else {
-		cmd.Println("[info] No compound agent hooks to remove")
+		cmd.Println("[info] No drl hooks to remove")
 	}
 	return nil
 }

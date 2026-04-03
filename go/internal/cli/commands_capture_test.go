@@ -23,7 +23,7 @@ func buildCaptureRoot() *cobra.Command {
 
 func TestLearnCmd_BasicInsight(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	stdout, _, err := runCmd(root, []string{"learn", "Always use parameterized queries for SQL"})
@@ -68,7 +68,7 @@ func TestLearnCmd_BasicInsight(t *testing.T) {
 
 func TestLearnCmd_WithFlags(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	stdout, _, err := runCmd(root, []string{
@@ -113,7 +113,7 @@ func TestLearnCmd_WithFlags(t *testing.T) {
 
 func TestLearnCmd_WithCitationCommit(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	_, _, err := runCmd(root, []string{
@@ -138,7 +138,7 @@ func TestLearnCmd_WithCitationCommit(t *testing.T) {
 
 func TestLearnCmd_PatternType(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	_, _, err := runCmd(root, []string{
@@ -170,7 +170,7 @@ func TestLearnCmd_PatternType(t *testing.T) {
 
 func TestLearnCmd_PatternTypeMissingBad(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	_, _, err := runCmd(root, []string{
@@ -189,7 +189,7 @@ func TestLearnCmd_PatternTypeMissingBad(t *testing.T) {
 
 func TestLearnCmd_PatternTypeMissingGood(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	_, _, err := runCmd(root, []string{
@@ -208,7 +208,7 @@ func TestLearnCmd_PatternTypeMissingGood(t *testing.T) {
 
 func TestLearnCmd_InvalidType(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	_, _, err := runCmd(root, []string{
@@ -226,7 +226,7 @@ func TestLearnCmd_InvalidType(t *testing.T) {
 
 func TestLearnCmd_InvalidSeverity(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	_, _, err := runCmd(root, []string{
@@ -244,7 +244,7 @@ func TestLearnCmd_InvalidSeverity(t *testing.T) {
 
 func TestLearnCmd_InvalidCitationFormat(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	_, _, err := runCmd(root, []string{
@@ -262,7 +262,7 @@ func TestLearnCmd_InvalidCitationFormat(t *testing.T) {
 
 func TestLearnCmd_GeneratesCorrectID(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	insight := "Always use parameterized queries for SQL"
 	root := buildCaptureRoot()
@@ -287,7 +287,7 @@ func TestLearnCmd_NoArgs(t *testing.T) {
 
 func TestLearnCmd_SolutionType(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	_, _, err := runCmd(root, []string{
@@ -309,7 +309,7 @@ func TestLearnCmd_SolutionType(t *testing.T) {
 
 func TestCaptureCmd_WithTriggerAndInsight(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	stdout, _, err := runCmd(root, []string{
@@ -337,7 +337,7 @@ func TestCaptureCmd_WithTriggerAndInsight(t *testing.T) {
 
 func TestCaptureCmd_WithYes(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	stdout, _, err := runCmd(root, []string{
@@ -362,7 +362,7 @@ func TestCaptureCmd_WithYes(t *testing.T) {
 
 func TestCaptureCmd_WithJSON(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	stdout, _, err := runCmd(root, []string{
@@ -395,7 +395,7 @@ func TestCaptureCmd_WithJSON(t *testing.T) {
 
 func TestCaptureCmd_WithJSONAndYes(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	stdout, _, err := runCmd(root, []string{
@@ -426,7 +426,7 @@ func TestCaptureCmd_WithJSONAndYes(t *testing.T) {
 
 func TestCaptureCmd_MissingTriggerAndInsight(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	_, _, err := runCmd(root, []string{"capture"})
@@ -437,7 +437,7 @@ func TestCaptureCmd_MissingTriggerAndInsight(t *testing.T) {
 
 func TestCaptureCmd_MissingInsight(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	_, _, err := runCmd(root, []string{"capture", "--trigger", "something"})
@@ -448,7 +448,7 @@ func TestCaptureCmd_MissingInsight(t *testing.T) {
 
 func TestCaptureCmd_WithInputFile(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	// Create input file with user correction signal (actionable insight).
 	// The insight must be actionable but NOT match pattern indicators
@@ -491,7 +491,7 @@ func TestCaptureCmd_WithInputFile(t *testing.T) {
 
 func TestDetectCmd_UserCorrection(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	input := map[string]interface{}{
 		"messages": []string{"Do X with globals", "No, actually avoid using globals in production code"},
@@ -518,7 +518,7 @@ func TestDetectCmd_UserCorrection(t *testing.T) {
 
 func TestDetectCmd_TestFailure(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	input := map[string]interface{}{
 		"testResult": capture.TestResult{
@@ -545,7 +545,7 @@ func TestDetectCmd_TestFailure(t *testing.T) {
 
 func TestDetectCmd_SelfCorrection(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	// Self-correction generates "Self-correction detected on <file>" as insight,
 	// which is not actionable. The quality gate correctly rejects it.
@@ -576,7 +576,7 @@ func TestDetectCmd_SelfCorrection(t *testing.T) {
 
 func TestDetectCmd_NoDetection(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	input := map[string]interface{}{
 		"messages": []string{"Hello"},
@@ -600,7 +600,7 @@ func TestDetectCmd_NoDetection(t *testing.T) {
 
 func TestDetectCmd_MissingInput(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	_, _, err := runCmd(root, []string{"detect"})
@@ -611,7 +611,7 @@ func TestDetectCmd_MissingInput(t *testing.T) {
 
 func TestDetectCmd_SaveWithYes(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	input := map[string]interface{}{
 		"messages": []string{"Do X", "No, actually avoid using globals in production code"},
@@ -641,7 +641,7 @@ func TestDetectCmd_SaveWithYes(t *testing.T) {
 
 func TestDetectCmd_SaveWithoutYes(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildCaptureRoot()
 	_, _, err := runCmd(root, []string{
@@ -659,7 +659,7 @@ func TestDetectCmd_SaveWithoutYes(t *testing.T) {
 
 func TestDetectCmd_JSONOutput(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	input := map[string]interface{}{
 		"messages": []string{"Do X", "No, actually avoid using globals in production code"},
@@ -691,7 +691,7 @@ func TestDetectCmd_JSONOutput(t *testing.T) {
 
 func TestDetectCmd_JSONNoDetection(t *testing.T) {
 	dir := setupTestRepo(t, nil)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	input := map[string]interface{}{
 		"messages": []string{"Hello"},

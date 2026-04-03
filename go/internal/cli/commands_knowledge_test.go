@@ -17,7 +17,7 @@ func TestKnowledgeCmd_BasicSearch(t *testing.T) {
 	// Create the .claude/.cache directory for the DB
 	os.MkdirAll(filepath.Join(dir, ".claude", ".cache"), 0o755)
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	cmd := knowledgeCmd()
 	var out strings.Builder
@@ -52,7 +52,7 @@ func TestIndexDocsCmd_BasicIndex(t *testing.T) {
 	os.WriteFile(filepath.Join(docsDir, "readme.md"), []byte("# README\n\nProject docs."), 0o644)
 	os.MkdirAll(filepath.Join(dir, ".claude", ".cache"), 0o755)
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	cmd := indexDocsCmd()
 	var out strings.Builder
@@ -75,7 +75,7 @@ func TestIndexDocsCmd_EmptyDocs(t *testing.T) {
 	dir := t.TempDir()
 	os.MkdirAll(filepath.Join(dir, ".claude", ".cache"), 0o755)
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	cmd := indexDocsCmd()
 	var out strings.Builder

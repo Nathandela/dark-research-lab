@@ -67,7 +67,7 @@ func seedItems() []memory.Item {
 
 func TestShowCmd_HumanFormat(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	stdout, _, err := runCmd(root, []string{"show", "L0001"})
@@ -94,7 +94,7 @@ func TestShowCmd_HumanFormat(t *testing.T) {
 
 func TestShowCmd_JSONFormat(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	stdout, _, err := runCmd(root, []string{"show", "--json", "L0001"})
@@ -116,7 +116,7 @@ func TestShowCmd_JSONFormat(t *testing.T) {
 
 func TestShowCmd_NotFound(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	_, stderr, err := runCmd(root, []string{"show", "LNOTEXIST"})
@@ -143,7 +143,7 @@ func TestShowCmd_DeletedLesson(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 	root := buildRoot()
 	_, stderr, err := runCmd(root, []string{"show", "L0001"})
 	if err == nil {
@@ -158,7 +158,7 @@ func TestShowCmd_DeletedLesson(t *testing.T) {
 
 func TestUpdateCmd_UpdateInsight(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	stdout, _, err := runCmd(root, []string{"update", "L0001", "--insight", "New insight text"})
@@ -187,7 +187,7 @@ func TestUpdateCmd_UpdateInsight(t *testing.T) {
 
 func TestUpdateCmd_UpdateTags(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	_, _, err := runCmd(root, []string{"update", "L0001", "--tags", "new-tag, another , new-tag"})
@@ -210,7 +210,7 @@ func TestUpdateCmd_UpdateTags(t *testing.T) {
 
 func TestUpdateCmd_UpdateSeverity(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	_, _, err := runCmd(root, []string{"update", "L0001", "--severity", "low"})
@@ -232,7 +232,7 @@ func TestUpdateCmd_UpdateSeverity(t *testing.T) {
 
 func TestUpdateCmd_InvalidSeverity(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	_, stderr, err := runCmd(root, []string{"update", "L0001", "--severity", "critical"})
@@ -246,7 +246,7 @@ func TestUpdateCmd_InvalidSeverity(t *testing.T) {
 
 func TestUpdateCmd_NoFieldsProvided(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	_, stderr, err := runCmd(root, []string{"update", "L0001"})
@@ -260,7 +260,7 @@ func TestUpdateCmd_NoFieldsProvided(t *testing.T) {
 
 func TestUpdateCmd_NotFound(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	_, stderr, err := runCmd(root, []string{"update", "LNOTEXIST", "--insight", "x"})
@@ -274,7 +274,7 @@ func TestUpdateCmd_NotFound(t *testing.T) {
 
 func TestUpdateCmd_JSONOutput(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	stdout, _, err := runCmd(root, []string{"update", "L0001", "--insight", "Changed", "--json"})
@@ -293,7 +293,7 @@ func TestUpdateCmd_JSONOutput(t *testing.T) {
 
 func TestUpdateCmd_UpdateConfirmed(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	// L0002 starts unconfirmed
 	root := buildRoot()
@@ -318,7 +318,7 @@ func TestUpdateCmd_UpdateConfirmed(t *testing.T) {
 
 func TestDeleteCmd_SingleID(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	stdout, _, err := runCmd(root, []string{"delete", "L0001"})
@@ -343,7 +343,7 @@ func TestDeleteCmd_SingleID(t *testing.T) {
 
 func TestDeleteCmd_MultipleIDs(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	stdout, _, err := runCmd(root, []string{"delete", "L0001", "L0002"})
@@ -362,7 +362,7 @@ func TestDeleteCmd_MultipleIDs(t *testing.T) {
 
 func TestDeleteCmd_NotFound(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	stdout, _, err := runCmd(root, []string{"delete", "LNOTEXIST"})
@@ -388,7 +388,7 @@ func TestDeleteCmd_AlreadyDeleted(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 	root := buildRoot()
 	stdout, stderr, _ := runCmd(root, []string{"delete", "L0001"})
 	combined := stdout + stderr
@@ -399,7 +399,7 @@ func TestDeleteCmd_AlreadyDeleted(t *testing.T) {
 
 func TestDeleteCmd_JSONOutput(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	stdout, _, err := runCmd(root, []string{"delete", "--json", "L0001", "LNOTEXIST"})
@@ -429,7 +429,7 @@ func TestDeleteCmd_JSONOutput(t *testing.T) {
 
 func TestWrongCmd_MarkInvalid(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	stdout, _, err := runCmd(root, []string{"wrong", "L0001", "--reason", "This was incorrect"})
@@ -458,7 +458,7 @@ func TestWrongCmd_MarkInvalid(t *testing.T) {
 
 func TestWrongCmd_NoReason(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	_, _, err := runCmd(root, []string{"wrong", "L0001"})
@@ -485,7 +485,7 @@ func TestWrongCmd_AlreadyInvalid(t *testing.T) {
 	items := seedItems()
 	items[0].InvalidatedAt = strPtr("2026-03-05T10:00:00Z")
 	dir := setupTestRepo(t, items)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	stdout, _, err := runCmd(root, []string{"wrong", "L0001"})
@@ -499,7 +499,7 @@ func TestWrongCmd_AlreadyInvalid(t *testing.T) {
 
 func TestWrongCmd_NotFound(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	_, stderr, err := runCmd(root, []string{"wrong", "LNOTEXIST"})
@@ -518,7 +518,7 @@ func TestValidateCmd_ReEnable(t *testing.T) {
 	items[0].InvalidatedAt = strPtr("2026-03-05T10:00:00Z")
 	items[0].InvalidationReason = strPtr("was wrong")
 	dir := setupTestRepo(t, items)
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	stdout, _, err := runCmd(root, []string{"validate", "L0001"})
@@ -547,7 +547,7 @@ func TestValidateCmd_ReEnable(t *testing.T) {
 
 func TestValidateCmd_NotInvalidated(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	stdout, _, err := runCmd(root, []string{"validate", "L0001"})
@@ -561,7 +561,7 @@ func TestValidateCmd_NotInvalidated(t *testing.T) {
 
 func TestValidateCmd_NotFound(t *testing.T) {
 	dir := setupTestRepo(t, seedItems())
-	t.Setenv("COMPOUND_AGENT_ROOT", dir)
+	t.Setenv("DRL_ROOT", dir)
 
 	root := buildRoot()
 	_, stderr, err := runCmd(root, []string{"validate", "LNOTEXIST"})

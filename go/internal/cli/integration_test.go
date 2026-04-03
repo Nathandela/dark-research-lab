@@ -59,12 +59,12 @@ func TestMain(m *testing.M) {
 // --- helpers ---
 
 // runCA executes the compiled binary with the given args, setting
-// COMPOUND_AGENT_ROOT to repoDir so the CLI finds lessons there.
+// DRL_ROOT to repoDir so the CLI finds lessons there.
 func runCA(t *testing.T, repoDir string, args ...string) (string, error) {
 	t.Helper()
 	cmd := exec.Command(binaryPath, args...)
 	cmd.Dir = repoDir
-	cmd.Env = append(os.Environ(), "COMPOUND_AGENT_ROOT="+repoDir)
+	cmd.Env = append(os.Environ(), "DRL_ROOT="+repoDir)
 	out, err := cmd.CombinedOutput()
 	return string(out), err
 }
@@ -266,7 +266,7 @@ func TestE2E_PrimeHookCommandWritesToStdout(t *testing.T) {
 	repo := setupTestRepo(t)
 	cmd := exec.Command("sh", "-c", fmt.Sprintf("'%s' prime 2>/dev/null || true", binaryPath))
 	cmd.Dir = repo
-	cmd.Env = append(os.Environ(), "COMPOUND_AGENT_ROOT="+repo)
+	cmd.Env = append(os.Environ(), "DRL_ROOT="+repo)
 
 	out, err := cmd.Output()
 	if err != nil {
@@ -274,7 +274,7 @@ func TestE2E_PrimeHookCommandWritesToStdout(t *testing.T) {
 	}
 
 	stdout := string(out)
-	if !strings.Contains(stdout, "Compound Agent Active") {
+	if !strings.Contains(stdout, "Dark Research Lab Active") {
 		t.Fatalf("expected prime output on stdout, got: %q", stdout)
 	}
 	if !strings.Contains(stdout, "npx drl search") {
