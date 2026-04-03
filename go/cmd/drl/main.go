@@ -46,6 +46,7 @@ func buildHooksCmd() *cobra.Command {
 
 func main() {
 	var verbose bool
+	var quiet bool
 
 	rootCmd := &cobra.Command{
 		Use:   "drl",
@@ -66,6 +67,7 @@ func main() {
 	rootCmd.SetErr(os.Stderr)
 
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "enable verbose (debug-level) logging")
+	rootCmd.PersistentFlags().BoolVarP(&quiet, "quiet", "q", false, "suppress non-essential output")
 
 	rootCmd.AddCommand(buildHooksCmd())
 	cli.RegisterCommands(rootCmd)

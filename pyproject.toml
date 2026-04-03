@@ -26,3 +26,6 @@ drl = "drl:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["python/drl"]
+
+[tool.hatch.build.targets.wheel.hooks.custom]
+path = "hatch_build.py"

@@ -7,6 +7,10 @@
 __pycache__/
 *.pyc
 
+# Bundled Go binary (copied by hatch build hook)
+python/drl/drl
+python/drl/drl.exe
+
 # Agent runtime logs
 agent_logs/
 

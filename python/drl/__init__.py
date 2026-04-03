@@ -54,10 +54,13 @@ def main():
         print("  Set DRL_BINARY_PATH or run: cd go && make build", file=sys.stderr)
         sys.exit(1)
 
-    result = subprocess.run(
-        [str(binary)] + sys.argv[1:],
-        stdin=sys.stdin,
-        stdout=sys.stdout,
-        stderr=sys.stderr,
-    )
-    sys.exit(result.returncode)
+    try:
+        result = subprocess.run(
+            [str(binary)] + sys.argv[1:],
+            stdin=sys.stdin,
+            stdout=sys.stdout,
+            stderr=sys.stderr,
+        )
+        sys.exit(result.returncode)
+    except KeyboardInterrupt:
+        sys.exit(130)

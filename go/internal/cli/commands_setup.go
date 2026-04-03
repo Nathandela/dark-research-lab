@@ -38,6 +38,7 @@ func initCmd() *cobra.Command {
 	cmd.Flags().BoolVar(&allSkill, "all-skill", false, "Install all tiers including style")
 	cmd.Flags().BoolVar(&jsonOut, "json", false, "output as JSON")
 	cmd.Flags().StringVar(&repoRoot, "repo-root", "", "Repository root (defaults to git root)")
+	cmd.MarkFlagsMutuallyExclusive("core-skill", "all-skill")
 	return cmd
 }
 
@@ -91,6 +92,7 @@ func setupCmd() *cobra.Command {
 	cmd.Flags().BoolVar(&allSkill, "all-skill", false, "Install all tiers including style")
 	cmd.Flags().BoolVar(&jsonOut, "json", false, "output as JSON")
 	cmd.Flags().StringVar(&repoRoot, "repo-root", "", "Repository root")
+	cmd.MarkFlagsMutuallyExclusive("core-skill", "all-skill")
 	return cmd
 }
 
