@@ -4,6 +4,7 @@
 *.sqlite-shm
 *.sqlite-wal
 .drl-phase-state.json
+.ca-phase-state*.json
 .ca-failure-state.json
 .ca-read-state.json
 .ca-hints-shown

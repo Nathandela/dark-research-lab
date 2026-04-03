@@ -29,7 +29,10 @@ agent_logs/
 # Ephemeral hook state
 .claude/.drl-last-phase
 .drl-phase-state.json
-.claude/.ca-phase-state.json
+.claude/.ca-phase-state*.json
+
+# Prevent nested .claude/ in subdirectories
+go/.claude/
 
 # Stale worktree debris
 drltmp/
