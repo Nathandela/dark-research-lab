@@ -141,6 +141,27 @@ class TestAgentResearchSpecificity:
             )
 
 
+class TestArchitectSkillResearchSpecificity:
+    """AC-6: Architect skill is research-specific, not software dev."""
+
+    SOFTWARE_DEV_TERMS = [
+        "pull request",
+        "deploy",
+        "CI/CD",
+        "kubernetes",
+        "docker",
+        "sprint",
+        "user story",
+        "microservice",
+        "bounded context",
+    ]
+
+    def test_skill_avoids_software_dev_vocabulary(self):
+        content = ARCHITECT_SKILL.read_text().lower()
+        found = [t for t in self.SOFTWARE_DEV_TERMS if t in content]
+        assert not found, f"SKILL.md contains software dev terms: {found}"
+
+
 class TestArchitectSkill:
     """AC-2, AC-5, AC-7: Research architect SKILL.md format and content."""
 

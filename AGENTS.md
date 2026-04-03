@@ -8,14 +8,18 @@ This project is an autonomous research paper factory. Agents operate within a st
 
 ### Research Agent Roles
 
-| Role | Responsibility |
-|------|---------------|
-| Research Architect | Decomposes research questions into epics with methodology specs |
-| Literature Reviewer | Surveys existing research via PDF + RAG pipeline |
-| Data Analyst | Executes statistical analysis with Polars, produces tables/figures |
-| Paper Writer | Generates LaTeX sections following academic conventions |
-| Methodology Auditor | Verifies statistical rigor and methodological consistency |
-| Advisory Fleet | Multi-model review (Claude + Gemini + Codex) for critical decisions |
+| Role | Agent File | Responsibility |
+|------|-----------|---------------|
+| Research Architect | `.claude/skills/drl/research-architect/SKILL.md` | Decomposes research questions into epics with methodology specs |
+| Research Analyst | `.claude/agents/drl/analyst.md` | Executes statistical analysis with Polars, produces tables/figures |
+| Literature Analyst | `.claude/agents/drl/literature-analyst.md` | Surveys existing research via PDF + RAG pipeline |
+| Methodology Reviewer | `.claude/agents/drl/methodology-reviewer.md` | Audits statistical methods and causal inference validity |
+| Robustness Checker | `.claude/agents/drl/robustness-checker.md` | Verifies findings hold under alternative specifications |
+| Coherence Reviewer | `.claude/agents/drl/coherence-reviewer.md` | Ensures logical consistency across paper sections |
+| Reproducibility Verifier | `.claude/agents/drl/reproducibility-verifier.md` | Validates all outputs can be independently reproduced |
+| Citation Checker | `.claude/agents/drl/citation-checker.md` | Verifies citation accuracy and bibliography completeness |
+| Writing Quality Reviewer | `.claude/agents/drl/writing-quality-reviewer.md` | Evaluates academic writing clarity and publication standards |
+| Advisory Fleet | (external CLIs) | Multi-model review (Claude + Gemini + Codex) for critical decisions |
 
 ### Decision Logging
 

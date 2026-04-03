@@ -10,7 +10,7 @@ phase: architect
 
 Take a research question and decompose it into naturally-scoped research epic beads that the infinity loop can process via cook-it. Each output epic represents a coherent unit of research work (a paper section, an analysis pipeline, a robustness battery, etc.).
 
-This skill adapts the compound-agent architect pattern for social science research. Instead of DDD bounded contexts, it uses research domain boundaries: literature review, data collection, analysis, robustness, and synthesis.
+This skill organizes work around research domain boundaries: literature review, data collection, analysis, robustness, and synthesis.
 
 ## Input
 
