@@ -1,75 +1,109 @@
 ---
-version: "v0.1.1"
-last-updated: "2026-04-03"
+version: "{{VERSION}}"
+last-updated: "{{DATE}}"
 summary: "Overview and getting started guide for dark-research-lab"
 ---
 
 # Dark Research Lab
 
-A learning system for Claude Code that captures, indexes, and retrieves lessons learned during development sessions -- so the same mistakes are not repeated.
+An autonomous research pipeline for social science. You define the research question and theoretical motivation, DRL helps you spec the methodology, then executes the analysis, writes the paper, reviews it, and synthesizes lessons -- end to end. You bring the "what and why"; DRL handles the "how".
+
+DRL is not a statistical package. It is a compound-agent system that orchestrates 27 specialized agents through a 5-phase research cycle, producing publication-quality LaTeX papers with full methodological traceability.
 
 ---
 
-## What is dark-research-lab?
+## Who is it for?
 
-Dark-research-lab is a Go CLI that integrates with Claude Code. When Claude makes a mistake and gets corrected, or discovers a useful pattern, that knowledge is stored as a **memory item** in `.claude/lessons/index.jsonl`. Future sessions search this memory before planning and implementing.
-
-The system uses:
-
-- **JSONL storage** (`.claude/lessons/index.jsonl`) as the git-tracked source of truth
-- **SQLite + FTS5** (`.claude/.cache/lessons.sqlite`) as a rebuildable search index
-- **Semantic embeddings** (drl-embed Rust daemon with local model) for vector similarity search
-- **Claude Code hooks** to inject memory at session start, before compaction, and on tool failures
-
-Memory items have four types: `lesson`, `solution`, `pattern`, and `preference`. Each has a trigger, an insight, tags, severity, and optional citations.
+Social science researchers who use Python for empirical analysis and target journal-quality papers. DRL assumes familiarity with research design (hypotheses, identification strategies, robustness checks) but handles the mechanical execution: data pipelines, econometric code, table/figure generation, LaTeX compilation, and internal review.
 
 ---
 
 ## Quick start
 
 ```bash
-# Initialize in your project:
-drl init
+# Install
+uv pip install dark-research-lab
 
-# Full setup (includes embedding model download):
+# Set up a new research project
 drl setup
 
-# Verify installation:
-drl doctor
+# Customize the research flavor (econometrics, experimental, qualitative)
+/drl:flavor
+
+# Start a new research project -- two entry points:
+/drl:architect    # Break a broad topic into research epics
+/drl:cook-it      # Run the full pipeline on a single epic
 ```
 
-### What `init` does
+---
 
-1. Creates `.claude/lessons/` directory and empty `index.jsonl`
-2. Updates `AGENTS.md` with a dark-research-lab section
-3. Adds a reference to `.claude/CLAUDE.md`
-4. Creates `.claude/plugin.json` manifest
-5. Installs agent templates, workflow commands, phase skills, and agent role skills
-6. Installs a git pre-commit hook (lesson capture reminder)
-7. Installs Claude Code hooks (SessionStart, PreCompact, UserPromptSubmit, PostToolUseFailure, PostToolUse, PreToolUse, Stop)
-8. For pnpm projects: auto-configures `onlyBuiltDependencies` for native addons
+## The research pipeline
 
-`setup` does everything `init` does. The embedding model is managed separately by the embed daemon.
+Every project follows five phases. The `/drl:cook-it` orchestrator chains them with enforcement gates.
+
+1. **Spec** -- Define the research question, hypotheses, and literature gap through Socratic dialogue. Produces a formal research specification with EARS-notation requirements.
+
+2. **Plan** -- Design the methodology: operationalize variables, select estimators, plan robustness checks. Decomposes the spec into concrete analysis tasks with acceptance criteria.
+
+3. **Work** -- Run the analysis, write paper sections, generate tables and figures. Three execution modes (code, writing, analysis) with agent teams working under TDD.
+
+4. **Review** -- Dual-mode review fleet: code quality reviewers check implementation correctness, methodology/writing reviewers check statistical validity, identification threats, and prose quality.
+
+5. **Synthesis** -- Compile the paper, verify cross-section coherence, extract methodological lessons for future projects.
+
+---
+
+## What ships
+
+| Category | Count | Description |
+|----------|-------|-------------|
+| Agents | 27 | Specialized roles (econometrician, reviewer, writer, etc.) |
+| Skills | 22 | Phase instructions and agent role knowledge |
+| Commands | 23 | Slash commands for every workflow step |
+| Knowledge docs | 97 | PhD-level references (econometrics, causal inference, identification, writing) |
+| LaTeX scaffold | 7 sections | Paper template with compilation script |
+| Python skeleton | 6 modules | Analysis, data, visualization, orchestration |
 
 ---
 
 ## Directory structure
 
+After `drl setup`, your project gets:
+
 ```
 .claude/
   CLAUDE.md                    # Project instructions (always loaded)
-  dark-research-lab.json          # Config (created by `drl reviewer enable`)
   settings.json                # Claude Code hooks
   plugin.json                  # Plugin manifest
-  agents/drl/             # Subagent definitions
-  commands/drl/           # Slash commands (spec-dev, plan, work, review, compound, cook-it, agentic-audit, agentic-setup)
-  skills/drl/             # Phase skills + agent role skills
-  lessons/
-    index.jsonl                # Memory items (git-tracked source of truth)
-  .cache/
-    lessons.sqlite             # Rebuildable search index (.gitignore)
+  agents/drl/                  # 27 subagent definitions
+  commands/drl/                # 23 slash commands
+  skills/drl/                  # 22 phase + agent role skills
+paper/
+  main.tex                     # Main paper file
+  sections/                    # intro, literature, methodology, data, results, robustness, conclusion
+  outputs/tables/              # Generated LaTeX tables
+  outputs/figures/             # Generated figures
+  Ref.bib                      # Bibliography
+  compile.sh                   # Compilation script
+src/
+  analysis/                    # descriptive, econometrics, robustness
+  data/                        # loaders, cleaners
+  visualization/               # plots
+  literature/                  # extraction utilities
+  orchestrators/               # reproducibility pipeline
+data/
+  input/                       # Raw data
+  output/                      # Processed data
+docs/
+  decisions/                   # ADR-style methodology decision log
+  researcher_notes/            # Working notes
+  agent_notes/                 # Agent working memory
+literature/
+  pdfs/                        # Source papers
+  notes/                       # Literature notes
 docs/drl/
-  research/                    # PhD-level research docs for agent knowledge
+  research/                    # 97 PhD-level knowledge documents
+tests/                         # Test suite
 ```
 
 ---
@@ -78,19 +112,24 @@ docs/drl/
 
 | Task | Command |
 |------|---------|
-| Capture a lesson | `drl learn "insight" --trigger "what happened"` |
-| Search memory | `drl search "keywords"` |
-| Search docs knowledge | `drl knowledge "query"` |
-| Check plan against memory | `drl check-plan --plan "description"` |
-| View stats | `drl stats` |
-| Run full workflow | `/drl:cook-it <epic-id>` |
+| Full autonomous pipeline | `/drl:cook-it <epic-id>` |
+| Decompose broad topic into epics | `/drl:architect` |
+| Define research spec (Socratic) | `/drl:spec-dev` |
+| Plan methodology and tasks | `/drl:plan` |
+| Execute analysis and writing | `/drl:work` |
+| Run review fleet | `/drl:review` |
+| Synthesize and compile | `/drl:compound` |
+| Customize research flavor | `/drl:flavor` |
+| Literature review | `/drl:lit-review` |
+| Search knowledge docs | `drl knowledge "query"` |
 | Health check | `drl doctor` |
 
 ---
 
 ## Further reading
 
-- [WORKFLOW.md](WORKFLOW.md) -- The 5-phase development workflow and cook-it orchestrator
+- [ONBOARDING.md](ONBOARDING.md) -- First-time setup walkthrough
+- [WORKFLOW.md](WORKFLOW.md) -- The 5-phase research pipeline in detail
+- [SKILLS.md](SKILLS.md) -- Phase skills and agent role skills reference
 - [CLI_REFERENCE.md](CLI_REFERENCE.md) -- Complete CLI command reference
-- [SKILLS.md](SKILLS.md) -- Phase skills and agent role skills
-- [INTEGRATION.md](INTEGRATION.md) -- Memory system, hooks, beads, and agent guidance
+- [INTEGRATION.md](INTEGRATION.md) -- Hooks, beads, and agent guidance internals
