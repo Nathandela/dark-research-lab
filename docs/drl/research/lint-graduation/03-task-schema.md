@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-A lint rule proposal uses existing beads fields deliberately: `description` for the self-contained rule spec, `design` for implementation architecture (Class B AST rules only), and `acceptance_criteria` for test cases. Two classes of rules exist: Class A (native compound-agent `rules.json` — regex/glob) and Class B (external linter — requires AST analysis). The schema must be linter-agnostic but concrete enough for a future agent to implement without reading the source lesson.
+A lint rule proposal uses existing beads fields deliberately: `description` for the self-contained rule spec, `design` for implementation architecture (Class B AST rules only), and `acceptance_criteria` for test cases. Two classes of rules exist: Class A (native dark-research-lab `rules.json` — regex/glob) and Class B (external linter — requires AST analysis). The schema must be linter-agnostic but concrete enough for a future agent to implement without reading the source lesson.
 
 ---
 
@@ -16,7 +16,7 @@ A lint rule proposal uses existing beads fields deliberately: `description` for 
 
 | Class | Target | Check Type | Complexity | Example |
 |-------|--------|------------|------------|---------|
-| **A** | compound-agent `rules.json` | `file-pattern`, `file-size`, `script` | Low — JSON entry | "no SQL string interpolation" |
+| **A** | dark-research-lab `rules.json` | `file-pattern`, `file-size`, `script` | Low — JSON entry | "no SQL string interpolation" |
 | **B** | External linter (ESLint, Ruff, ast-grep) | AST visitor, selector | Medium-High — plugin code | "no `if(condition){expect()}`" |
 
 ---

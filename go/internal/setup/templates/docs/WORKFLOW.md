@@ -37,7 +37,7 @@ Execute implementation through agent teams using TDD.
 - Read the epic's Acceptance Criteria and Verification Contract before implementation
 - Delegate to test-writer and implementer agents
 - Commit incrementally as tests pass
-- Run `/implementation-reviewer` before closing tasks
+- Verify acceptance criteria are met before closing tasks
 
 ## Phase 4: Review
 
@@ -101,7 +101,7 @@ For each phase, cook-it:
 |------|------|-------------|
 | Post-plan | After Plan | `bd list --status=open` shows Review + Compound tasks, and `bd show <epic-id>` contains both `## Acceptance Criteria` and `## Verification Contract` |
 | Gate 3 | After Work | `bd list --status=in_progress` returns empty |
-| Gate 4 | After Review | `/implementation-reviewer` returned APPROVED |
+| Gate 4 | After Review | All Critical and Major review findings resolved |
 | Final | After Compound | `drl verify-gates <epic-id>` passes, `{{QUALITY_GATE_TEST}}` and `{{QUALITY_GATE_LINT}}` pass, and the remaining required evidence from the Verification Contract is satisfied (including `{{QUALITY_GATE_BUILD}}` when required) |
 
 If any gate fails, cook-it stops. You must fix the issue before proceeding.

@@ -1,5 +1,5 @@
 ---
-version: "2.6.1"
+version: "v0.1.1"
 last-updated: "2026-04-03"
 summary: "Memory system, hooks, beads integration, and agent guidance"
 ---

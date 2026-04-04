@@ -47,13 +47,13 @@ Deep research produced via `/drl:get-a-phd` for agent domain knowledge. Each fol
 
 | Document | Target Agents |
 |----------|---------------|
-| [security/secure-coding-failure.md](security/secure-coding-failure.md) | security-reviewer, security-injection, security-secrets, security-auth, security-data, security-deps |
+| [security/secure-coding-failure.md](security/secure-coding-failure.md) | security-reviewer |
 | [security/overview.md](security/overview.md) | security-reviewer |
-| [security/injection-patterns.md](security/injection-patterns.md) | security-reviewer, security-injection |
-| [security/secrets-checklist.md](security/secrets-checklist.md) | security-reviewer, security-secrets |
-| [security/auth-patterns.md](security/auth-patterns.md) | security-reviewer, security-auth |
-| [security/data-exposure.md](security/data-exposure.md) | security-reviewer, security-data |
-| [security/dependency-security.md](security/dependency-security.md) | security-reviewer, security-deps |
+| [security/injection-patterns.md](security/injection-patterns.md) | security-reviewer |
+| [security/secrets-checklist.md](security/secrets-checklist.md) | security-reviewer |
+| [security/auth-patterns.md](security/auth-patterns.md) | security-reviewer |
+| [security/data-exposure.md](security/data-exposure.md) | security-reviewer |
+| [security/dependency-security.md](security/dependency-security.md) | security-reviewer |
 
 ### Web Design & UX
 
@@ -124,6 +124,16 @@ Deep research produced via `/drl:get-a-phd` for agent domain knowledge. Each fol
 | [development/web-apps/analytics-instrumentation-design.md](development/web-apps/analytics-instrumentation-design.md) | build-great-things |
 | [development/web-apps/spa-seo-crawlability.md](development/web-apps/spa-seo-crawlability.md) | build-great-things |
 | [development/web-apps/web-application-security.md](development/web-apps/web-application-security.md) | build-great-things |
+
+### Social Science Methodology
+
+| Document | Target Agents |
+|----------|---------------|
+| [social_science/econometrics-fundamentals.md](social_science/econometrics-fundamentals.md) | analyst, statistical-methods-reviewer |
+| [social_science/causal-inference-strategies.md](social_science/causal-inference-strategies.md) | methodology-reviewer, statistical-methods-reviewer |
+| [social_science/robustness-check-catalog.md](social_science/robustness-check-catalog.md) | robustness-checker, analyst |
+| [social_science/academic-writing-conventions.md](social_science/academic-writing-conventions.md) | writing-quality-reviewer, prose-drafter, section-writer |
+| [social_science/identification-strategies.md](social_science/identification-strategies.md) | methodology-reviewer, theoretical-framing-reviewer |
 
 ## Existing Analysis
 

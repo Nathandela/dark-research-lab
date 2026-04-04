@@ -34,7 +34,7 @@ Skills are instructions that Claude reads before executing each phase. They live
 
 **When invoked**: After plan, when tasks are ready in beads.
 
-**What it does**: Picks tasks from `bd ready`, reads the epic's Acceptance Criteria and Verification Contract, deploys an AgentTeam with test-writers and implementers, coordinates agent work, commits incrementally, and produces the required evidence before `/implementation-reviewer`.
+**What it does**: Picks tasks from `bd ready`, reads the epic's Acceptance Criteria and Verification Contract, detects work mode (code, writing, or analysis), delegates to the appropriate sub-skill, coordinates agent work, commits incrementally, and closes tasks as they complete.
 
 ### `/drl:review`
 
@@ -42,7 +42,7 @@ Skills are instructions that Claude reads before executing each phase. They live
 
 **When invoked**: After all work tasks are closed.
 
-**What it does**: Runs baseline quality gates plus contract-required build checks, verifies Acceptance Criteria and Verification Contract evidence, selects reviewer tier based on diff size (4-11 reviewers), spawns reviewers in an AgentTeam, classifies findings by severity, fixes all P1s, runs `/implementation-reviewer`.
+**What it does**: Detects what changed (code vs paper), spawns the appropriate review fleet (5 code reviewers or 10 paper reviewers), verifies Acceptance Criteria and Verification Contract evidence, classifies findings by severity (Critical/Major/Minor), and resolves all Critical and Major findings before proceeding.
 
 ### `/drl:compound`
 

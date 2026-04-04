@@ -1,168 +1,74 @@
 ---
-name: Research Work
-description: Execute analysis pipeline, generate tables and figures, write paper sections, and auto-log decisions
+name: Work
+description: Route work tasks to the appropriate sub-skill based on task context
 phase: work
 ---
 
-# Research Work Skill
+# Work Router
 
 ## Overview
 
-Execute the approved research plan. Run the statistical analysis pipeline, produce publication-ready tables and figures, write paper sections, and auto-log all methodological decisions. This phase turns the plan into concrete research outputs.
-
-## Input
-
-- Approved research plan from the plan phase
-- Beads tasks: `bd ready` for analysis tasks to execute
-- Variable operationalization table and model equations from the plan
-- Hypothesis-analysis-output-section mapping
+Generic work framework that reads task context and delegates to the right sub-skill(s). The router picks tasks, detects the work mode, and hands off to `work-code`, `work-writing`, or `work-analysis`.
 
 ## Methodology
 
-### Step 1: Claim and Organize Work
+### Step 1: Pick and Claim Tasks
 
-1. Run `bd ready` to find available analysis tasks
-2. Claim tasks: `bd update <id> --claim`
-3. Read the parent epic (`bd show <epic>`) for EARS requirements and the research plan
-4. **Verify spec approval** (hard check): Run `bd show <epic>` and confirm the spec phase status is complete. Look for spec-phase closure or notes confirming approval. If the spec phase is not complete, do NOT proceed -- flag the blocker via `AskUserQuestion`
+1. Run `bd ready` to find available tasks (or use the task ID from arguments)
+2. Claim: `bd update <id> --claim`
+3. Read epic context: `bd show <epic>` for the spec, acceptance criteria table, and verification contract
+4. Run `drl search` for relevant context from prior work
 
-### Step 2: Execute Analysis Pipeline
+### Step 2: Detect Work Mode
 
-Spawn **analyst** subagent (`.claude/agents/drl/analyst.md`) for each analysis task:
+Read the task title and description. Match keywords to determine the sub-skill:
 
-1. **Data loading and cleaning** (`src/data/`):
-   - Load raw data using `src/data/loaders.py`
-   - Apply cleaning rules from `src/data/cleaners.py`
-   - Validate against the operationalization table
-   - Write analysis-ready datasets
+| Keywords | Sub-Skill |
+|----------|-----------|
+| implement, test, code, function, module, fix bug, refactor, pipeline | `work-code/SKILL.md` |
+| write, draft, section, introduction, discussion, prose, abstract, conclusion | `work-writing/SKILL.md` |
+| regression, analysis, table, figure, descriptive stats, robustness, estimate | `work-analysis/SKILL.md` |
 
-2. **Descriptive statistics** (`src/analysis/descriptive.py`):
-   - Summary statistics (mean, sd, min, max, N)
-   - Correlation matrices
-   - Distribution checks
-   - Output to `paper/outputs/tables/`
+If the task is ambiguous (no clear keyword match), use `AskUserQuestion` to clarify the work mode.
 
-3. **Main regressions** (`src/analysis/econometrics.py`):
-   - Implement each model equation from the plan
-   - Follow variable operationalization exactly
-   - Output regression tables to `paper/outputs/tables/`
-   - Output figures to `paper/outputs/figures/`
+### Step 3: Execute Sub-Skill
 
-4. **Robustness checks** (`src/analysis/robustness.py`):
-   - Execute the robustness plan from the plan phase
-   - Run alternative specifications
-   - Output robustness tables to `paper/outputs/tables/`
+1. **Read the selected sub-skill file** (`.claude/skills/drl/<sub-skill>/SKILL.md`) and follow its instructions
+2. For composite tasks (e.g., "run regression and write results section"):
+   - Run `work-analysis` first to produce tables and figures
+   - Then run `work-writing` to draft the section referencing those outputs
+3. Pass the task context (epic, acceptance criteria, plan equations) to the sub-skill
 
-### Step 3: Write Paper Sections
+### Step 4: Decision Logging
 
-For each section in the hypothesis-analysis-output-section mapping:
+Every methodological choice MUST be logged to `docs/decisions/` using the ADR template (`docs/decisions/0000-template.md`). Use `/drl:decision` for guided logging. This applies regardless of which sub-skill executes the work.
 
-1. Write LaTeX content to `paper/sections/{section}.tex`
-2. Reference the generated tables and figures
-3. Interpret results in the context of the hypotheses
-4. Flag any unexpected findings for human review
+### Step 5: Close Tasks
 
-Paper section files:
-- `paper/sections/data.tex` -- sample description, descriptive stats
-- `paper/sections/results.tex` -- main findings per hypothesis
-- `paper/sections/robustness.tex` -- alternative specification results
-
-### Step 4: Auto-Log Decisions
-
-Every methodological choice made during execution MUST be logged:
-
-1. Create an ADR in `docs/decisions/` using the template (`docs/decisions/0000-template.md`). Use `/drl:decision` for guided logging
-2. Log decisions including:
-   - Variable transformations applied
-   - Outlier handling choices
-   - Sample exclusion decisions
-   - Estimation method refinements
-   - Any deviation from the original plan
-3. Use sequential numbering: check existing ADRs and increment
-
-### Step 5: Agent Progress Notes
-
-Throughout execution, maintain progress visibility:
-
-1. Update beads task notes: `bd update <id> --notes="Progress: ..."`
-2. Flag blockers immediately: unexpected data quality issues, failed assumptions
-3. If a planned analysis cannot proceed as specified, stop and use `AskUserQuestion`
+1. Verify all acceptance criteria are met
+2. Update task notes: `bd update <id> --notes="Completed: ..."`
+3. Close: `bd close <id>`
 
 ## Gate Criteria
 
-**Gate 3: All Analyses Complete**
-
-Before proceeding to methodology-review, verify ALL of:
+**Gate 3: All Work Tasks Closed**
 
 | Criterion | Verification |
 |-----------|-------------|
-| All analysis tasks executed | `bd list --status=open` shows no analysis tasks |
-| Tables generated | `ls paper/outputs/tables/` |
-| Figures generated | `ls paper/outputs/figures/` |
-| Paper sections written | `ls paper/sections/*.tex` |
-| All decisions logged as ADRs | `ls docs/decisions/` (one per decision) |
-| No tasks in-progress | `bd list --status=in_progress` is empty |
-| Tests pass | `uv run python -m pytest` |
+| All work tasks closed | `bd list --status=in_progress` is empty |
+| Sub-skill gates pass | Each invoked sub-skill's verification gate passes |
+| All decisions logged | `ls docs/decisions/` (one ADR per decision) |
 | Spec was approved | `bd show <epic>` confirms spec phase complete |
-
-
-## Handoff Checklist
-
-| Output | Location | Format | Next Phase Retrieval |
-|--------|----------|--------|---------------------|
-| Regression tables | `paper/outputs/tables/` | LaTeX `.tex` files with proper labels and notes | methodology-review reads tables for statistical validity checks |
-| Figures | `paper/outputs/figures/` | PDF or PNG files referenced via `\includegraphics` | methodology-review checks figure-text consistency |
-| Paper sections | `paper/sections/data.tex`, `paper/sections/results.tex`, `paper/sections/robustness.tex` | LaTeX with `\input{}` references to output tables | methodology-review reads sections for coherence and writing quality |
-| ADR decision log entries | `docs/decisions/NNNN-*.md` | ADR template format | methodology-review checks decision log completeness |
-| Closed analysis tasks | Beads (`bd list --status=closed`) | All analysis tasks marked done | methodology-review verifies no open work tasks remain |
 
 ## Memory Integration
 
-- `drl search` before each analysis task for relevant patterns
-- `drl learn` after corrections, unexpected results, or novel findings
-- Log progress notes to beads tasks
-
-## Failure and Recovery
-
-If the work phase fails mid-execution:
-
-1. **Analysis code fails** (runtime errors, data issues):
-   - Check data loading and cleaning steps first
-   - Verify variable operationalization matches the plan
-   - Log any data issues discovered to `docs/decisions/`
-   - Fix and re-run -- do not skip failed analyses
-
-2. **Tests fail** (`uv run python -m pytest` returns errors):
-   - Read the test output and fix the failing tests or the code they exercise
-   - Do not proceed to review with failing tests
-
-3. **Unexpected results** (sign flips, non-significance):
-   - Do NOT discard or hide unfavorable results
-   - Log the unexpected finding to `docs/decisions/`
-   - Flag for human review via `AskUserQuestion`
-   - Report all results in the paper, including unexpected ones
-
-4. **Partial completion** (some tasks done, agent interrupted):
-   - Check `bd list --status=in_progress` for unfinished tasks
-   - Resume from the last incomplete task -- completed work is preserved in `paper/outputs/`
+- `drl search` before each task for relevant patterns
+- `drl learn` after discoveries or corrections
 
 ## Common Pitfalls
 
-- Running analyses without verifying the research spec was approved
-- Not following the variable operationalization table exactly
-- Forgetting to log decisions as ADRs
-- Modifying the analysis plan without documenting the change
-- Generating tables without proper labels, units, or source notes
-- Not flagging unexpected results for human review
-- Fabricating or simulating data in production code
-
-## Quality Criteria
-
-- [ ] Analysis code is testable (functions in `src/`, not scripts)
-- [ ] Analyst subagent executed analysis per the plan
-- [ ] All outputs in correct directories (`paper/outputs/tables/`, `paper/outputs/figures/`)
-- [ ] Results are reproducible (fixed seeds, documented transforms)
-- [ ] Paper sections reference generated outputs
-- [ ] Every decision logged to `docs/decisions/`
-- [ ] Agent progress notes maintained in beads
-- [ ] All tests pass
+- Not reading the sub-skill file before executing (skipping delegation)
+- Wrong mode detection: a "write regression code" task is code, not analysis
+- Skipping decision logging for "minor" choices
+- Running writing before analysis outputs exist
+- Not verifying the spec was approved before starting work

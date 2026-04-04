@@ -48,6 +48,8 @@ type InitResult struct {
 	DocsScaffUpdated    int
 	TestsInstalled      int
 	TestsUpdated        int
+	DataInstalled       int
+	DataUpdated         int
 	AgentsMdUpdated     bool
 	ClaudeMdUpdated     bool
 	PluginCreated       bool
@@ -188,6 +190,8 @@ func installTemplateGroups(repoRoot string, version string, stack StackInfo, tie
 			func(n int) { result.DocsScaffInstalled = n }, func(u int) { result.DocsScaffUpdated = u }, "docs structure"},
 		{func() (int, int, error) { return InstallTestsScaffolding(repoRoot) },
 			func(n int) { result.TestsInstalled = n }, func(u int) { result.TestsUpdated = u }, "tests scaffolding"},
+		{func() (int, int, error) { return InstallDataScaffolding(repoRoot) },
+			func(n int) { result.DataInstalled = n }, func(u int) { result.DataUpdated = u }, "data scaffolding"},
 	}
 
 	// Core tier: skills + agents

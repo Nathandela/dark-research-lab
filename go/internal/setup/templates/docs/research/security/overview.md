@@ -29,37 +29,31 @@ Distilled from [secure-coding-failure.md](secure-coding-failure.md) (survey sect
 | A09 Security Logging Failures | P3 | Escalate to P2 if no logging on auth events or admin actions |
 | A10 SSRF | P1 | Escalate to P0 if cloud metadata endpoint (169.254.169.254) is reachable |
 
-## Escalation Triggers
+## Focus Areas
 
-When the review agent detects one of the following patterns, it should invoke the
-corresponding specialist skill for deeper analysis.
+The consolidated security-reviewer should pay special attention to these patterns:
 
-### /security-injection
-Trigger when:
+### Injection
 - String concatenation or template interpolation inside a SQL query
 - `child_process.exec` or `os.system` called with user-derived arguments
 - Template engine receives user input as the template source (not data)
 
-### /security-secrets
-Trigger when:
+### Secrets
 - Hardcoded strings matching API key or token patterns (see [secrets-checklist.md](secrets-checklist.md))
 - `.env` files tracked in git
 - Variables named `password`, `secret`, `token`, `apiKey` assigned string literals
 
-### /security-auth
-Trigger when:
+### Authentication
 - Route handlers missing auth middleware present on sibling routes
 - Database queries using user-supplied IDs without ownership filter
 - CORS configured with `origin: '*'` alongside `credentials: true`
 
-### /security-data
-Trigger when:
+### Data Exposure
 - Logging calls receive entire request objects (`console.log(req.body)`)
 - Error handlers pass `err.stack` or `err.message` directly to HTTP response
 - Tokens or PII appear in URL query parameters
 
-### /security-deps
-Trigger when:
+### Dependencies
 - Lockfile changes introduce new direct dependencies
 - Package version downgrades appear in diffs
 - Packages with `postinstall` scripts are added

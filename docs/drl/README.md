@@ -1,5 +1,5 @@
 ---
-version: "2.6.1"
+version: "v0.1.1"
 last-updated: "2026-04-03"
 summary: "Overview and getting started guide for dark-research-lab"
 ---
@@ -47,6 +47,7 @@ drl doctor
 5. Installs agent templates, workflow commands, phase skills, and agent role skills
 6. Installs a git pre-commit hook (lesson capture reminder)
 7. Installs Claude Code hooks (SessionStart, PreCompact, UserPromptSubmit, PostToolUseFailure, PostToolUse, PreToolUse, Stop)
+8. For pnpm projects: auto-configures `onlyBuiltDependencies` for native addons
 
 `setup` does everything `init` does. The embedding model is managed separately by the embed daemon.
 

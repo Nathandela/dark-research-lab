@@ -4,7 +4,7 @@
 
 ## Abstract
 
-This document assesses whether migrating Compound Agent from TypeScript/Node.js to Go (with a Rust embedding subprocess) would deliver meaningful performance improvements. The analysis is grounded in the Go PhD research (6 papers, ~55K words) and a detailed profiling of the current `ca search` hot path.
+This document assesses whether migrating Dark Research Lab from TypeScript/Node.js to Go (with a Rust embedding subprocess) would deliver meaningful performance improvements. The analysis is grounded in the Go PhD research (6 papers, ~55K words) and a detailed profiling of the current `drl search` hot path.
 
 **Verdict**: Migration is justified. The current architecture pays a **4.4-second tax per search invocation**, dominated by Node.js startup and per-process embedding model load/unload. A Go binary with a persistent Rust embedding daemon could reduce this to **<100ms warm, <500ms cold** — a 10-40x improvement that directly impacts Claude Code's responsiveness.
 
@@ -12,7 +12,7 @@ This document assesses whether migrating Compound Agent from TypeScript/Node.js 
 
 ## 1. Current Performance Profile
 
-Measured: `time ca search "error handling"` → **4.39s wall, 2.8s user, 0.9s sys**
+Measured: `time drl search "error handling"` → **4.39s wall, 2.8s user, 0.9s sys**
 
 ### Cost Breakdown (per invocation)
 
@@ -32,7 +32,7 @@ Measured: `time ca search "error handling"` → **4.39s wall, 2.8s user, 0.9s sy
 
 ### Architectural Root Cause
 
-The current design loads and unloads the 278MB embedding model on **every CLI invocation**. There is no persistent process or daemon. Each `ca search` call:
+The current design loads and unloads the 278MB embedding model on **every CLI invocation**. There is no persistent process or daemon. Each `drl search` call:
 
 1. Starts Node.js (200-800ms)
 2. Loads native SQLite addon (10-50ms)
@@ -48,7 +48,7 @@ This is like starting a database server to run one query, then shutting it down.
 
 ```
 ┌─────────────────────────────────────────────┐
-│ Go Binary (ca)                               │
+│ Go Binary (drl)                               │
 │                                              │
 │  CLI parsing ──► SQLite FTS5 ──► Ranking     │
 │       │              │              │        │
@@ -62,7 +62,7 @@ This is like starting a database server to run one query, then shutting it down.
               │
               ▼
 ┌─────────────────────────────────────────────┐
-│ Rust Embedding Daemon (ca-embed)             │
+│ Rust Embedding Daemon (drl-embed)             │
 │                                              │
 │  Model loaded ONCE at startup                │
 │  Stays resident in memory (~150MB)           │
@@ -116,7 +116,7 @@ This is like starting a database server to run one query, then shutting it down.
 ### 3.1 Compilation & Distribution
 
 From *Section 03 (Compiler Toolchain)*:
-- **Single static binary**: No runtime dependencies. `ca` is one file, ~15-20MB
+- **Single static binary**: No runtime dependencies. `drl` is one file, ~15-20MB
 - **Cross-compilation**: `GOOS=linux GOARCH=arm64 go build` — trivial multi-platform
 - **Build speed**: <1 second for a CLI this size (vs ~3s for tsup bundle)
 - **No npx tax**: Eliminates the 200-800ms `npx` resolution overhead entirely
@@ -170,7 +170,7 @@ From *Section 02 (Error Handling)*:
 
 - **The embedding model itself**: Same GGUF file, just loaded by Rust instead of node-llama-cpp
 - **File formats**: `.claude/lessons/index.jsonl` and `.claude/.cache/lessons.sqlite` stay identical
-- **Hook interface**: Claude Code still calls `ca <command>` — the binary just changes from Node.js to Go
+- **Hook interface**: Claude Code still calls `drl <command>` — the binary just changes from Node.js to Go
 - **Schema version**: SQLite schema v5 stays the same
 
 ### 4.3 Risk Matrix
@@ -208,7 +208,7 @@ From *Section 02 (Error Handling)*:
 
 ### Scope
 
-Build a minimal Go binary that implements `ca search "query"` end-to-end:
+Build a minimal Go binary that implements `drl search "query"` end-to-end:
 1. Parse CLI args (cobra)
 2. Open SQLite, run FTS5 search
 3. Connect to Rust embedding daemon (spawn if not running)
@@ -218,7 +218,7 @@ Build a minimal Go binary that implements `ca search "query"` end-to-end:
 
 ### Deliverables
 
-1. `cmd/ca/main.go` — CLI entry point
+1. `cmd/drl/main.go` — CLI entry point
 2. `internal/storage/sqlite.go` — SQLite + FTS5 (reads existing `.claude/.cache/lessons.sqlite`)
 3. `internal/search/vector.go` — Vector search with daemon IPC
 4. `internal/search/hybrid.go` — Hybrid merge + ranking
@@ -229,11 +229,11 @@ Build a minimal Go binary that implements `ca search "query"` end-to-end:
 
 | Metric | Target | How to Measure |
 |--------|--------|---------------|
-| Warm search latency | <100ms | `time ./ca search "query"` with daemon running |
-| Cold search latency | <1s | `time ./ca search "query"` from scratch |
-| Keyword-only latency | <20ms | `time ./ca search "query"` without model |
-| Binary size (Go) | <20MB | `ls -lh ca` |
-| Binary size (Rust) | <10MB | `ls -lh ca-embed` |
+| Warm search latency | <100ms | `time ./drl search "query"` with daemon running |
+| Cold search latency | <1s | `time ./drl search "query"` from scratch |
+| Keyword-only latency | <20ms | `time ./drl search "query"` without model |
+| Binary size (Go) | <20MB | `ls -lh drl` |
+| Binary size (Rust) | <10MB | `ls -lh drl-embed` |
 | FTS5 result parity | 100% | Compare results vs TypeScript version |
 
 ### Estimated Effort
@@ -284,7 +284,7 @@ Build a minimal Go binary that implements `ca search "query"` end-to-end:
 
 ## 8. Conclusion
 
-The current compound-agent spends **99% of its time on overhead** (Node.js startup + embedding model lifecycle) and **<1% on actual search**. Go eliminates the runtime overhead, and a persistent Rust embedding daemon eliminates the model load/unload cycle.
+The current dark-research-lab spends **99% of its time on overhead** (Node.js startup + embedding model lifecycle) and **<1% on actual search**. Go eliminates the runtime overhead, and a persistent Rust embedding daemon eliminates the model load/unload cycle.
 
 The projected improvement is **10-55x faster search** depending on whether the daemon is warm. For hook handlers (no embedding needed), the improvement is **~160x** (800ms → 5ms).
 

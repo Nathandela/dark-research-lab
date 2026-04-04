@@ -115,6 +115,7 @@ func TestPhaseSkills_FrontmatterHasRequiredFields(t *testing.T) {
 	orchestrators := map[string]bool{
 		"cook-it": true, "lit-review": true, "flavor": true,
 		"onboard": true, "compile": true, "decision": true, "status": true,
+		"work-code": true, "work-writing": true, "work-analysis": true,
 	}
 
 	for dir, content := range skills {

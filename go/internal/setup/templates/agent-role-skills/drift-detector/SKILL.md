@@ -9,7 +9,7 @@ Detects drift between the approved research plan (specification, ADRs, methodolo
 
 ## Pipeline Position
 
-module-boundary-reviewer -> **Methodology Drift Detector** -> implementation-reviewer
+architecture-reviewer -> **Methodology Drift Detector** -> runtime-verifier
 
 ## Responsibilities
 

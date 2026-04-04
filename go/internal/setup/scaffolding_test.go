@@ -349,6 +349,7 @@ func TestScaffoldingTemplates_NonEmpty(t *testing.T) {
 		{"LiteratureScaffolding", templates.LiteratureScaffolding, 2},
 		{"DocsScaffolding", templates.DocsScaffolding, 3},
 		{"TestsScaffolding", templates.TestsScaffolding, 2},
+		{"DataScaffolding", templates.DataScaffolding, 2},
 	}
 
 	for _, tc := range checks {
@@ -387,6 +388,9 @@ func TestInitRepo_CreatesScaffolding(t *testing.T) {
 	if result.TestsInstalled == 0 {
 		t.Error("expected TestsInstalled > 0")
 	}
+	if result.DataInstalled == 0 {
+		t.Error("expected DataInstalled > 0")
+	}
 
 	// Verify key scaffolding files exist on disk
 	for _, rel := range []string{
@@ -395,6 +399,8 @@ func TestInitRepo_CreatesScaffolding(t *testing.T) {
 		"literature/pdfs/.gitkeep",
 		"docs/decisions/0000-template.md",
 		"tests/conftest.py",
+		"data/input/.gitkeep",
+		"data/output/.gitkeep",
 	} {
 		path := filepath.Join(dir, rel)
 		if _, err := os.Stat(path); os.IsNotExist(err) {

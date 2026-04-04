@@ -92,17 +92,17 @@ RATIONALE: One sentence summary
 
 ### Rule Classes
 
-- **Class A** (native `rules.json`): The check can be expressed as a regex/glob (`file-pattern`), line count (`file-size`), or shell command (`script`). These map directly to the compound-agent rule engine. No external linter needed.
+- **Class A** (native `rules.json`): The check can be expressed as a regex/glob (`file-pattern`), line count (`file-size`), or shell command (`script`). These map directly to the DRL rule engine. No external linter needed.
 - **Class B** (external linter): The check requires AST analysis or linter-specific features. Targets the user's detected linter (ESLint, Ruff, ast-grep, etc.).
 
-CHECK_TYPE must be one of: `file-pattern`, `file-size`, `script` (Class A -- maps to compound-agent rule engine), `ast` (Class B -- requires external linter), or `N/A` (not lintable).
+CHECK_TYPE must be one of: `file-pattern`, `file-size`, `script` (Class A -- maps to DRL rule engine), `ast` (Class B -- requires external linter), or `N/A` (not lintable).
 
 ## Routing Rules
 
 | Classification | Action |
 |---------------|--------|
 | LINTABLE + HIGH | Create beads task under "Linting Improvement" epic |
-| LINTABLE + MEDIUM or PARTIAL + HIGH | Note as "potentially-lintable" in the lesson's `ca learn` capture (append to insight text) |
+| LINTABLE + MEDIUM or PARTIAL + HIGH | Note as "potentially-lintable" in the lesson's `drl learn` capture (append to insight text) |
 | NOT_LINTABLE or LOW confidence | No additional action (lesson already stored by compound flow) |
 
 **Critical**: ALL insights are already stored as lessons by the compound pipeline (step 8). Lint task creation is purely additive. Do not re-store or modify existing lessons.

@@ -2,13 +2,13 @@
 
 **Research for**: `learning_agent-i72b`
 **Date**: 2026-03-11
-**Purpose**: Understand what's possible per linter for compound-agent's lint rule proposal feature
+**Purpose**: Understand what's possible per linter for dark-research-lab's lint rule proposal feature
 
 ---
 
 ## Executive Summary
 
-Every major linter provides some degree of config-only pattern enforcement, but the depth varies significantly. ESLint and golangci-lint offer the richest config-only surfaces, while Ruff explicitly has no custom rule API (by design). For compound-agent's use case of *proposing* lint rules, the practical division is: config-only rules (immediately actionable), custom rule stubs (require code, but can be templated), and universal tools like Semgrep or ast-grep (YAML-only, language-agnostic, self-contained).
+Every major linter provides some degree of config-only pattern enforcement, but the depth varies significantly. ESLint and golangci-lint offer the richest config-only surfaces, while Ruff explicitly has no custom rule API (by design). For dark-research-lab's use case of *proposing* lint rules, the practical division is: config-only rules (immediately actionable), custom rule stubs (require code, but can be templated), and universal tools like Semgrep or ast-grep (YAML-only, language-agnostic, self-contained).
 
 ---
 
@@ -28,7 +28,7 @@ Every major linter provides some degree of config-only pattern enforcement, but 
 
 **Rule installation**: Flat config: inline plugin in `eslint.config.js`. Legacy: `eslint-plugin-local-rules`.
 
-**Verdict**: Best config-only surface. `no-restricted-syntax` alone covers many compound-agent use cases.
+**Verdict**: Best config-only surface. `no-restricted-syntax` alone covers many dark-research-lab use cases.
 
 ### 2. Ruff (Python)
 
@@ -69,7 +69,7 @@ Every major linter provides some degree of config-only pattern enforcement, but 
 
 **Detection**: `.golangci.yml/yaml/toml/json`, GitHub Actions workflows.
 
-**Verdict**: Rich config-only surface via `depguard` + `forbidigo`. Good target for compound-agent proposals.
+**Verdict**: Rich config-only surface via `depguard` + `forbidigo`. Good target for dark-research-lab proposals.
 
 ### 5. RuboCop (Ruby)
 
@@ -120,11 +120,11 @@ rule:
 fix: logger.info($$$ARGS)
 ```
 
-**Both tools** are strong candidates as a universal target for compound-agent rule proposals — YAML-only, no per-linter code generation needed.
+**Both tools** are strong candidates as a universal target for dark-research-lab rule proposals — YAML-only, no per-linter code generation needed.
 
 ---
 
-## Recommendation for compound-agent
+## Recommendation for dark-research-lab
 
 | Strategy | Effort | Coverage | Reliability |
 |----------|--------|----------|-------------|

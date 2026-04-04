@@ -76,7 +76,8 @@ func TestPhaseSkills(t *testing.T) {
 
 	// Verify expected phases exist
 	expected := []string{
-		"spec-dev", "plan", "work", "review", "compound",
+		"spec-dev", "plan", "work", "work-code", "work-writing", "work-analysis",
+		"review", "compound",
 		"cook-it", "researcher", "test-cleaner", "agentic", "architect",
 		"qa-engineer", "loop-launcher", "build-great-things",
 		"lit-review", "flavor", "onboard", "compile", "decision", "status",
@@ -178,8 +179,10 @@ func TestAgentRoleSkills(t *testing.T) {
 		"solution-writer", "test-writer", "implementer",
 		"compounding", "audit", "doc-gardener", "cct-subagent",
 		"drift-detector", "scenario-coverage-reviewer",
-		"security-injection", "security-secrets", "security-auth",
-		"security-data", "security-deps",
+		"prose-drafter", "section-writer",
+		"argumentation-builder", "argumentation-reviewer",
+		"statistical-methods-reviewer", "data-quality-reviewer",
+		"theoretical-framing-reviewer", "contribution-clarity-reviewer",
 		"design-craft-reviewer", "runtime-verifier",
 	}
 	for _, role := range expected {

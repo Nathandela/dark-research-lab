@@ -530,19 +530,19 @@ func TestInstallPhaseSkills_SubstitutesQualityGates(t *testing.T) {
 		t.Fatalf("InstallPhaseSkills: %v", err)
 	}
 
-	// DRL research skills use hardcoded uv/pytest commands instead of quality gate placeholders
-	workSkill := filepath.Join(dir, ".claude", "skills", "drl", "work", "SKILL.md")
-	content, err := os.ReadFile(workSkill)
+	// DRL work-code sub-skill uses hardcoded uv/pytest commands instead of quality gate placeholders
+	workCodeSkill := filepath.Join(dir, ".claude", "skills", "drl", "work-code", "SKILL.md")
+	content, err := os.ReadFile(workCodeSkill)
 	if err != nil {
-		t.Fatalf("read work/SKILL.md: %v", err)
+		t.Fatalf("read work-code/SKILL.md: %v", err)
 	}
-	// Verify no leftover quality gate placeholders
+	// Verify no leftover quality gate placeholders in work-code
 	if strings.Contains(string(content), "{{QUALITY_GATE_") {
-		t.Error("work/SKILL.md still has quality gate placeholders")
+		t.Error("work-code/SKILL.md still has quality gate placeholders")
 	}
-	// DRL work skill should contain pytest reference
+	// DRL work-code skill should contain pytest reference
 	if !strings.Contains(string(content), "pytest") {
-		t.Error("work/SKILL.md missing pytest reference")
+		t.Error("work-code/SKILL.md missing pytest reference")
 	}
 
 	// Verify NO installed DRL skill has leftover quality gate placeholders
@@ -604,21 +604,22 @@ func TestInstallPhaseSkills_ContentPreservedAcrossInstalls(t *testing.T) {
 	t.Parallel()
 	dir := t.TempDir()
 
-	// DRL skills use hardcoded Python commands, not quality gate placeholders.
-	// Stack changes don't affect skill content since there are no placeholders
-	// to substitute. This test verifies content stability.
+	// DRL research skills (work router, work-writing, work-analysis) use hardcoded
+	// Python commands, not quality gate placeholders. Stack changes don't affect
+	// their content. work-code uses placeholders (adapts to project stack).
 	_, _, err := InstallPhaseSkills(dir, StackInfo{})
 	if err != nil {
 		t.Fatalf("InstallPhaseSkills: %v", err)
 	}
 
-	workSkill := filepath.Join(dir, ".claude", "skills", "drl", "work", "SKILL.md")
-	content1, err := os.ReadFile(workSkill)
+	// Work router has no placeholders -- should be stable across stacks
+	workRouter := filepath.Join(dir, ".claude", "skills", "drl", "work", "SKILL.md")
+	content1, err := os.ReadFile(workRouter)
 	if err != nil {
 		t.Fatalf("read work/SKILL.md: %v", err)
 	}
 
-	// Re-install with a different stack (should not change DRL skills)
+	// Re-install with a different stack (should not change placeholder-free skills)
 	goStack := StackInfo{
 		TestCmd:  "go test ./...",
 		LintCmd:  "golangci-lint run ./...",
@@ -629,17 +630,23 @@ func TestInstallPhaseSkills_ContentPreservedAcrossInstalls(t *testing.T) {
 		t.Fatalf("InstallPhaseSkills (go): %v", err)
 	}
 
-	content2, err := os.ReadFile(workSkill)
+	content2, err := os.ReadFile(workRouter)
 	if err != nil {
 		t.Fatalf("read work/SKILL.md after reinstall: %v", err)
 	}
 
-	// DRL work skill should still reference pytest (not go test)
-	if !strings.Contains(string(content2), "pytest") {
-		t.Error("work/SKILL.md should retain pytest reference (DRL is Python-only)")
-	}
 	if string(content1) != string(content2) {
 		t.Error("work/SKILL.md content should be identical after reinstall (no placeholders to substitute)")
+	}
+
+	// work-code uses {{QUALITY_GATE_*}} placeholders and correctly adapts to stack
+	workCode := filepath.Join(dir, ".claude", "skills", "drl", "work-code", "SKILL.md")
+	codeContent, err := os.ReadFile(workCode)
+	if err != nil {
+		t.Fatalf("read work-code/SKILL.md: %v", err)
+	}
+	if !strings.Contains(string(codeContent), "go test") {
+		t.Error("work-code/SKILL.md should have substituted quality gates for Go stack")
 	}
 }
 

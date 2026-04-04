@@ -40,16 +40,21 @@ func TestIntegrationVerification_GateCriteriaFlowContract(t *testing.T) {
 	})
 
 	t.Run("review_checks_methodology", func(t *testing.T) {
-		assertContains(t, review, "Statistical Validity", "missing statistical validity check")
-		assertContains(t, review, "Robustness Assessment", "missing robustness assessment check")
-		assertContains(t, review, "Logical Consistency", "missing logical consistency check")
-		assertContains(t, review, "Citation Accuracy", "missing citation accuracy check")
+		// The review skill's Paper Review Fleet covers these dimensions via named reviewers
+		assertContains(t, review, "methodology-reviewer", "missing methodology-reviewer (statistical validity)")
+		assertContains(t, review, "robustness-checker", "missing robustness-checker (robustness assessment)")
+		assertContains(t, review, "coherence-reviewer", "missing coherence-reviewer (logical consistency)")
+		assertContains(t, review, "citation-checker", "missing citation-checker (citation accuracy)")
 	})
 
 	t.Run("work_executes_plan", func(t *testing.T) {
-		assertContains(t, work, "Execute Analysis Pipeline", "missing analysis pipeline section")
-		assertContains(t, work, "operationalization", "missing operationalization reference")
-		assertContains(t, work, "paper/outputs/tables/", "missing tables output path")
+		// The work router delegates analysis to work-analysis sub-skill;
+		// verify the sub-skill has the plan execution details.
+		workAnalysis := requireSkill(t, skills, "work-analysis")
+		assertContains(t, workAnalysis, "operationalization", "missing operationalization reference")
+		assertContains(t, workAnalysis, "paper/outputs/tables/", "missing tables output path")
+		// Router itself must reference sub-skills
+		assertContains(t, work, "work-analysis", "work router missing work-analysis reference")
 	})
 
 	t.Run("gate_criteria_consistency", func(t *testing.T) {

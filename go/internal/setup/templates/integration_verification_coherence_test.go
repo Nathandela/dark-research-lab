@@ -48,7 +48,7 @@ func TestIntegrationVerification_IVCreationContract(t *testing.T) {
 }
 
 // TestIntegrationVerification_ReviewCoherence verifies that the review SKILL.md
-// is internally consistent with 6 reviewer fleet and severity classification.
+// is internally consistent with dual-mode reviewer fleets and severity classification.
 func TestIntegrationVerification_ReviewCoherence(t *testing.T) {
 	review := requireSkill(t, PhaseSkills(), "review")
 
@@ -105,10 +105,12 @@ func TestIntegrationVerification_SmokeTestMarkers(t *testing.T) {
 		assertContains(t, skills["plan"], "Variable Operationalization", "plan missing operationalization")
 	})
 	t.Run("work_has_analysis_pipeline", func(t *testing.T) {
-		assertContains(t, skills["work"], "Analysis Pipeline", "work missing analysis pipeline")
+		// Work is now a router; analysis pipeline lives in work-analysis sub-skill
+		assertContains(t, skills["work-analysis"], "analysis pipeline", "work-analysis missing analysis pipeline")
+		assertContains(t, skills["work"], "work-analysis", "work router missing work-analysis reference")
 	})
 	t.Run("review_has_review_fleet", func(t *testing.T) {
-		assertContains(t, skills["review"], "Spawn Review Fleet", "review missing review fleet")
+		assertContains(t, skills["review"], "Paper Review Fleet", "review missing paper review fleet")
 	})
 	t.Run("compound_has_latex_compile", func(t *testing.T) {
 		assertContains(t, skills["compound"], "LaTeX Compilation", "compound missing LaTeX compilation")

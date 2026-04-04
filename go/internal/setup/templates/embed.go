@@ -223,6 +223,11 @@ func TestsScaffolding() map[string]string {
 	return readEmbedTree(scaffoldingFS, "scaffolding/tests")
 }
 
+// DataScaffolding returns a map of relative-path -> content for data directory templates.
+func DataScaffolding() map[string]string {
+	return readEmbedTree(scaffoldingFS, "scaffolding/data")
+}
+
 // readEmbedTree walks an embedded FS directory tree and returns a map
 // of relative-path -> content. Relative paths use slash separators.
 // Panics on errors since embedded FS failures indicate a broken binary.

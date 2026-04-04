@@ -85,11 +85,11 @@ If step 3 fails, the original file is untouched. If step 2 fails, there is no co
 
 Edit the following skill files in `.claude/skills/drl/`:
 
-1. **research-spec/SKILL.md**: Adapt hypothesis format, literature gap framing, and methodology outline to field conventions
-2. **research-plan/SKILL.md**: Adjust statistical method recommendations, variable naming conventions, and robustness battery to field norms
-3. **research-work/SKILL.md**: Set field-appropriate significance thresholds, effect size measures, and table/figure formatting
-4. **methodology-review/SKILL.md**: Calibrate reviewer expectations for the field (e.g., IV validity checks for economics, effect size reporting for psychology)
-5. **synthesis/SKILL.md**: Adjust paper structure to journal requirements, set abstract format, and configure citation style
+1. **spec-dev/SKILL.md**: Adapt hypothesis format, literature gap framing, and methodology outline to field conventions
+2. **plan/SKILL.md**: Adjust statistical method recommendations, variable naming conventions, and robustness battery to field norms
+3. **work/SKILL.md** and sub-skills (**work-writing/SKILL.md**, **work-analysis/SKILL.md**): Set field-appropriate significance thresholds, effect size measures, and table/figure formatting
+4. **review/SKILL.md**: Calibrate reviewer expectations for the field (e.g., IV validity checks for economics, effect size reporting for psychology)
+5. **compound/SKILL.md**: Adjust paper structure to journal requirements, set abstract format, and configure citation style
 
 Note: The procedural skills (lit-review, decision, compile, status) are intentionally excluded from flavor customization because their workflows are field-agnostic.
 
@@ -140,5 +140,5 @@ Before concluding, verify:
 - Editing skill files without creating a safety checkpoint first
 - Applying changes that are too field-specific and break the general workflow
 - Not searching for the actual journal requirements (guessing instead)
-- Forgetting to update the citation style in the synthesis skill
-- Making vocabulary changes that conflict with beads or compound-agent terminology
+- Forgetting to update the citation style in the compound skill
+- Making vocabulary changes that conflict with beads or DRL workflow terminology

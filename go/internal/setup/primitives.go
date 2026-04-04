@@ -755,6 +755,13 @@ func InstallTestsScaffolding(repoRoot string) (int, int, error) {
 	return installScaffoldingTree(filepath.Join(repoRoot, "tests"), templates.TestsScaffolding())
 }
 
+// InstallDataScaffolding writes data/ directory templates (input/.gitkeep, output/.gitkeep)
+// to the target repository root. Creates missing files only.
+// Returns (created, updated, error).
+func InstallDataScaffolding(repoRoot string) (int, int, error) {
+	return installScaffoldingTree(filepath.Join(repoRoot, "data"), templates.DataScaffolding())
+}
+
 // installMapToDir writes files from a map to a directory.
 // Creates missing files and updates existing files whose content has changed.
 // Returns (created count, updated count, error).

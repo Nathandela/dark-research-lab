@@ -14,10 +14,10 @@ Formulate:
 
 Confirm with the user via AskUserQuestion before saving.
 
-Then run `ca learn` with the **confirmed, reformulated insight** (not the raw user input):
+Then run `drl learn` with the **confirmed, reformulated insight** (not the raw user input):
 
 ```bash
-ca learn "<confirmed insight text>" --tags "<tag1>,<tag2>"
+drl learn "<confirmed insight text>" --tags "<tag1>,<tag2>"
 ```
 
 Replace `<confirmed insight text>` with the structured insight the user approved. If `$ARGUMENTS` was empty (conversation-analysis mode), use the insight you formulated from the conversation.

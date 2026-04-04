@@ -51,9 +51,9 @@ The cook-it workflow tracks its state in `.claude/.drl-phase-state.json`. This f
 
 ## The Research Phases
 
-### Phase 0: Architecture (research-architect)
+### Phase 0: Architecture (architect)
 
-**Skill**: `.claude/skills/drl/research-architect/SKILL.md`
+**Skill**: `.claude/skills/drl/architect/SKILL.md`
 
 **When to use**: Before starting cook-it, if no epic exists yet. `/drl:architect` is the entry point that decomposes a research question into cook-it-ready epics. If the epic already exists with a well-formed description (Scope, EARS, Contracts, Assumptions, Roles, Decisions sections), skip Phase 0 and begin at Phase 1.
 
@@ -64,9 +64,9 @@ The cook-it workflow tracks its state in `.claude/.drl-phase-state.json`. This f
 
 This phase is a prerequisite, not part of the cook-it loop itself. Cook-it operates on a single epic produced by the architect.
 
-### Phase 1: Specification (research-spec)
+### Phase 1: Specification (spec-dev)
 
-**Skill**: `.claude/skills/drl/research-spec/SKILL.md`
+**Skill**: `.claude/skills/drl/spec-dev/SKILL.md`
 
 **What happens**:
 - Refine the research question into a precise formulation
@@ -81,9 +81,9 @@ This phase is a prerequisite, not part of the cook-it loop itself. Cook-it opera
 
 **Gate 1**: Research question approved, hypotheses articulated, literature gap documented. Human confirmation via `AskUserQuestion`.
 
-### Phase 2: Planning (research-plan)
+### Phase 2: Planning (plan)
 
-**Skill**: `.claude/skills/drl/research-plan/SKILL.md`
+**Skill**: `.claude/skills/drl/plan/SKILL.md`
 
 **What happens**:
 - Design the full analytical methodology
@@ -98,9 +98,9 @@ This phase is a prerequisite, not part of the cook-it loop itself. Cook-it opera
 
 **Gate 2**: Methodology is sound, identification strategy is defensible, robustness battery is planned. Human confirmation via `AskUserQuestion`.
 
-### Phase 3: Work (research-work)
+### Phase 3: Work (work)
 
-**Skill**: `.claude/skills/drl/research-work/SKILL.md`
+**Skill**: `.claude/skills/drl/work/SKILL.md`
 
 **What happens**:
 - Execute the analysis plan: data cleaning, transformation, modeling
@@ -115,28 +115,25 @@ This phase is a prerequisite, not part of the cook-it loop itself. Cook-it opera
 
 **Gate 3**: All planned analyses complete, tables and figures generated, results written. All work subtasks closed in beads.
 
-### Phase 4: Review (methodology-review)
+### Phase 4: Review (dual-mode)
 
-**Skill**: `.claude/skills/drl/methodology-review/SKILL.md`
+**Skill**: `.claude/skills/drl/review/SKILL.md`
 
 **What happens**:
-- Six parallel reviewers audit the completed work:
-  1. Statistical validity (methodology-reviewer)
-  2. Robustness assessment (robustness-checker)
-  3. Logical consistency (coherence-reviewer)
-  4. Citation accuracy (citation-checker)
-  5. Reproducibility (reproducibility-verifier)
-  6. Writing quality (writing-quality-reviewer)
+- Auto-detect what changed (code vs paper vs both) and spawn the appropriate fleet:
+  - **Code changes** (*.py, *.sh): 5 code reviewers (security, simplicity, test-coverage, performance, runtime-verifier)
+  - **Paper changes** (*.tex, *.bib): 10 paper reviewers (methodology, coherence, writing-quality, citation, reproducibility, argumentation, statistical-methods, theoretical-framing, contribution-clarity, robustness-checker)
+  - **Both**: both fleets run in parallel
 - Findings classified by severity: critical, major, minor
 - Critical and major findings must be resolved before proceeding
 
 **Decision logging**: Log any methodological corrections and their rationale to `docs/decisions/`
 
-**Gate 4**: No critical or major findings remain. All six review dimensions pass.
+**Gate 4**: No critical or major findings remain. All review dimensions pass.
 
-### Phase 5: Synthesis (synthesis)
+### Phase 5: Synthesis (compound)
 
-**Skill**: `.claude/skills/drl/synthesis/SKILL.md`
+**Skill**: `.claude/skills/drl/compound/SKILL.md`
 
 **What happens**:
 - Verify cross-section coherence (the paper tells one story)

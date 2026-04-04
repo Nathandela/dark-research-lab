@@ -1,5 +1,5 @@
 ---
-version: "2.6.1"
+version: "v0.1.1"
 last-updated: "2026-04-03"
 summary: "Complete CLI command reference for dark-research-lab"
 ---
@@ -84,13 +84,13 @@ drl init --skip-claude      # Skip Claude Code hooks
 drl init --json             # Output result as JSON
 drl setup                   # Full setup (init + hooks + templates)
 drl setup --update          # Regenerate templates (preserves user files)
-drl setup --uninstall       # Remove compound-agent integration
+drl setup --uninstall       # Remove dark-research-lab integration
 drl setup --status          # Show installation status
 drl setup claude            # Install Claude Code hooks only
 drl setup claude --status   # Check hook status
 drl setup claude --dry-run  # Preview changes without writing
 drl setup claude --global   # Use global ~/.claude/ settings
-drl setup claude --uninstall # Remove compound-agent hooks
+drl setup claude --uninstall # Remove dark-research-lab hooks
 drl download-model          # Download embedding model (~23MB)
 drl download-model --json   # Output result as JSON
 ```

@@ -1,9 +1,9 @@
 ---
 name: drl:prime
-description: "Load compound-agent workflow context after compaction or context loss"
+description: "Load DRL workflow context after compaction or context loss"
 ---
-Load compound-agent workflow context after compaction or context loss.
+Load DRL workflow context after compaction or context loss.
 
 ```bash
-ca prime
+drl prime
 ```

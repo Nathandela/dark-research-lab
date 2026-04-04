@@ -8,7 +8,7 @@ argument-hint: "<query to search for>"
 If $ARGUMENTS is provided, use it as the search query. Otherwise, infer from current context.
 
 ```bash
-ca search "$ARGUMENTS"
+drl search "$ARGUMENTS"
 ```
 
 Analyze the results and proactively suggest or apply relevant lessons to the current work.
