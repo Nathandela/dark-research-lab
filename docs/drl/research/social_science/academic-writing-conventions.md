@@ -245,16 +245,149 @@ Order by relevance to the specific point, then by date. In economics: "(Smith, 2
 7. **Inconsistent terminology**: Choose one term for each concept and use it consistently. Do not alternate between "trade openness," "openness to trade," and "trade liberalization" unless they mean different things.
 8. **Appendix hoarding**: Put your best material in the main paper. The appendix is for supporting evidence, not for the results you are least confident about.
 
+## Head's Introduction Formula
+
+Keith Head's five-component formula for introductions (refined by Brander, widely adopted in economics):
+
+1. **Hook**: Attract interest via importance (people are hurt/helped), puzzle (defies explanation), or controversy (scholars disagree). Avoid the bait-and-switch (promising interesting content, delivering mundane material). Do not justify topics solely because peers have written about them.
+
+2. **Question**: "This paper addresses the question..." by end of paragraph 2-3. Like identifying a perpetrator after detailing a crime -- readers should grasp a clear, answerable question.
+
+3. **Antecedents**: 3-5 critical prior papers only. The key mistake is discussing papers not integral to your intellectual narrative. Acknowledge predecessors while establishing their limitations respectfully.
+
+4. **Value-Added**: Approximately 3 contributions relative to antecedents. "This paragraph might be the most important one for convincing referees not to reject your paper." Contributions only make sense in context of prior work cited above.
+
+5. **Roadmap**: Customize to the project with specific landmarks. Avoid outlines so generic they could apply to any paper.
+
+Write the introduction first, then revise it throughout the writing process -- it should receive the most editorial attention of any section.
+
+## Bellemare's Middle Bits Formula
+
+Six sections between introduction and conclusion (covers ~90% of applied papers):
+
+### 1. Theoretical Framework (when applicable)
+Primitives (preferences/technology) -> choice variables vs parameters -> assumptions -> maximization problem and Lagrangian -> first-order conditions -> testable prediction (must map one-to-one with empirical framework) -> proof (simple over elegant). Not all papers need formal theory; for well-established questions, this section may be omitted.
+
+### 2. Empirical Framework
+Two subsections:
+- **Estimation strategy**: equations to estimate, estimation methods, standard error treatment, hypothesis tests, outcome variable construction
+- **Identification strategy**: ideal dataset, gaps between ideal and actual, treatment of unobserved heterogeneity, reverse causality/simultaneity, measurement error, SUTVA violations
+
+### 3. Data and Descriptive Statistics
+Three subsections:
+- **Data**: when, where, why, how, by whom collected; sample selection and size; population comparison; missing observations and imputation; variable construction
+- **Descriptive statistics**: tell a story, do not just enumerate means
+- **Balance tests**: comparisons between treatment/control when applicable
+
+### 4. Results and Discussion
+Five components:
+- **Preliminary (nonparametric) results**: scatter plots, kernel density estimates
+- **Core (parametric) results**: main testable prediction tests; discuss controls only when germane
+- **Robustness checks**: multiple specification/sample/measurement alternatives (details in appendix)
+- **Extensions**: treatment heterogeneity, sample splits
+- **Limitations**: internal and external validity constraints
+
+Note: literature review should be a brief affair in the introduction, not a separate section (for journal submissions). Background sections are optional (useful for policy changes or market features).
+
+## Bellemare's Conclusion Formula
+
+1. **Summary**: Recap main points -- must differ noticeably from both abstract and introduction. Tell a story to make it engaging.
+2. **Limitations**: Emphasize constraints in methodology and approach. Some place this in a separate section following results.
+3. **Policy implications**: Assess costs vs benefits (even rough estimates). Identify clear winners and losers. Discuss political feasibility and implementation difficulty. Caution against overstating findings.
+4. **Future research**: Identify theoretical extensions, empirical improvements (particularly causal identification), and external validity concerns.
+
+## 10-Point Coverage Checklist
+
+Before submission, verify the paper addresses all ten:
+
+1. What is the focus?
+2. Why is it relevant?
+3. What is known/not known?
+4. What is the burning question?
+5. How is it addressed?
+6. What was done?
+7. What was found?
+8. What does it mean?
+9. What has been added to the discussion?
+10. Why should people care / what is the actionable news?
+
+## Dark Data Categories for Data Sections
+
+When writing the data section, explicitly identify which of these 15 categories apply:
+
+1. Known missing data (survey non-response)
+2. Unknown missing data (non-respondents entirely)
+3. Selection bias (failed firms unobservable)
+4. Self-selection (survey opt-in)
+5. Missing variables/confounders
+6. Unmeasurable counterfactuals
+7. Time-dependent changes
+8. Definition inconsistencies
+9. Data summarization hiding variation
+10. Measurement error/uncertainty
+11. Feedback/gaming effects
+12. Information asymmetry
+13. Intentionally darkened data
+14. Fabricated data risk
+15. Extrapolation beyond sample scope
+
+## AEA Replication Package Requirements
+
+When preparing the paper for submission, ensure the replication package includes:
+
+**README** (PDF format) must contain:
+- Data Availability Statement (provenance, access procedures, redistribution rights)
+- Software versions, hardware requirements, expected runtime
+- Program-to-output mapping (which script generates which table/figure)
+- Step-by-step instructions to reproduce all results
+- Data citations not included in the paper
+
+**Code requirements**:
+- Master script (strongly encouraged) running all code in correct order
+- Setup program with package installation commands
+- All transformation code (raw -> analysis data)
+- All analysis code (estimation, simulation, visualization)
+- All file paths relative, not absolute
+
+**Data requirements**:
+- Raw data included unless restricted
+- Analysis data included unless fully reproducible from accessible sources
+- For restricted data: preserve 5+ years, commit to assistance, make code public, document source with contact info
+
+## Regression Table Conventions
+
+Standard format for coefficient tables:
+- One column per specification (simple -> progressively add controls)
+- Coefficients with standard errors in parentheses below (not separate columns)
+- Significance: * p<0.10, ** p<0.05, *** p<0.01
+- Report: N, R-squared (within for FE), number of clusters/units
+- Note the SE type (robust, clustered, HAC)
+- Self-explanatory variable names (avoid cryptic abbreviations)
+- Sensible coefficient scales (2-3 decimal places)
+- Place key tables in paper body, not appendix
+
+## Figure Conventions
+
+- Every figure must be self-contained: informative labels, no cross-referencing panels with captions
+- Captions fully explain the chart even without reading surrounding text
+- Aim for one "killer chart" per paper -- a visualization that tells the main story independently
+- Avoid excessive decimal places (signals false precision)
+- Position figures next to first text reference
+
 ## Decision Checklist
 
 - [ ] Abstract contains context, method, finding, and implication
-- [ ] Introduction follows hook-gap-contribution-preview structure
+- [ ] Introduction follows Head's formula: hook, question, antecedents, value-added, roadmap
 - [ ] Contribution is stated clearly and specifically by page 2
 - [ ] Literature review is thematic, not a list of summaries
-- [ ] Data section includes sample construction and summary statistics
+- [ ] Data section includes sample flow (observations at each step) and summary statistics
+- [ ] Data section addresses applicable dark data categories
 - [ ] Methodology section states the estimating equation and identification strategy
 - [ ] Results lead with the main finding, not peripheral results
 - [ ] Hedging language matches the strength of identification
 - [ ] Limitations are honest and specific, not generic
-- [ ] Conclusion is self-contained and introduces no new material
+- [ ] Conclusion follows Bellemare's formula: summary, limitations, policy, future research
+- [ ] Replication package meets AEA standards (README, master script, relative paths)
+- [ ] Tables follow regression table conventions; figures are self-contained
+- [ ] 10-point coverage checklist passes
 - [ ] All writing conventions documented in `docs/decisions/` where they involve methodological choices

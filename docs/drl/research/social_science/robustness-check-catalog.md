@@ -231,13 +231,84 @@ For maximum transparency, present a specification curve:
 2. Bottom panel: dot matrix showing which specification choices correspond to each estimate
 3. Report the share of specifications yielding significant results
 
+## Specification Curve Analysis
+
+Simonsohn, Simmons, and Nelson (2020) introduced specification curve analysis as the most transparent approach to reporting robustness. It addresses the "garden of forking paths" problem by showing results across all defensible specifications simultaneously.
+
+### Implementation Steps
+
+1. **Define the specification universe**: List all defensible, theoretically justified, non-redundant specifications. Dimensions include: which controls to include, which sample to use, which functional form, which estimator, which SE type.
+2. **Estimate all specifications**: Run every combination. For a study with 3 control sets, 2 samples, 2 functional forms, and 2 SE types = 24 specifications.
+3. **Display graphically**: Top panel shows coefficient estimates sorted by magnitude. Bottom panel shows a dot matrix indicating which specification choices correspond to each estimate.
+4. **Joint inference**: Test whether results across specifications are systematically different from the null (the paper provides a permutation-based test).
+5. **Report**: Proportion of specifications with expected sign; proportion statistically significant; median effect size across specifications.
+
+### When to Use
+
+Specification curves are most valuable when the main result could plausibly be sensitive to analytical choices and when the specification universe is manageable (< 500 specifications). For very large universes, sample a representative subset.
+
+## E-Values
+
+VanderWeele and Ding (2017) provide a sensitivity analysis applicable to any observational study. The E-value answers: "How strong would an unmeasured confounder need to be to fully explain away the observed effect?"
+
+### Computation
+
+For a risk ratio RR, the E-value = RR + sqrt(RR * (RR - 1)). For other effect measures (odds ratios, hazard ratios, standardized mean differences), convert to approximate risk ratios first using the formulas in VanderWeele and Ding (2017).
+
+### Interpretation
+
+- E-value of 1.0: no unmeasured confounding needed to explain the result (the effect is null)
+- E-value of 2.0: an unmeasured confounder would need to double the risk of both treatment and outcome to explain away the result
+- E-value of 5.0: very strong unmeasured confounding required -- result is robust
+
+Report both the E-value for the point estimate and the E-value for the confidence interval limit closest to the null. The latter indicates how strong confounding must be to make the result statistically insignificant.
+
+### Practical Thresholds
+
+No universal threshold exists, but compare the E-value against the strength of known confounders in your study. If the E-value exceeds the strongest known confounder's association, the result is reasonably robust.
+
+## Leave-One-Out Influence Analysis
+
+A systematic approach to checking whether results are driven by individual observations, units, or time periods.
+
+### Observation-Level
+
+- Drop each observation one at a time and re-estimate. Plot the distribution of coefficients. Flag observations whose removal changes the coefficient by more than 10% or changes significance.
+- Alternative: use Cook's distance (threshold: 4/n) or DFBETAS (threshold: 2/sqrt(n)) to identify influential observations.
+
+### Unit-Level (Cross-Country, Cross-State)
+
+- Drop each country/state/firm one at a time and re-estimate. If results change dramatically when one unit is dropped, investigate that unit.
+- For DiD: drop each treatment cohort one at a time.
+- For cross-country studies: drop regions one at a time (e.g., drop all African countries, drop all OECD countries).
+
+### Time-Period Sensitivity
+
+- Vary the start and end dates of the sample period. Results should not depend critically on a specific window.
+- For DiD: vary pre-treatment and post-treatment window lengths.
+- Test whether results hold in a balanced panel (only units observed in all periods).
+
+## Oster Bounds: Detailed Implementation
+
+The Oster (2019) method extends Altonji, Elder, and Taber (2005). Implementation steps:
+
+1. **Restricted model**: Run regression without controls. Record beta_R and R_R.
+2. **Full model**: Run regression with all controls. Record beta_F and R_F.
+3. **Set Rmax**: Maximum R-squared achievable if all confounders were observed. Convention: Rmax = min(1, 1.3 * R_F). If R_F is very high (> 0.7), Rmax = min(1, 2.2 * R_F) may be more appropriate.
+4. **Set delta**: Proportionality of selection on unobservables to observables. Delta = 1 means equal selection -- the standard benchmark.
+5. **Compute bias-adjusted coefficient**: Use Oster's formula (available in Stata's `psacalc` or R's `robomit` package).
+6. **Report identified set**: [beta_adjusted(delta=1, Rmax), beta_F]. If zero is outside this set, the result survives the Oster test.
+7. **Interpretation**: Delta > 1 means unobservables would need to be more important than observables to explain away the result. Report the exact delta value at which the effect disappears.
+
 ## Decision Checklist
 
 - [ ] You have planned robustness checks before running the main analysis
 - [ ] Checks span multiple categories (specifications, samples, measurements, estimators)
 - [ ] At least one check directly tests the identifying assumption
 - [ ] At least one placebo or falsification test is included
-- [ ] Sensitivity analysis (Oster/Rosenbaum/E-value) is reported
+- [ ] Sensitivity analysis is reported: Oster bounds for OLS; Rosenbaum bounds for matching; E-values for any observational study
+- [ ] Specification curve produced when specification universe is manageable
+- [ ] Leave-one-out analysis conducted for influential units
 - [ ] Results are presented clearly in appendix tables
 - [ ] Failed checks are discussed honestly, not hidden
 - [ ] All robustness decisions are logged in `docs/decisions/`

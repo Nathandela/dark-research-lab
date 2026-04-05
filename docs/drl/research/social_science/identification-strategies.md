@@ -175,6 +175,65 @@ Unit fixed effects absorb time-invariant unobservables, but they do not address:
 
 Using X(t-1) to predict Y(t) helps with strict simultaneity but does not address persistent confounders that affect both past X and current Y. If an omitted variable is correlated with both X(t-1) and Y(t), the lagged specification is still biased.
 
+## Synthetic Control for Case Studies
+
+When only one unit receives treatment (a single country, state, or firm), standard methods (DiD, matching) are difficult to apply. Synthetic control (Abadie, Diamond, and Hainmueller, 2010) constructs a weighted combination of donor units to approximate the treated unit's counterfactual. See causal-inference-strategies.md for detailed implementation steps.
+
+**Identification logic**: The synthetic control must closely match the treated unit's pre-treatment trajectory. If it does, post-treatment divergence is attributed to treatment. The key assumption: the relationship between predictors and outcomes is stable across time.
+
+**When it works best**: Aggregate data with a long pre-treatment period, a clear treatment date, and a pool of plausible donor units.
+
+## Shift-Share (Bartik) Instruments
+
+Bartik instruments combine cross-sectional variation in industry shares with time-series variation in national industry shocks. See causal-inference-strategies.md for the Goldsmith-Pinkham et al. (2020) critique and the shares-vs-shocks distinction.
+
+**Identification logic**: Local outcomes respond to national shocks through the channel of local industry composition. If local shares are exogenous to local outcome determinants (shares approach) or national shocks are exogenous (shocks approach), the instrument is valid.
+
+**Key threat**: If local industry composition reflects local factors that also affect outcomes (e.g., regions that attracted manufacturing also invested in infrastructure), the instrument fails.
+
+## Bunching Estimators
+
+Kleven (2016) introduced bunching estimators for settings where individuals face a threshold (tax bracket, eligibility cutoff) and can adjust their behavior in response.
+
+**Core idea**: Estimate the counterfactual distribution of behavior absent the threshold (typically using a polynomial fitted to the distribution away from the threshold). The excess mass at the threshold (bunching) reveals the behavioral response to the threshold.
+
+**Identification logic**: The bunching mass is a revealed-preference estimate of the elasticity of the underlying behavior with respect to the incentive created by the threshold.
+
+**Implementation**:
+1. Plot the distribution of the running variable with the threshold marked
+2. Fit a polynomial to the distribution excluding a window around the threshold
+3. Compute excess mass: observed density minus counterfactual density at the threshold
+4. Convert to an elasticity using the structural relationship between the response variable and the incentive
+5. Report sensitivity to polynomial order and exclusion window width
+
+**Key assumption**: Absent the threshold, the distribution would be smooth. Violated if there are other institutional features at the same point.
+
+## Event Study Designs
+
+Event studies estimate the dynamic effect of treatment over time, typically as a sequence of period-specific treatment effects relative to a baseline period.
+
+### Distinction from DiD Pre-Trends
+
+An event study is not just a pre-trends test for DiD. It is a research design in its own right when the goal is to estimate how effects evolve over time (onset, peak, persistence, reversal).
+
+### Implementation
+
+Y_it = alpha_i + gamma_t + sum_{k != -1} beta_k * D_it^k + epsilon_it
+
+where D_it^k is an indicator for being k periods from treatment (relative time). The omitted category (k = -1) is the baseline.
+
+**Reporting**:
+- Plot beta_k with 95% confidence intervals over event time
+- Pre-treatment coefficients (k < 0) should be near zero (supports parallel trends)
+- Post-treatment coefficients (k >= 0) trace out the dynamic effect
+- Test pre-treatment leads jointly (F-test for joint insignificance)
+
+### Modern Issues
+
+- **Staggered timing**: Standard event study with TWFE is biased when treatment effects are heterogeneous and adoption is staggered. Use Callaway/Sant'Anna group-time ATTs or Sun/Abraham interaction-weighted estimator.
+- **Pre-trend sensitivity**: Even if pre-trend coefficients are insignificant, pre-trends may exist but be imprecisely estimated. Use Rambachan and Roth's HonestDiD to assess sensitivity to violations of parallel trends.
+- **Endpoint accumulation**: Bin distant event-time indicators (e.g., group all k >= 5 and k <= -5) to avoid thin-cell bias.
+
 ## Decision Checklist
 
 - [ ] You have named your identification strategy explicitly
@@ -186,5 +245,8 @@ Using X(t-1) to predict Y(t) helps with strict simultaneity but does not address
 - [ ] You have reported sensitivity analysis for untestable assumptions
 - [ ] Your language (causal vs. associational) matches your identification strength
 - [ ] You have discussed external validity and the population for which your estimate applies
+- [ ] For event studies: pre-treatment leads jointly insignificant, staggered adoption handled
+- [ ] For synthetic control: pre-treatment fit documented, placebo tests conducted
+- [ ] For Bartik: dominant shares/shocks identified, balance tested
 - [ ] You have avoided the common fallacies listed above
 - [ ] Strategy and assumptions are logged in `docs/decisions/`

@@ -187,11 +187,61 @@ Standard table format for regression results:
 4. **p-hacking**: Running many specifications and reporting only the significant ones. Pre-register your specification or report all specifications you ran.
 5. **Misinterpreting interaction terms**: The coefficient on X1*X2 does not mean "the effect of X1 depends on X2" unless you have also included X1 and X2 as main effects. In nonlinear models (logit, probit), the interaction effect differs from the coefficient on the interaction term.
 
+## Machine Learning for Causal Inference
+
+### LASSO for Variable Selection
+
+Post-double-selection (Belloni, Chernozhukov, and Hansen, 2014) uses LASSO to select control variables in a principled way:
+
+1. Run LASSO of Y on all candidate controls -> select controls with non-zero coefficients
+2. Run LASSO of D (treatment) on all candidate controls -> select controls with non-zero coefficients
+3. Run OLS of Y on D and the union of controls selected in steps 1 and 2
+
+This avoids the "which controls to include" problem and is valid for inference on the treatment coefficient (unlike naive LASSO, which produces biased standard errors).
+
+**When to use**: High-dimensional settings where theory does not clearly dictate which controls to include (many potential confounders, administrative data with hundreds of variables).
+
+### Causal Forests (Athey and Imbens)
+
+Causal forests estimate heterogeneous treatment effects -- how the treatment effect varies across subgroups defined by observable characteristics.
+
+**Implementation**:
+1. Split the sample: use half for building the forest (splitting sample), half for estimation (estimation sample). This "honesty" prevents overfitting.
+2. Grow trees: at each split, choose the variable and split point that maximizes heterogeneity in treatment effects across the resulting subgroups.
+3. Average across trees to get the Conditional Average Treatment Effect (CATE) for each observation.
+4. Report: average CATE, distribution of CATEs, best linear projection of CATE on covariates.
+
+**Key principle**: All heterogeneity analyses using causal forests should be labeled exploratory unless pre-specified in a pre-analysis plan. The method finds heterogeneity whether or not it exists in the data-generating process.
+
+**Software**: R `grf` package, Python `econml` (Microsoft).
+
+### Bayesian Estimation
+
+Bayesian methods provide an alternative inferential framework that reports credible intervals (probability statements about parameters) rather than confidence intervals (statements about repeated sampling).
+
+**When to consider**:
+- Small samples where asymptotic approximations are unreliable
+- Settings where informative priors exist (meta-analysis, hierarchical models)
+- When the goal is prediction or decision-making (posterior predictive distributions)
+
+**Key practical steps**:
+1. Specify the likelihood (same as frequentist model)
+2. Specify priors: start with weakly informative priors (regularization) unless strong prior knowledge exists
+3. Estimate via MCMC (Stan, PyMC) or variational inference
+4. Report: posterior mean/median, 95% credible interval, prior sensitivity analysis
+5. **Prior sensitivity**: always report results under at least two prior specifications to show conclusions are not driven by prior choice
+
+### Dynamic Panel Updates
+
+**Instrument proliferation warning**: In Arellano-Bond and Blundell-Bond system GMM, too many instruments leads to overfitting and weakened specification tests (Hansen J-test has low power with many instruments). Rule of thumb: number of instruments should not exceed number of groups.
+
+**Modern alternatives**: When T is moderate (> 15 periods), bias-corrected FE estimators (Fernandez-Val and Weidner, 2016) or split-panel jackknife may be preferred over GMM.
+
 ## Decision Checklist
 
 Before submitting your analysis, verify:
 
-- [ ] You can justify every control variable on theoretical grounds
+- [ ] You can justify every control variable on theoretical grounds (or used post-double-selection LASSO)
 - [ ] You have tested for and addressed heteroscedasticity
 - [ ] Standard errors are appropriate for your data structure (robust, clustered, HAC)
 - [ ] You report effect sizes alongside statistical significance
@@ -199,5 +249,7 @@ Before submitting your analysis, verify:
 - [ ] For panel data: you justify FE vs. RE choice (Hausman test or theoretical argument)
 - [ ] Your sample size is reported and consistent across specifications
 - [ ] You have checked for influential outliers
+- [ ] For dynamic panels: instrument count does not exceed group count
+- [ ] Heterogeneous treatment effect analyses labeled exploratory unless pre-specified
 - [ ] Results are robust to reasonable alternative specifications (see robustness-check-catalog.md)
 - [ ] You have logged your methodology choices in `docs/decisions/`

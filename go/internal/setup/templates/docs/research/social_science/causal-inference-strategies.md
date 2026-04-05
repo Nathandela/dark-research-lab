@@ -221,6 +221,106 @@ If you are unsure, assume selection on unobservables and look for a natural expe
 4. At least one robustness check addressing the most likely violation
 5. Honest discussion of what the design cannot rule out
 
+## Synthetic Control Method
+
+### Core Idea
+
+Construct a weighted combination of untreated units that closely matches the treated unit's pre-treatment trajectory. The synthetic control serves as the counterfactual. Developed by Abadie, Diamond, and Hainmueller (2010).
+
+### When to Use
+
+Case studies with aggregate data: one treated unit (a country, state, or firm) affected by a policy, with multiple untreated donor units. Ideal when DiD is infeasible because only one treated unit exists.
+
+### Implementation Steps
+
+1. Select donor pool: units not affected by treatment and plausibly comparable.
+2. Choose matching variables: pre-treatment outcomes and predictors of the outcome.
+3. Construct synthetic control: optimize weights on donor units to minimize pre-treatment prediction error.
+4. Assess pre-treatment fit: plot treated vs synthetic. Pre-RMSPE should be near zero.
+5. Estimate treatment effect: difference between treated and synthetic post-treatment.
+6. **Placebo tests** (essential): reassign treatment to each donor unit. Calculate post/pre RMSPE ratio for each. Rank the treated unit's ratio within the placebo distribution. If the treated unit's ratio is extreme (top 5-10%), the effect is statistically significant.
+7. Filter out donors with poor pre-treatment fit (convention: pre-RMSPE > 2x treated unit's).
+8. **Placebo timing**: apply treatment at earlier period; no effect should appear.
+9. Document donor weights; flag if one donor dominates. Test sensitivity to dropping dominant donors.
+
+### Limitations
+
+- Requires good pre-treatment fit (garbage in, garbage out)
+- No formal standard errors (inference via placebo distribution)
+- External validity limited to the single treated unit
+
+## Bounds Approaches (Partial Identification)
+
+### When No Clean Identification Exists
+
+Manski (2003) showed that when identification assumptions are too strong to be credible, you can still provide informative bounds on the causal effect. Instead of a point estimate with a strong assumption, report a range of estimates under weaker assumptions.
+
+### Key Approaches
+
+**Manski bounds**: With no assumptions beyond random sampling, treatment effects are bounded by the range of the outcome variable. Adding monotonicity or mean independence assumptions tightens the bounds progressively.
+
+**Lee bounds** (2009): For sample selection problems (attrition in RCTs), compute upper and lower bounds on the treatment effect by trimming the group with more observations. Assumes monotonicity: treatment affects selection in only one direction.
+
+**Partial identification with IV**: When exclusion restriction is relaxed (instrument may have a small direct effect on outcome), Conley, Hansen, and Rossi (2012) provide bounds on the treatment effect as a function of the assumed direct-effect magnitude.
+
+### Reporting
+
+- Present the identified set [lower bound, upper bound] alongside the point estimate from the primary specification.
+- Discuss which assumptions generate narrower vs wider bounds.
+- If bounds include zero, acknowledge that the effect is not sign-identified under weaker assumptions.
+
+## Pre-Analysis Plan Requirements
+
+For prospective studies, a pre-analysis plan locks in analytical decisions before seeing results, reducing researcher degrees of freedom.
+
+### World Bank/McKenzie 10-Item Checklist
+
+1. **Sample description**: how obtained, expected size, randomization method, balance variables
+2. **Key data sources**: surveys planned, administrative data types
+3. **Hypotheses along causal chain**: key outcomes, measurement steps, subgroup analyses linked to instruments
+4. **Variable construction**: functional forms, missing data handling, outlier procedures, coding rules
+5. **Treatment effect equation**: regression approach, controls, SE calculation -- write out the exact equation
+6. **Multiple outcomes strategy**: index aggregation or domain-family grouping for multiple testing correction
+7. **Attrition procedures**: checks for selective attrition, adjustments
+8. **Limited variation handling**: criteria for dropping near-constant variables
+9. **Theoretical model**: if testing a model, include it pre-commitment
+10. **Archival plan**: register on AEA RCT Registry, EGAP, or OSF for time-stamping
+
+### EGAP PAP Structure (8 sections)
+
+1. Study design overview (design type, randomization, unit of analysis, population)
+2. Hypotheses (confirmatory vs exploratory, directionality, theoretical link)
+3. Measures and index construction (operationalization, survey wording, transformation code)
+4. Estimation procedure (estimand, estimator, model specification, test statistic)
+5. Inference criteria (SE type, alpha level, multiple comparisons correction)
+6. Data issues (extreme values, missing data, attrition handling, imputation approach)
+7. Power analysis (effect size assumptions, ICC, design effect, computational code)
+8. Timeline and registration (verifiable timestamp, registration before analysis)
+
+## Shift-Share (Bartik) Instruments
+
+### Core Idea
+
+Construct an instrument as the sum of national industry growth rates weighted by local industry shares. Variation comes from differences in local industry composition interacting with national shocks.
+
+### Recent Critique (Goldsmith-Pinkham, Sorkin, and Swift, 2020)
+
+The identifying assumption depends on whether you view the shares or the shocks as exogenous:
+
+- **Shares approach**: Identification comes from the cross-sectional variation in industry shares. Requires shares to be uncorrelated with local outcome determinants (conditional on controls). Can test by checking balance on observables across share variation.
+- **Shocks approach** (Borusyak, Hull, and Jaravel, 2022): Identification comes from the exogeneity of national shocks. Requires shocks to be many, mutually uncorrelated, and individually weak. Inference should be at the shock level.
+
+### Which to Use
+
+If you have many industries and believe national shocks are exogenous (e.g., trade shocks from China), the shocks approach is more credible. If you have few industries but believe local shares reflect historical accidents, the shares approach may work.
+
+### Verification
+
+- Report Rotemberg weights: show which industries/shocks drive the estimate
+- Test balance of top-contributing shares against observables
+- Test robustness to dropping dominant industries
+- For the shocks approach: report effective number of shocks and first-stage F
+
 ## Decision Checklist
 
 - [ ] You have identified and named your identification strategy
@@ -233,4 +333,7 @@ If you are unsure, assume selection on unobservables and look for a natural expe
 - [ ] For DiD: pre-trends tested, staggered adoption addressed if applicable
 - [ ] For RDD: manipulation test, bandwidth sensitivity, covariate balance
 - [ ] For matching: balance assessment, sensitivity analysis, common support
+- [ ] For synthetic control: pre-treatment fit assessed, placebo tests conducted, donor weights documented
+- [ ] For Bartik: Rotemberg weights reported, dominant industries tested
+- [ ] For prospective studies: pre-analysis plan registered and filed
 - [ ] Methodology choices are logged in `docs/decisions/`
