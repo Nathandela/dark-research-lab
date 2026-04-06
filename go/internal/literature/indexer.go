@@ -1,6 +1,7 @@
 package literature
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/exec"
@@ -9,8 +10,11 @@ import (
 	"time"
 
 	"github.com/nathandelacretaz/dark-research-lab/internal/knowledge"
+	"github.com/nathandelacretaz/dark-research-lab/internal/setup"
 	"github.com/nathandelacretaz/dark-research-lab/internal/storage"
 )
+
+const pdfExtractTimeout = 60 * time.Second
 
 // IndexOptions controls literature indexing behavior.
 type IndexOptions struct {
@@ -102,7 +106,7 @@ func replaceChunks(kdb *storage.KnowledgeDB, relPath string, chunks []storage.Kn
 
 // pythonPath returns the venv python if available, otherwise falls back to python3.
 func pythonPath(repoRoot string) string {
-	venvPython := filepath.Join(repoRoot, ".venv", "bin", "python")
+	venvPython := setup.VenvPythonPath(repoRoot)
 	if _, err := os.Stat(venvPython); err == nil {
 		return venvPython
 	}
@@ -111,16 +115,21 @@ func pythonPath(repoRoot string) string {
 
 // extractPDF calls the Python extraction script and returns parsed results.
 func extractPDF(repoRoot, pdfPath string) (*ExtractedPDF, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), pdfExtractTimeout)
+	defer cancel()
+
 	pyPath := pythonPath(repoRoot)
-	cmd := exec.Command(pyPath, "-m", "src.literature.extract", "--json", pdfPath)
+	cmd := exec.CommandContext(ctx, pyPath, "-m", "src.literature.extract", "--json", pdfPath)
 	cmd.Dir = repoRoot
 
 	output, err := cmd.Output()
 	if err != nil {
+		if ctx.Err() == context.DeadlineExceeded {
+			return nil, fmt.Errorf("PDF extraction timed out after %s (file may be too large)", pdfExtractTimeout)
+		}
 		if exitErr, ok := err.(*exec.ExitError); ok {
 			return nil, classifyPythonError(string(exitErr.Stderr))
 		}
-		// Python binary not found
 		if strings.Contains(err.Error(), "executable file not found") {
 			return nil, fmt.Errorf("Python not found. Run 'drl setup' to create the project venv")
 		}
@@ -133,17 +142,33 @@ func extractPDF(repoRoot, pdfPath string) (*ExtractedPDF, error) {
 // classifyPythonError extracts a clear message from Python stderr.
 func classifyPythonError(stderr string) error {
 	stderr = strings.TrimSpace(stderr)
+	if stderr == "" {
+		return fmt.Errorf("python extraction failed (no error output)")
+	}
+
 	lines := strings.Split(stderr, "\n")
-	lastLine := lines[len(lines)-1]
+	lastLine := ""
+	for i := len(lines) - 1; i >= 0; i-- {
+		if strings.TrimSpace(lines[i]) != "" {
+			lastLine = strings.TrimSpace(lines[i])
+			break
+		}
+	}
+	if lastLine == "" {
+		lastLine = stderr
+	}
 
 	switch {
 	case strings.Contains(stderr, "ModuleNotFoundError"):
-		module := lastLine
-		return fmt.Errorf("missing Python dependency: %s\n  Fix: run 'drl setup' to install dependencies into .venv/", module)
+		return fmt.Errorf("missing Python dependency: %s\n  Fix: run 'drl setup' to install dependencies into .venv/", lastLine)
+	case strings.Contains(stderr, "ImportError"):
+		return fmt.Errorf("Python import error: %s\n  Fix: run 'drl setup' to reinstall dependencies", lastLine)
 	case strings.Contains(stderr, "No module named 'src"):
 		return fmt.Errorf("Python module path error: src/ package not found.\n  Fix: run 'drl setup' to regenerate the project structure")
 	case strings.Contains(stderr, "FileNotFoundError"):
 		return fmt.Errorf("PDF file not found or unreadable: %s", lastLine)
+	case strings.Contains(stderr, "PermissionError"):
+		return fmt.Errorf("permission denied reading PDF: %s", lastLine)
 	default:
 		return fmt.Errorf("python extraction failed: %s", lastLine)
 	}

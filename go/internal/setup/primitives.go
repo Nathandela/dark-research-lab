@@ -2,6 +2,7 @@
 package setup
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -16,6 +17,11 @@ import (
 	"time"
 
 	"github.com/nathandelacretaz/dark-research-lab/internal/setup/templates"
+)
+
+const (
+	venvProbeTimeout   = 10 * time.Second
+	venvInstallTimeout = 120 * time.Second
 )
 
 // SkillEntry represents a single skill in the compiled index.
@@ -789,8 +795,8 @@ func installMapToDir(dir string, files map[string]string) (int, int, error) {
 	return created, updated, nil
 }
 
-// venvPythonPath returns the platform-appropriate path to the venv Python binary.
-func venvPythonPath(repoRoot string) string {
+// VenvPythonPath returns the platform-appropriate path to the venv Python binary.
+func VenvPythonPath(repoRoot string) string {
 	if runtime.GOOS == "windows" {
 		return filepath.Join(repoRoot, ".venv", "Scripts", "python.exe")
 	}
@@ -803,14 +809,16 @@ func venvPythonPath(repoRoot string) string {
 // should log it as a warning, not abort setup.
 func EnsurePythonVenv(repoRoot string) (bool, bool, error) {
 	venvDir := filepath.Join(repoRoot, ".venv")
-	pythonBin := venvPythonPath(repoRoot)
+	pythonBin := VenvPythonPath(repoRoot)
 
 	venvCreated := false
 	depsInstalled := false
 
 	// Skip if venv already has the key dependency (pymupdf/fitz)
 	if _, err := os.Stat(pythonBin); err == nil {
-		cmd := exec.Command(pythonBin, "-c", "import fitz")
+		ctx, cancel := context.WithTimeout(context.Background(), venvProbeTimeout)
+		defer cancel()
+		cmd := exec.CommandContext(ctx, pythonBin, "-c", "import fitz")
 		cmd.Dir = repoRoot
 		if cmd.Run() == nil {
 			return false, false, nil // already good
@@ -834,8 +842,11 @@ func EnsurePythonVenv(repoRoot string) (bool, bool, error) {
 }
 
 func createVenv(repoRoot, venvDir string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), venvInstallTimeout)
+	defer cancel()
+
 	if uvPath, err := exec.LookPath("uv"); err == nil {
-		cmd := exec.Command(uvPath, "venv", venvDir)
+		cmd := exec.CommandContext(ctx, uvPath, "venv", venvDir)
 		cmd.Dir = repoRoot
 		if output, err := cmd.CombinedOutput(); err != nil {
 			return fmt.Errorf("uv venv failed: %w\n%s", err, output)
@@ -846,7 +857,7 @@ func createVenv(repoRoot, venvDir string) error {
 	if err != nil {
 		return fmt.Errorf("neither uv nor python3 found on PATH")
 	}
-	cmd := exec.Command(python, "-m", "venv", venvDir)
+	cmd := exec.CommandContext(ctx, python, "-m", "venv", venvDir)
 	cmd.Dir = repoRoot
 	if output, err := cmd.CombinedOutput(); err != nil {
 		return fmt.Errorf("python3 -m venv failed: %w\n%s", err, output)
@@ -855,18 +866,22 @@ func createVenv(repoRoot, venvDir string) error {
 }
 
 func installPythonDeps(repoRoot, venvDir string) error {
-	pyprojectPath := filepath.Join(repoRoot, "pyproject.toml")
+	ctx, cancel := context.WithTimeout(context.Background(), venvInstallTimeout)
+	defer cancel()
+
+	// Check if pyproject.toml has a [project] section (not just tooling config)
 	hasPyproject := false
-	if _, err := os.Stat(pyprojectPath); err == nil {
-		hasPyproject = true
+	pyprojectPath := filepath.Join(repoRoot, "pyproject.toml")
+	if data, err := os.ReadFile(pyprojectPath); err == nil {
+		hasPyproject = strings.Contains(string(data), "[project]")
 	}
 
 	if uvPath, err := exec.LookPath("uv"); err == nil {
 		var cmd *exec.Cmd
 		if hasPyproject {
-			cmd = exec.Command(uvPath, "pip", "install", "--python", venvPythonPath(repoRoot), "-e", ".")
+			cmd = exec.CommandContext(ctx, uvPath, "pip", "install", "--python", VenvPythonPath(repoRoot), "-e", ".")
 		} else {
-			cmd = exec.Command(uvPath, "pip", "install", "--python", venvPythonPath(repoRoot),
+			cmd = exec.CommandContext(ctx, uvPath, "pip", "install", "--python", VenvPythonPath(repoRoot),
 				"pymupdf>=1.24.0", "polars>=1.0.0", "matplotlib>=3.8.0")
 		}
 		cmd.Dir = repoRoot
@@ -882,9 +897,9 @@ func installPythonDeps(repoRoot, venvDir string) error {
 	}
 	var cmd *exec.Cmd
 	if hasPyproject {
-		cmd = exec.Command(pipPath, "install", "-e", ".")
+		cmd = exec.CommandContext(ctx, pipPath, "install", "-e", ".")
 	} else {
-		cmd = exec.Command(pipPath, "install",
+		cmd = exec.CommandContext(ctx, pipPath, "install",
 			"pymupdf>=1.24.0", "polars>=1.0.0", "matplotlib>=3.8.0")
 	}
 	cmd.Dir = repoRoot
@@ -896,17 +911,19 @@ func installPythonDeps(repoRoot, venvDir string) error {
 
 // CheckPythonVenv checks if the Python venv exists and has required dependencies.
 func CheckPythonVenv(repoRoot string) (bool, bool, string) {
-	pythonBin := venvPythonPath(repoRoot)
+	pythonBin := VenvPythonPath(repoRoot)
 	if _, err := os.Stat(pythonBin); err != nil {
 		return false, false, ""
 	}
-	cmd := exec.Command(pythonBin, "--version")
+	ctx, cancel := context.WithTimeout(context.Background(), venvProbeTimeout)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, pythonBin, "--version")
 	versionOut, err := cmd.Output()
 	version := ""
 	if err == nil {
 		version = strings.TrimSpace(string(versionOut))
 	}
-	cmd = exec.Command(pythonBin, "-c", "import fitz; import polars; import matplotlib")
+	cmd = exec.CommandContext(ctx, pythonBin, "-c", "import fitz; import polars; import matplotlib")
 	cmd.Dir = repoRoot
 	depsOK := cmd.Run() == nil
 	return true, depsOK, version
