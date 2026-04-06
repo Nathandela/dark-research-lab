@@ -44,16 +44,17 @@ Issues = "https://github.com/Nathandela/dark-research-lab/issues"
 [dependency-groups]
 test = ["pytest", "pyyaml", "pymupdf>=1.24.0", "matplotlib>=3.8.0"]
 
+[tool.hatch.build]
+artifacts = ["go/dist/drl-*"]
+
 [tool.hatch.build.targets.sdist]
-exclude = [
-    "tests/",
-    "docs/",
-    "paper/",
-    "literature/",
-    "agent_logs/",
-    ".beads/",
-    ".claude/",
-    "drltmp/",
+include = [
+    "python/drl/",
+    "go/dist/drl-*",
+    "hatch_build.py",
+    "pyproject.toml",
+    "README.md",
+    "LICENSE",
 ]
 
 [tool.hatch.build.targets.wheel]

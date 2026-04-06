@@ -298,15 +298,13 @@ func TestResearchDocs(t *testing.T) {
 		t.Fatal("expected research docs, got none")
 	}
 
-	// Verify expected research files exist (spot check key paths)
+	// Verify expected social science research files exist
 	expected := []string{
-		"index.md",
-		"security/overview.md",
-		"security/injection-patterns.md",
-		"tdd/test-driven-development-methodology.md",
-		"code-review/systematic-review-methodology.md",
-		"learning-systems/knowledge-compounding-for-agents.md",
-		"property-testing/property-based-testing-and-invariants.md",
+		"social_science/econometrics-fundamentals.md",
+		"social_science/causal-inference-strategies.md",
+		"social_science/identification-strategies.md",
+		"social_science/robustness-check-catalog.md",
+		"social_science/academic-writing-conventions.md",
 	}
 	for _, relPath := range expected {
 		content, ok := docs[relPath]
@@ -328,7 +326,7 @@ func TestResearchDocs(t *testing.T) {
 		}
 	}
 	if !hasNested {
-		t.Error("research docs should include nested paths (e.g., security/overview.md)")
+		t.Error("research docs should include nested paths (e.g., social_science/econometrics-fundamentals.md)")
 	}
 
 	t.Logf("research docs: %d", len(docs))

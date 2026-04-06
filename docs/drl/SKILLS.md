@@ -94,11 +94,11 @@ Skills are instructions that Claude reads before executing each phase. They live
 
 ### `/drl:architect`
 
-**Purpose**: Decompose a large system specification into cook-it-ready epic beads via DDD bounded contexts.
+**Purpose**: Decompose a research question into cook-it-ready epic beads with methodology specifications.
 
-**When invoked**: When a large system needs to be broken down into naturally-scoped epics before implementation.
+**When invoked**: When a broad research topic needs to be broken down into naturally-scoped research epics before analysis begins.
 
-**What it does**: Runs 5 phases (Socratic → Spec → Decompose → Materialize → Launch) with human gates. Uses DDD bounded contexts, STPA analysis, and a 6-angle decomposition convoy. Optionally configures and launches the infinity loop with improvement programs.
+**What it does**: Runs 4 phases (Socratic → Research Spec → Decompose → Materialize) with human gates. The Socratic phase refines the research question, checks literature sufficiency, and generates hypotheses. The decomposition phase spawns 6 parallel subagents (literature mapper, methodology analyst, data requirements analyst, scope sizer, traceability designer, risk analyst) to produce a research-grounded epic structure. Optionally produces a pre-analysis plan for quasi-experimental designs.
 
 ---
 

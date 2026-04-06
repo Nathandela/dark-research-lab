@@ -6,39 +6,42 @@ LaTeX compilation.
 
 ## Install
 
+Requires Python 3.10+ and [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
+
 ```bash
+# Install DRL
 uv tool install dark-research-lab
+
+# Install beads (task tracker)
+npm install -g beads
 ```
-
-Or with pipx:
-
-```bash
-pipx install dark-research-lab
-```
-
-Requires Python 3.10+. Both methods add `drl` to your PATH automatically.
 
 ## Quick Start
 
 ```bash
-# Initialize a new research project
+# 1. Create a project and scaffold
+mkdir my-paper && cd my-paper && git init
 drl setup
 
-# Walk through configuration
-/drl:onboard
+# 2. Add your data and literature
+cp ~/data/*.csv data/input/          # Keep originals safe elsewhere
+cp ~/papers/*.pdf literature/pdfs/
+drl index                            # Index PDFs for agent search
 
-# Customize for your field (labor economics, political science, etc.)
+# 3. Configure for your field
 /drl:flavor
 
-# Index literature -- drop PDFs into literature/pdfs/, then:
-drl index
-
-# Decompose your research question into epics
+# 4. Decompose your research question into epics
 /drl:architect
 
-# Run the full pipeline (spec -> plan -> work -> review -> synthesis)
-drl loop
+# 5. Run the pipeline on each epic
+/drl:cook-it <epic-id>
+
+# Or run autonomously
+drl loop --force && screen -dmS loop ./infinity-loop.sh
 ```
+
+See [docs/drl/ONBOARDING.md](docs/drl/ONBOARDING.md) for the full setup walkthrough.
 
 ## How It Works
 

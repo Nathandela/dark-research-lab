@@ -21,18 +21,25 @@ Social science researchers who use Python for empirical analysis and target jour
 ## Quick start
 
 ```bash
-# Install
-uv pip install dark-research-lab
+# Install DRL and beads
+uv tool install dark-research-lab
+npm install -g beads
 
-# Set up a new research project
+# Create and scaffold a research project
+mkdir my-paper && cd my-paper && git init
 drl setup
 
-# Customize the research flavor (econometrics, experimental, qualitative)
+# Add your data (keep originals safe elsewhere) and literature
+cp ~/data/*.csv data/input/
+cp ~/papers/*.pdf literature/pdfs/
+drl index
+
+# Customize for your field (labor economics, political science, etc.)
 /drl:flavor
 
-# Start a new research project -- two entry points:
-/drl:architect    # Break a broad topic into research epics
-/drl:cook-it      # Run the full pipeline on a single epic
+# Two entry points:
+/drl:architect    # Decompose a broad topic into research epics
+/drl:cook-it      # Run the full 5-phase pipeline on a single epic
 ```
 
 ---
@@ -60,7 +67,7 @@ Every project follows five phases. The `/drl:cook-it` orchestrator chains them w
 | Agents | 27 | Specialized roles (econometrician, reviewer, writer, etc.) |
 | Skills | 22 | Phase instructions and agent role knowledge |
 | Commands | 23 | Slash commands for every workflow step |
-| Knowledge docs | 97 | PhD-level references (econometrics, causal inference, identification, writing) |
+| Knowledge docs | 16 | PhD-level references: social science methodology (5) + Python architecture (11) |
 | LaTeX scaffold | 7 sections | Paper template with compilation script |
 | Python skeleton | 6 modules | Analysis, data, visualization, orchestration |
 
@@ -128,8 +135,8 @@ tests/                         # Test suite
 
 ## Further reading
 
-- [ONBOARDING.md](ONBOARDING.md) -- First-time setup walkthrough
+- [ONBOARDING.md](ONBOARDING.md) -- **Start here.** Full setup walkthrough: install, data, literature, first session
 - [WORKFLOW.md](WORKFLOW.md) -- The 5-phase research pipeline in detail
 - [SKILLS.md](SKILLS.md) -- Phase skills and agent role skills reference
 - [CLI_REFERENCE.md](CLI_REFERENCE.md) -- Complete CLI command reference
-- [INTEGRATION.md](INTEGRATION.md) -- Hooks, beads, and agent guidance internals
+- [INTEGRATION.md](INTEGRATION.md) -- Hooks, beads, memory, and reproducibility internals

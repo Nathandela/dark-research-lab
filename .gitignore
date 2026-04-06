@@ -13,9 +13,8 @@ go/drl
 dist/
 *.egg-info/
 
-# Bundled Go binary (copied by hatch build hook)
-python/drl/drl
-python/drl/drl.exe
+# Bundled Go binaries (copied by hatch build hook)
+python/drl/bin/
 
 # Agent cache files
 **/.claude/.cache/

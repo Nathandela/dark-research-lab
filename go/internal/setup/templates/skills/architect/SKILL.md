@@ -22,6 +22,8 @@ This skill organizes work around research domain boundaries: literature review, 
 
 **Goal**: Understand the research domain and refine the question before decomposing.
 
+If a `/drl:flavor` configuration exists, load it first -- different fields have different norms for what constitutes a publishable paper, and the decomposition should respect those norms.
+
 1. Search memory: `drl search` for past research decisions, constraints, methodology patterns
 2. Search knowledge: `drl knowledge "relevant terms"` for indexed literature and project docs
 3. **Literature sufficiency gate** (see below)
@@ -34,7 +36,8 @@ This skill organizes work around research domain boundaries: literature review, 
    - Methodological approaches
    - Expected contributions
 7. **Hypothesis generation**: Help the researcher articulate testable hypotheses from the research question
-8. Use `AskUserQuestion` to clarify scope, field conventions, and methodological preferences
+8. **Power analysis (soft check)**: If the researcher has a target dataset or sample size in mind, run a quick power assessment: is the expected effect size detectable with the available sample? This is not a hard gate -- many projects proceed without power calculations at this stage -- but flagging power concerns early prevents wasted effort. Reference: `docs/research/social_science/econometrics-fundamentals.md` (Method Selection Decision Tree).
+9. Use `AskUserQuestion` to clarify scope, field conventions, and methodological preferences
 
 ### Literature Sufficiency Gate
 
@@ -62,7 +65,13 @@ After steps 1-2, evaluate whether the literature base is adequate:
    - Causal diagram (DAG) showing hypothesized relationships
    - Analysis pipeline flowchart (data -> cleaning -> analysis -> robustness -> output)
    - Variable operationalization table
+2b. **Theory-data alignment check**: Before writing the spec, verify that the theoretical model's testable predictions can actually be tested with available or obtainable data. Ask:
+   - Can the key theoretical constructs be measured with available data?
+   - Does the data vary enough along the relevant dimensions?
+   - Are the required control variables available?
+   If alignment is weak, flag it for the researcher before investing in a full spec.
 3. Write the spec to `docs/specs/<research-topic>.md`
+3b. **Pre-analysis plan (optional)**: For experimental or quasi-experimental designs, produce a structured pre-analysis plan using the templates in `docs/research/social_science/causal-inference-strategies.md` (Pre-Analysis Plan Requirements section). This is optional for observational studies but strongly recommended for DiD, RDD, and IV designs where specification searching is a concern.
 4. Create a **meta-epic bead** for the research project
 
 **Gate 2**: Use `AskUserQuestion` to get human approval of the research specification.
@@ -86,6 +95,7 @@ Spawn **6 parallel subagents** via the Agent tool. Each subagent is an inline ro
    - Identification strategy for causal claims (if applicable)
    - Required sample size and statistical power
    - Assumptions and their testability
+   - Reference: `docs/research/social_science/econometrics-fundamentals.md`, `identification-strategies.md`, `causal-inference-strategies.md`
 
 3. **Data requirements analyst**: Specify:
    - Required variables and their sources
@@ -110,6 +120,7 @@ Spawn **6 parallel subagents** via the Agent tool. Each subagent is an inline ro
    - Methodological risks (endogeneity, selection bias, measurement error)
    - Scope risks (analysis may reveal need for additional data or methods)
    - Reproducibility risks (environment, dependency, randomness)
+   - Reference: `docs/research/social_science/robustness-check-catalog.md`
 
 **Synthesis**: Merge subagent findings into a proposed epic structure. For each epic:
 - Title and scope boundaries (what is in, what is out)
@@ -178,10 +189,10 @@ This format allows cook-it to parse the epic description and route information t
 WHERE external model CLIs are available (gemini, codex), include them in review:
 1. Detect available advisor CLIs with health-check Bash calls
 2. Assign review lenses:
-   - **Methodological Rigor**: Are the statistical methods appropriate?
-   - **Literature Coverage**: Are key papers missing?
-   - **Logical Coherence**: Does the argument flow hold?
-   - **Simplicity**: Is the research design unnecessarily complex?
+   - **Identification Credibility**: Is the causal strategy convincing?
+   - **External Validity**: Does the study generalize beyond the sample?
+   - **Contribution Significance**: Does it clear the publication bar?
+   - **Feasibility**: Can this be executed with available data and timeline?
 3. Synthesize advisory feedback before presenting to the human
 
 If no advisor CLIs are available, skip. The advisory fleet is non-blocking.

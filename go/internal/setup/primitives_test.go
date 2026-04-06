@@ -201,19 +201,18 @@ func TestInstallResearchDocs(t *testing.T) {
 	}
 
 	// Verify nested research file exists
-	overviewPath := filepath.Join(dir, "docs", "drl", "research", "security", "overview.md")
-	if _, err := os.Stat(overviewPath); err != nil {
-		t.Errorf("missing security/overview.md: %v", err)
+	econPath := filepath.Join(dir, "docs", "drl", "research", "social_science", "econometrics-fundamentals.md")
+	if _, err := os.Stat(econPath); err != nil {
+		t.Errorf("missing social_science/econometrics-fundamentals.md: %v", err)
 	}
 
-	// Verify index.md at root
-	indexPath := filepath.Join(dir, "docs", "drl", "research", "index.md")
-	content, err := os.ReadFile(indexPath)
+	// Verify content is non-empty
+	content, err := os.ReadFile(econPath)
 	if err != nil {
-		t.Fatalf("ReadFile index.md: %v", err)
+		t.Fatalf("ReadFile econometrics-fundamentals.md: %v", err)
 	}
 	if len(content) == 0 {
-		t.Error("index.md is empty")
+		t.Error("econometrics-fundamentals.md is empty")
 	}
 
 	// Verify idempotency: second install creates/updates nothing
@@ -240,7 +239,7 @@ func TestInstallResearchDocs_UpdatesStaleContent(t *testing.T) {
 	}
 
 	// Corrupt a file to simulate stale content
-	overviewPath := filepath.Join(dir, "docs", "drl", "research", "security", "overview.md")
+	overviewPath := filepath.Join(dir, "docs", "drl", "research", "social_science", "econometrics-fundamentals.md")
 	if err := os.WriteFile(overviewPath, []byte("stale content"), 0644); err != nil {
 		t.Fatalf("WriteFile: %v", err)
 	}
@@ -1049,9 +1048,9 @@ func TestPruneStaleTemplates_RemovesStaleResearchFiles(t *testing.T) {
 	}
 
 	// Current research files must remain
-	indexPath := filepath.Join(dir, "docs", "drl", "research", "index.md")
-	if _, err := os.Stat(indexPath); err != nil {
-		t.Errorf("index.md should be preserved: %v", err)
+	econPath := filepath.Join(dir, "docs", "drl", "research", "social_science", "econometrics-fundamentals.md")
+	if _, err := os.Stat(econPath); err != nil {
+		t.Errorf("social_science/econometrics-fundamentals.md should be preserved: %v", err)
 	}
 }
 
