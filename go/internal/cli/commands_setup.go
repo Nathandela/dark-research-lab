@@ -464,6 +464,17 @@ func printTemplatesSummary(cmd *cobra.Command, result *setup.InitResult) {
 	if result.TemplatesPruned > 0 {
 		cmd.Printf("  Templates: %d retired files removed\n", result.TemplatesPruned)
 	}
+	if result.PythonVenvCreated {
+		cmd.Println("  Python: created .venv/")
+	}
+	if result.PythonDepsInstalled {
+		cmd.Println("  Python: installed dependencies (pymupdf, polars, matplotlib)")
+	}
+	if result.PythonVenvError != "" {
+		cmd.Printf("  Python: [warn] %s\n", result.PythonVenvError)
+		cmd.Println("  Python: PDF indexing (drl index) will not work until dependencies are installed.")
+		cmd.Println("          Fix manually: uv venv .venv && uv pip install pymupdf polars matplotlib")
+	}
 }
 
 // resolveBinaryPath finds the current Go binary path for hook commands.
@@ -580,7 +591,28 @@ func runDoctorChecks(repoRoot string) []doctorCheck {
 		checks = append(checks, doctorCheck{Name: "Beads initialized", Status: "warn", Fix: "Run: bd init"})
 	}
 
-	// 7. Windows platform notice (under WSL2, GOOS is "linux")
+	// 7. Python venv and dependencies
+	venvExists, depsOK, pyVersion := setup.CheckPythonVenv(repoRoot)
+	if !venvExists {
+		checks = append(checks, doctorCheck{
+			Name:   "Python venv (.venv/)",
+			Status: "warn",
+			Fix:    "Run: drl setup (creates .venv and installs pymupdf, polars, matplotlib)",
+		})
+	} else if !depsOK {
+		checks = append(checks, doctorCheck{
+			Name:   "Python dependencies (pymupdf, polars, matplotlib)",
+			Status: "warn",
+			Fix:    "Run: drl setup (installs missing dependencies into .venv/)",
+		})
+	} else {
+		checks = append(checks, doctorCheck{
+			Name:   "Python venv and dependencies (" + pyVersion + ")",
+			Status: "pass",
+		})
+	}
+
+	// 8. Windows platform notice (under WSL2, GOOS is "linux")
 	if runtime.GOOS == "windows" {
 		checks = append(checks, doctorCheck{
 			Name:   "Windows platform",

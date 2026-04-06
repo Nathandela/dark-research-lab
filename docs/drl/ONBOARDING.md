@@ -70,7 +70,7 @@ git init
 drl setup
 ```
 
-`drl setup` scaffolds the full directory structure, installs agents, skills, commands, hooks, knowledge docs, the LaTeX template, and the Python skeleton. This takes about 30 seconds.
+`drl setup` scaffolds the full directory structure, installs agents, skills, commands, hooks, knowledge docs, the LaTeX template, and the Python skeleton. It also creates a `.venv/` and installs Python dependencies (PyMuPDF for PDF extraction, Polars for data manipulation, Matplotlib for figures). This takes about 30 seconds.
 
 ### Step 2: Protect and place your data
 

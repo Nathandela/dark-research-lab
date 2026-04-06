@@ -6,9 +6,11 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"sort"
 	"strings"
 	"time"
@@ -785,4 +787,127 @@ func installMapToDir(dir string, files map[string]string) (int, int, error) {
 		}
 	}
 	return created, updated, nil
+}
+
+// venvPythonPath returns the platform-appropriate path to the venv Python binary.
+func venvPythonPath(repoRoot string) string {
+	if runtime.GOOS == "windows" {
+		return filepath.Join(repoRoot, ".venv", "Scripts", "python.exe")
+	}
+	return filepath.Join(repoRoot, ".venv", "bin", "python")
+}
+
+// EnsurePythonVenv creates .venv and installs Python dependencies if needed.
+// Uses uv if available, falls back to python3 -m venv + pip.
+// Returns (venvCreated, depsInstalled, error). Error is non-fatal — caller
+// should log it as a warning, not abort setup.
+func EnsurePythonVenv(repoRoot string) (bool, bool, error) {
+	venvDir := filepath.Join(repoRoot, ".venv")
+	pythonBin := venvPythonPath(repoRoot)
+
+	venvCreated := false
+	depsInstalled := false
+
+	// Skip if venv already has the key dependency (pymupdf/fitz)
+	if _, err := os.Stat(pythonBin); err == nil {
+		cmd := exec.Command(pythonBin, "-c", "import fitz")
+		cmd.Dir = repoRoot
+		if cmd.Run() == nil {
+			return false, false, nil // already good
+		}
+		// venv exists but deps missing — install below
+	} else {
+		// Create venv
+		if err := createVenv(repoRoot, venvDir); err != nil {
+			return false, false, err
+		}
+		venvCreated = true
+	}
+
+	// Install dependencies
+	if err := installPythonDeps(repoRoot, venvDir); err != nil {
+		return venvCreated, false, err
+	}
+	depsInstalled = true
+
+	return venvCreated, depsInstalled, nil
+}
+
+func createVenv(repoRoot, venvDir string) error {
+	if uvPath, err := exec.LookPath("uv"); err == nil {
+		cmd := exec.Command(uvPath, "venv", venvDir)
+		cmd.Dir = repoRoot
+		if output, err := cmd.CombinedOutput(); err != nil {
+			return fmt.Errorf("uv venv failed: %w\n%s", err, output)
+		}
+		return nil
+	}
+	python, err := exec.LookPath("python3")
+	if err != nil {
+		return fmt.Errorf("neither uv nor python3 found on PATH")
+	}
+	cmd := exec.Command(python, "-m", "venv", venvDir)
+	cmd.Dir = repoRoot
+	if output, err := cmd.CombinedOutput(); err != nil {
+		return fmt.Errorf("python3 -m venv failed: %w\n%s", err, output)
+	}
+	return nil
+}
+
+func installPythonDeps(repoRoot, venvDir string) error {
+	pyprojectPath := filepath.Join(repoRoot, "pyproject.toml")
+	hasPyproject := false
+	if _, err := os.Stat(pyprojectPath); err == nil {
+		hasPyproject = true
+	}
+
+	if uvPath, err := exec.LookPath("uv"); err == nil {
+		var cmd *exec.Cmd
+		if hasPyproject {
+			cmd = exec.Command(uvPath, "pip", "install", "--python", venvPythonPath(repoRoot), "-e", ".")
+		} else {
+			cmd = exec.Command(uvPath, "pip", "install", "--python", venvPythonPath(repoRoot),
+				"pymupdf>=1.24.0", "polars>=1.0.0", "matplotlib>=3.8.0")
+		}
+		cmd.Dir = repoRoot
+		if output, err := cmd.CombinedOutput(); err != nil {
+			return fmt.Errorf("uv pip install failed: %w\n%s", err, output)
+		}
+		return nil
+	}
+
+	pipPath := filepath.Join(venvDir, "bin", "pip")
+	if runtime.GOOS == "windows" {
+		pipPath = filepath.Join(venvDir, "Scripts", "pip.exe")
+	}
+	var cmd *exec.Cmd
+	if hasPyproject {
+		cmd = exec.Command(pipPath, "install", "-e", ".")
+	} else {
+		cmd = exec.Command(pipPath, "install",
+			"pymupdf>=1.24.0", "polars>=1.0.0", "matplotlib>=3.8.0")
+	}
+	cmd.Dir = repoRoot
+	if output, err := cmd.CombinedOutput(); err != nil {
+		return fmt.Errorf("pip install failed: %w\n%s", err, output)
+	}
+	return nil
+}
+
+// CheckPythonVenv checks if the Python venv exists and has required dependencies.
+func CheckPythonVenv(repoRoot string) (bool, bool, string) {
+	pythonBin := venvPythonPath(repoRoot)
+	if _, err := os.Stat(pythonBin); err != nil {
+		return false, false, ""
+	}
+	cmd := exec.Command(pythonBin, "--version")
+	versionOut, err := cmd.Output()
+	version := ""
+	if err == nil {
+		version = strings.TrimSpace(string(versionOut))
+	}
+	cmd = exec.Command(pythonBin, "-c", "import fitz; import polars; import matplotlib")
+	cmd.Dir = repoRoot
+	depsOK := cmd.Run() == nil
+	return true, depsOK, version
 }

@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/nathandelacretaz/dark-research-lab/internal/knowledge"
@@ -110,18 +111,42 @@ func pythonPath(repoRoot string) string {
 
 // extractPDF calls the Python extraction script and returns parsed results.
 func extractPDF(repoRoot, pdfPath string) (*ExtractedPDF, error) {
-	cmd := exec.Command(pythonPath(repoRoot), "-m", "src.literature.extract", "--json", pdfPath)
+	pyPath := pythonPath(repoRoot)
+	cmd := exec.Command(pyPath, "-m", "src.literature.extract", "--json", pdfPath)
 	cmd.Dir = repoRoot
 
 	output, err := cmd.Output()
 	if err != nil {
 		if exitErr, ok := err.(*exec.ExitError); ok {
-			return nil, fmt.Errorf("python extraction failed: %s", string(exitErr.Stderr))
+			return nil, classifyPythonError(string(exitErr.Stderr))
+		}
+		// Python binary not found
+		if strings.Contains(err.Error(), "executable file not found") {
+			return nil, fmt.Errorf("Python not found. Run 'drl setup' to create the project venv")
 		}
 		return nil, fmt.Errorf("run python: %w", err)
 	}
 
 	return ParseExtractedJSON(output)
+}
+
+// classifyPythonError extracts a clear message from Python stderr.
+func classifyPythonError(stderr string) error {
+	stderr = strings.TrimSpace(stderr)
+	lines := strings.Split(stderr, "\n")
+	lastLine := lines[len(lines)-1]
+
+	switch {
+	case strings.Contains(stderr, "ModuleNotFoundError"):
+		module := lastLine
+		return fmt.Errorf("missing Python dependency: %s\n  Fix: run 'drl setup' to install dependencies into .venv/", module)
+	case strings.Contains(stderr, "No module named 'src"):
+		return fmt.Errorf("Python module path error: src/ package not found.\n  Fix: run 'drl setup' to regenerate the project structure")
+	case strings.Contains(stderr, "FileNotFoundError"):
+		return fmt.Errorf("PDF file not found or unreadable: %s", lastLine)
+	default:
+		return fmt.Errorf("python extraction failed: %s", lastLine)
+	}
 }
 
 // relativeLiteraturePath returns the relative path from repo root for a literature file.

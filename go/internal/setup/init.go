@@ -50,6 +50,9 @@ type InitResult struct {
 	TestsUpdated        int
 	DataInstalled       int
 	DataUpdated         int
+	PythonVenvCreated   bool
+	PythonDepsInstalled bool
+	PythonVenvError     string // non-fatal: logged as warning
 	AgentsMdUpdated     bool
 	ClaudeMdUpdated     bool
 	PluginCreated       bool
@@ -263,6 +266,14 @@ func InitRepo(repoRoot string, opts InitOptions) (*InitResult, error) {
 		if err := installTemplates(repoRoot, tier, result); err != nil {
 			return nil, err
 		}
+	}
+
+	// Python venv setup (non-fatal — warn but don't abort)
+	venvCreated, depsInstalled, venvErr := EnsurePythonVenv(repoRoot)
+	result.PythonVenvCreated = venvCreated
+	result.PythonDepsInstalled = depsInstalled
+	if venvErr != nil {
+		result.PythonVenvError = venvErr.Error()
 	}
 
 	return result, nil
