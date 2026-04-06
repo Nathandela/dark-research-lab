@@ -473,7 +473,8 @@ func printTemplatesSummary(cmd *cobra.Command, result *setup.InitResult) {
 	if result.PythonVenvError != "" {
 		cmd.Printf("  Python: [warn] %s\n", result.PythonVenvError)
 		cmd.Println("  Python: PDF indexing (drl index) will not work until dependencies are installed.")
-		cmd.Println("          Fix manually: uv venv .venv && uv pip install pymupdf polars matplotlib")
+		cmd.Println("          Fix: uv venv .venv && uv pip install pymupdf polars matplotlib")
+		cmd.Println("          Or:  python3 -m venv .venv && .venv/bin/pip install pymupdf polars matplotlib")
 	}
 }
 

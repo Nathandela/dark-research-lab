@@ -158,19 +158,25 @@ func classifyPythonError(stderr string) error {
 		lastLine = stderr
 	}
 
+	// Strip Python exception class prefix (e.g. "ModuleNotFoundError: No module named 'fitz'" -> "No module named 'fitz'")
+	detail := lastLine
+	if idx := strings.Index(detail, ": "); idx != -1 {
+		detail = detail[idx+2:]
+	}
+
 	switch {
 	case strings.Contains(stderr, "ModuleNotFoundError"):
-		return fmt.Errorf("missing Python dependency: %s\n  Fix: run 'drl setup' to install dependencies into .venv/", lastLine)
+		return fmt.Errorf("missing Python dependency: %s\n  Fix: run 'drl setup' to install dependencies into .venv/", detail)
 	case strings.Contains(stderr, "ImportError"):
-		return fmt.Errorf("Python import error: %s\n  Fix: run 'drl setup' to reinstall dependencies", lastLine)
+		return fmt.Errorf("Python import error: %s\n  Fix: run 'drl setup' to reinstall dependencies", detail)
 	case strings.Contains(stderr, "No module named 'src"):
 		return fmt.Errorf("Python module path error: src/ package not found.\n  Fix: run 'drl setup' to regenerate the project structure")
 	case strings.Contains(stderr, "FileNotFoundError"):
-		return fmt.Errorf("PDF file not found or unreadable: %s", lastLine)
+		return fmt.Errorf("PDF file not found or unreadable: %s", detail)
 	case strings.Contains(stderr, "PermissionError"):
-		return fmt.Errorf("permission denied reading PDF: %s", lastLine)
+		return fmt.Errorf("permission denied reading PDF: %s", detail)
 	default:
-		return fmt.Errorf("python extraction failed: %s", lastLine)
+		return fmt.Errorf("python extraction failed: %s\n  Run 'drl doctor' to check your Python environment", lastLine)
 	}
 }
 

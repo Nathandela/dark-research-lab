@@ -20,9 +20,13 @@ The system is designed for social science researchers doing empirical work: econ
 
 ## Prerequisites
 
-DRL requires three tools installed on your machine:
+DRL requires four things installed on your machine:
 
-### 1. DRL itself
+### 1. Python 3.10+
+
+DRL uses Python for data analysis, PDF extraction, and figure generation. Verify with `python3 --version`. Most systems have this already.
+
+### 2. DRL itself
 
 ```bash
 uv tool install dark-research-lab
@@ -30,11 +34,11 @@ uv tool install dark-research-lab
 
 This installs the `drl` CLI globally. Verify with `drl about`.
 
-### 2. Claude Code
+### 3. Claude Code
 
 DRL's agents run inside Claude Code sessions. Install it following [the official guide](https://docs.anthropic.com/en/docs/claude-code).
 
-### 3. Beads (task tracker)
+### 4. Beads (task tracker)
 
 DRL uses beads to track research epics and tasks. Each analysis step, robustness check, and paper section becomes a beads issue with dependencies and acceptance criteria.
 

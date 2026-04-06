@@ -1,6 +1,6 @@
 ---
-version: "v0.1.1"
-last-updated: "2026-04-03"
+version: "v0.2.1"
+last-updated: "2026-04-06"
 summary: "Complete CLI command reference for dark-research-lab"
 ---
 
@@ -82,10 +82,9 @@ drl init --skip-agents      # Skip AGENTS.md and template installation
 drl init --skip-hooks       # Skip git hook installation
 drl init --skip-claude      # Skip Claude Code hooks
 drl init --json             # Output result as JSON
-drl setup                   # Full setup (init + hooks + templates)
-drl setup --update          # Regenerate templates (preserves user files)
-drl setup --uninstall       # Remove dark-research-lab integration
-drl setup --status          # Show installation status
+drl setup                   # Full setup (init + hooks + templates + Python venv)
+drl setup --core-skill      # Also install skills and agents (on existing repos)
+drl setup --all-skill       # Install everything including agent role skills
 drl setup claude            # Install Claude Code hooks only
 drl setup claude --status   # Check hook status
 drl setup claude --dry-run  # Preview changes without writing
@@ -142,7 +141,7 @@ drl watch --no-follow                 # Print existing trace and exit
 
 ```bash
 drl about                    # Show version, animation, and recent changelog
-drl doctor                  # Check external dependencies and project health
+drl doctor                  # Check project health (hooks, beads, Python venv, deps)
 drl audit                   # Run pattern, rule, and lesson quality checks
 drl rules check             # Check codebase against .claude/rules.json
 drl test-summary            # Run tests and output compact pass/fail summary
