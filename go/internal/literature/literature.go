@@ -72,6 +72,9 @@ func FindPDFs(dir string) ([]string, error) {
 
 // ParseExtractedJSON parses the JSON output from the Python extraction script.
 func ParseExtractedJSON(data []byte) (*ExtractedPDF, error) {
+	if len(strings.TrimSpace(string(data))) == 0 {
+		return nil, fmt.Errorf("python extraction produced no output (check src/literature/extract.py has a __main__ block)")
+	}
 	var result ExtractedPDF
 	if err := json.Unmarshal(data, &result); err != nil {
 		return nil, fmt.Errorf("parse extraction JSON: %w", err)

@@ -96,6 +96,18 @@ func TestParseExtractedJSON_Invalid(t *testing.T) {
 	}
 }
 
+func TestParseExtractedJSON_Empty(t *testing.T) {
+	for _, input := range []string{"", "  ", "\n"} {
+		_, err := ParseExtractedJSON([]byte(input))
+		if err == nil {
+			t.Fatalf("expected error for empty input %q", input)
+		}
+		if !strings.Contains(err.Error(), "no output") {
+			t.Errorf("expected 'no output' in error, got: %v", err)
+		}
+	}
+}
+
 func TestWriteSummaryNote(t *testing.T) {
 	dir := t.TempDir()
 	meta := PDFMetadata{

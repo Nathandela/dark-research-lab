@@ -99,15 +99,17 @@ def _cli_main() -> int:
         text = extract_text(pdf_path)
         if json_mode:
             meta = extract_metadata(pdf_path)
-            sys.stdout = _real_stdout
-            print(json.dumps({"text": text, "metadata": meta}))
+            print(json.dumps({"text": text, "metadata": meta}), file=_real_stdout)
         else:
-            sys.stdout = _real_stdout
-            print(text)
+            print(text, file=_real_stdout)
     except (FileNotFoundError, ValueError) as exc:
-        sys.stdout = _real_stdout
         print(f"Error: {exc}", file=sys.stderr)
         return 1
+    except Exception as exc:
+        print(f"Unexpected error: {exc}", file=sys.stderr)
+        return 1
+    finally:
+        sys.stdout = _real_stdout
     return 0
 
 
