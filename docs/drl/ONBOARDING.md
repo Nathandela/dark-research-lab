@@ -43,7 +43,8 @@ DRL's agents run inside Claude Code sessions. Install it following [the official
 DRL uses beads to track research epics and tasks. Each analysis step, robustness check, and paper section becomes a beads issue with dependencies and acceptance criteria.
 
 ```bash
-npm install -g beads
+brew install beads                 # macOS / Linux -- recommended
+# Alternative: npm install -g @beads/bd    # note the scoped name; unscoped "beads" on npm is a different project
 ```
 
 Verify with `bd stats`.

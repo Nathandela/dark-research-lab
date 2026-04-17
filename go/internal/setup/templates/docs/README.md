@@ -23,7 +23,7 @@ Social science researchers who use Python for empirical analysis and target jour
 ```bash
 # Install DRL and beads
 uv tool install dark-research-lab
-npm install -g beads
+brew install beads   # or: npm install -g @beads/bd  (unscoped "beads" on npm is a different project)
 
 # Create and scaffold a research project
 mkdir my-paper && cd my-paper && git init

@@ -9,7 +9,7 @@
 ```bash
 # Install
 uv tool install dark-research-lab
-npm install -g beads
+brew install beads   # or: npm install -g @beads/bd
 
 # Set up a project
 mkdir my-paper && cd my-paper && git init
@@ -97,7 +97,8 @@ Requires Python 3.10+ and [Claude Code](https://docs.anthropic.com/en/docs/claud
 uv tool install dark-research-lab
 
 # Install beads (task tracker for epics and dependencies)
-npm install -g beads
+brew install beads                 # macOS / Linux -- recommended
+# Alternative: npm install -g @beads/bd    # note the scoped name; unscoped "beads" on npm is a different project
 
 # Optional: external reviewers for multi-model review
 npm install -g @google/gemini-cli    # Gemini
