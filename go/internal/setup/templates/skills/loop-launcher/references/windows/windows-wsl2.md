@@ -36,7 +36,7 @@
    # jq (optional, python3 fallback works)
    sudo apt install -y jq
    # beads (bd) -- required for epic tracking
-   curl -fsSL https://raw.githubusercontent.com/gastownhall/beads/main/scripts/install.sh | bash
+   npm install -g @beads/bd    # note the scoped name; unscoped "beads" on npm is a different project
    # compound-agent
    npm install -g compound-agent
    ```
